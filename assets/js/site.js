@@ -42,6 +42,22 @@
     const b = document.querySelector('#tariffTabs [data-c="' + a.dataset.showTariff + '"]'); if (b) b.click();
   }));
 
+  // расписание экзаменов: «27.10.26» → «27 октября, вторник» и пометка «прошёл / сегодня / через N дней»
+  const MON = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  const WD = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+  const days = n => n % 10 === 1 && n % 100 !== 11 ? 'день' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'дня' : 'дней';
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  document.querySelectorAll('.exd-date').forEach(t => {
+    const m = t.textContent.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})$/);
+    if (!m) return;
+    const d = new Date(m[3].length === 2 ? 2000 + +m[3] : +m[3], m[2] - 1, +m[1]);
+    const diff = Math.round((d - today) / 864e5);
+    const st = diff < 0 ? 'прошёл' : diff === 0 ? 'сегодня' : diff === 1 ? 'завтра' : 'через ' + diff + ' ' + days(diff);
+    t.setAttribute('datetime', d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+    t.innerHTML = '<b>' + d.getDate() + ' ' + MON[d.getMonth()] + '</b><small>' + WD[d.getDay()] + ' <span class="exd-st">' + st + '</span></small>';
+    t.closest('.exd-row').classList.add(diff < 0 ? 'past' : diff <= 7 ? 'soon' : 'next');
+  });
+
   // калькулятор
   const calc = $('calc');
   if (calc) {

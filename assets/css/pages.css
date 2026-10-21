@@ -236,3 +236,38 @@ html.a11y-noimg .perk-ico,html.a11y-noimg .card-ico,html.a11y-noimg .ct img,html
 @media (min-width:900px){.biz{grid-template-columns:1fr 1fr}}
 @media (max-width:719px){.ptag:last-child{display:grid;grid-template-columns:72px minmax(0,1fr);column-gap:12px;row-gap:2px;align-items:center}.ptag:last-child img{grid-row:1 / 4;margin:0}.ptag:last-child b{padding-top:6px}}
 html.a11y-noimg .ptag img,html.a11y-noimg .biz-cta img{display:none!important}
+
+/* ===== расписание экзаменов (src/partials/exam-dates.html) ===== */
+.exd{display:grid;gap:12px}
+.exd-card{background:var(--grey);border-radius:var(--r);padding:16px 18px 8px}
+.exd-top{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center;margin-bottom:6px}
+.exd-top img{width:72px;height:72px;object-fit:contain}
+.exd-top .it{font-size:19px;line-height:1.15}
+.exd-top p{font-size:14px;color:var(--muted);margin-top:4px}
+.exd-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.exd-kind{font:900 italic 15px/1.2 var(--font);text-transform:uppercase;color:var(--head)}
+.exd-date{display:grid;justify-items:end;gap:4px;text-align:right}
+.exd-date b{font:900 italic 24px/1 var(--font);color:var(--ink);white-space:nowrap}
+.exd-date small{font-size:13.5px;color:var(--muted);white-space:nowrap}
+.exd-st{display:inline-block;font:700 12px/1 var(--font);padding:6px 9px;border-radius:999px;background:#fff;color:var(--ink);white-space:nowrap}
+.exd-row.soon .exd-st{background:var(--red);color:#fff}
+.exd-row.past .exd-date b{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
+.exd-row.past .exd-st{background:var(--grey-2);color:var(--head)}
+.exd-note{margin-top:14px;font-size:14.5px;color:var(--muted)}
+.exd-note a{color:var(--red);font-weight:700;white-space:nowrap;text-decoration:none}
+.sec.grey .exd-card{background:#fff}
+.sec.grey .exd-row.past .exd-st{background:var(--grey)}
+@media (min-width:720px){.exd{grid-template-columns:1fr 1fr}}
+html.a11y-noimg .exd-top img{display:none!important}
+html.a11y-noimg .exd-top{grid-template-columns:minmax(0,1fr)}
+
+/* ===== страница «Экзамены» ===== */
+.ex-how{display:grid;gap:12px}
+.ex-card{background:#fff;border-radius:var(--r);padding:20px 18px;display:grid;gap:12px;align-content:start}
+.ex-card .it{font-size:21px}
+.ex-card p{font-size:15px;line-height:1.5}
+.ex-card .checks li{background:var(--grey)}
+.ex-price{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ex-price div{background:var(--grey);border-radius:var(--r-sm);padding:12px 14px;font-size:13.5px;color:var(--muted);line-height:1.35}
+.ex-price b{display:block;font:900 italic 22px/1.1 var(--font);color:var(--ink);margin-bottom:4px}
+@media (min-width:900px){.ex-how{grid-template-columns:1fr 1fr}}

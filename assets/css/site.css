@@ -534,3 +534,5 @@ img.brand{width:22px;height:22px;flex:none;border-radius:6px;display:inline-bloc
 .btn-msg img.brand{box-shadow:0 0 0 2px rgba(255,255,255,.9)}
 .link img.brand,.rt-card img.brand{margin-right:6px}
 .rt-card b img.brand{width:20px;height:20px;vertical-align:-4px}
+/* 9 пунктов меню: на узком десктопе чуть плотнее, чтобы шапка не вылезала */
+@media (min-width:1080px) and (max-width:1439px){.nav a{padding:10px 7px;font-size:13.5px}.hdr-row{gap:14px}}
