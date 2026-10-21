@@ -528,3 +528,9 @@ span.rd-ico{display:none}
   .bot-top{padding-top:14px}
 }
 @media print{.bot,.bot-fab{display:none!important}}
+
+/* логотипы VK, MAX, 2ГИС в кнопках и ссылках */
+img.brand{width:22px;height:22px;flex:none;border-radius:6px;display:inline-block;vertical-align:-5px}
+.btn-msg img.brand{box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.link img.brand,.rt-card img.brand{margin-right:6px}
+.rt-card b img.brand{width:20px;height:20px;vertical-align:-4px}
