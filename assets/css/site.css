@@ -74,9 +74,9 @@ button{font:inherit;color:inherit}
 .city{display:flex;gap:2px;background:#1E1E1E;border-radius:999px;padding:3px}
 .city a{padding:6px 12px;border-radius:999px}
 .city a[aria-current],.city:not(:has([aria-current])) a[data-city="tomsk"]{background:#fff;color:#111}
-.ut.sv{color:#fff}
+.ut-sved{color:#fff}
 .ut svg{color:#8F8F8F}
-.ut.sv svg{color:var(--red)}
+.ut-sved svg{color:var(--red)}
 .hdr{position:sticky;top:0;z-index:40;background:#141414;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.06)}
 .hdr-row{display:flex;align-items:center;gap:8px;height:64px}
 .logo{flex:none}
