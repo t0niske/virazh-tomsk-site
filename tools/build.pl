@@ -57,7 +57,7 @@ my @pages;
 find({ no_chdir => 1, wanted => sub { push @pages, $File::Find::name if /\.html$/ && -f } }, 'src/pages');
 @pages = sort @pages;
 
-my (@sitemap, @redirects, %seen_path, $built);
+my (@sitemap, @redirects, %seen_path, $built, @bot_faq);
 for my $file (@pages) {
   my $rel = $file; $rel =~ s{^src/pages/}{}; $rel =~ s{\.html$}{};
   my $path = $rel eq 'index' ? '/' : $rel eq '404' ? '/404' : "/$rel";
@@ -76,6 +76,7 @@ for my $file (@pages) {
     my @qa;
     while ($content =~ m{<details>\s*<summary>(.*?)</summary>\s*(.*?)</details>}gs) {
       my ($q, $a) = ($1, $2);
+      push @bot_faq, [$q, $a, $path];
       for ($q, $a) { s/<[^>]+>//g; s/\s+/ /g; s/^\s+|\s+$//g; s/\\/\\\\/g; s/"/\\"/g; }
       push @qa, qq({"\@type":"Question","name":"$q","acceptedAnswer":{"\@type":"Answer","text":"$a"}});
     }
@@ -147,6 +148,54 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
   for my $css (glob("$opt{out}/assets/css/*.css")) {
     my $s = slurp($css); $s =~ s{url\("/(?!/)}{url("$opt{base}/}g; spew($css, $s);
   }
+}
+
+# --- база чат-помощника: bot/answers.md + блоки «Частые вопросы» со страниц → assets/js/bot-kb.json
+{
+  require JSON::PP;
+  my $md = -f 'bot/answers.md' ? slurp('bot/answers.md') : '';
+  my $inline = sub {
+    my $t = shift;
+    $t =~ s/&/&amp;/g; $t =~ s/</&lt;/g; $t =~ s/>/&gt;/g;
+    $t =~ s{\*\*(.+?)\*\*}{<b>$1</b>}g;
+    $t =~ s{\[\[записаться\]\]}{<button class="btn btn-red btn-sm" type="button" data-signup>Записаться</button>}g;
+    $t =~ s{\[\[позвонить\]\]}{<a class="btn btn-sm" href="tel:+73822345252">Позвонить</a>}g;
+    $t =~ s{\[([^\]]+)\]\(([^)\s]+)\)}{<a href="$2">$1</a>}g;
+    $t;
+  };
+  my $key = sub { my $q = lc shift; $q =~ s/<[^>]+>//g; $q =~ tr/ё/е/; $q =~ s/[^a-zа-я0-9]+//g; $q };
+  my (@items, %special, @chips, %have);
+  for my $block (split /^## /m, $md) {
+    next if $block !~ /\S/ || $block =~ /\A>/;
+    my ($title, @lines) = split /\n/, $block;
+    $title =~ s/\s+$//;
+    my ($words, @paras, @cur) = ('');
+    for (@lines) {
+      next if /^>/;
+      if (/^слова:\s*(.*)$/) { $words = $1; next }
+      if (/^\s*$/) { push @paras, [@cur] if @cur; @cur = (); next }
+      push @cur, $inline->($_);
+    }
+    push @paras, [@cur] if @cur;
+    if ($title eq '!подсказки') { @chips = map { @$_ } @paras; next }
+    my $html = join '', map { '<p>' . join('<br>', @$_) . '</p>' } @paras;
+    if ($title =~ /^!(.+)$/) { $special{$1} = $html; next }
+    push @items, { q => $title, k => $words, a => $html, w => 1 };
+    $have{ $key->($title) } = 1;
+  }
+  for (@bot_faq) {
+    my ($q, $a, $from) = @$_;
+    $q =~ s/<[^>]+>//g; $q =~ s/\s+/ /g; $q =~ s/^\s+|\s+$//g;
+    next if $have{ $key->($q) }++;
+    $a =~ s{</?(?!a\b|b\b|strong\b|br\b|p\b)\w+[^>]*>}{}g;
+    $a =~ s/\s+/ /g; $a =~ s/^\s+|\s+$//g;
+    $a .= qq{<p><a href="$from">Подробнее на странице</a></p>} unless $a =~ /<a\b/;
+    push @items, { q => $q, k => '', a => $a, w => 0.95 };
+  }
+  my $kb = JSON::PP->new->canonical->encode({ special => \%special, chips => \@chips, items => \@items });
+  $kb =~ s{href=\\?"/(?!/)}{my $m = $&; $m =~ s{/$}{$opt{base}/}; $m}ge if length $opt{base};
+  spew("$opt{out}/assets/js/bot-kb.json", $kb);
+  printf "Помощник: %d ответов (%d из bot/answers.md)\n", scalar(@items), scalar(grep { $_->{w} == 1 } @items);
 }
 
 # --- sitemap.xml и robots.txt

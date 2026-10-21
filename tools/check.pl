@@ -41,6 +41,11 @@ for my $f (@pages) {
     $bad{"$u  ← $rel"}++ unless exists_path($u);
   }
 }
+# 4. ссылки в ответах чат-помощника
+if (open my $h, '<:utf8', "$site/assets/js/bot-kb.json") {
+  local $/; my $kb = <$h>; close $h;
+  while ($kb =~ m{href=\\"(/[^"\\#]*)}g) { $bad{"$1  ← чат-помощник"}++ unless exists_path($1) }
+}
 print "БИТАЯ ССЫЛКА: $_\n" for sort keys %bad;
 $err += keys %bad;
 printf "Страниц: %d. Ошибок: %d\n", scalar(@pages), $err;

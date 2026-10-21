@@ -1,6 +1,6 @@
 <div class="bar" id="bar" aria-label="Быстрые действия">
   <a class="btn" href="tel:+73822345252" aria-label="Позвонить"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
-  <button class="btn" type="button" data-msg aria-label="Написать в мессенджер"><svg width="22" height="22"><use href="#i-chat"/></svg></button>
+  <button class="btn" type="button" data-bot aria-label="Задать вопрос помощнику"><svg width="22" height="22"><use href="#i-chat"/></svg></button>
   <button class="btn btn-red" type="button" data-signup>Записаться</button>
 </div>
 
@@ -17,7 +17,7 @@
     <label class="consent"><input type="checkbox" id="s-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a> и знаком(а) с <a href="/politika-konfidentsialnosti" target="_blank">политикой конфиденциальности</a></span></label>
     <button class="btn btn-red btn-block" type="submit">Отправить заявку</button>
   </form>
-  <div class="ok-msg" id="sheetOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время. (Прототип: отправка заявок ещё не подключена.)</div>
+  <div class="ok-msg" id="sheetOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время.</div>
 </dialog>
 
 <dialog class="sheet" id="msgSheet" aria-labelledby="msgTitle">
@@ -28,3 +28,18 @@
     <a class="btn btn-msg btn-max btn-block" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener">MAX</a>
   </div>
 </dialog>
+
+<button class="bot-fab" type="button" data-bot aria-haspopup="dialog" aria-controls="bot"><svg width="22" height="22" aria-hidden="true"><use href="#i-chat"/></svg>Есть вопрос?</button>
+<section class="bot" id="bot" role="dialog" aria-labelledby="botTitle" hidden>
+  <div class="bot-top">
+    <div><b id="botTitle">Помощник «Авто-Вираж»</b><small>Отвечаю по информации с сайта</small></div>
+    <button class="x" type="button" data-bot-close aria-label="Закрыть чат"><svg width="20" height="20" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="bot-log" id="botLog" aria-live="polite"></div>
+  <div class="bot-chips" id="botChips" role="group" aria-label="Частые вопросы"></div>
+  <form class="bot-form" id="botForm" autocomplete="off">
+    <input id="botIn" type="text" maxlength="300" placeholder="Напишите вопрос…" aria-label="Ваш вопрос">
+    <button class="btn btn-red" type="submit" aria-label="Отправить"><svg width="20" height="20" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+  </form>
+  <p class="bot-note">Чат не сохраняется и никуда не отправляется. Чтобы записаться, оставьте номер в <button type="button" data-signup>форме записи</button>.</p>
+</section>
