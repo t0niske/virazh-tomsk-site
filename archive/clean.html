@@ -1,0 +1,1196 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style></head><body><title>Авто-Вираж — чистый вариант</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Автошкола «Авто-Вираж» в Томске: категории B (АКПП и МКПП) и A. Старт с 5 000 ₽, вождение 2 000 ₽ за занятие, 3 офиса, рейтинг 5.0 в 2ГИС.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Onest:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: светлая страница с одной большой фото-карточкой Томска в первом экране (приём Яндекс Практикума).
+   Белые карточки, мягкие тени, красный — только для действия. Тёмные полосы задают ритм длинной страницы. */
+:root{
+  --bg:#F5F5F3; --surface:#FFFFFF; --surface-2:#EFEFEC; --studio:#ECECE9;
+  --ink:#111111; --ink-2:#3A3A37; --muted:#6B6A66; --line:#E4E3DF;
+  --red:#D7232C; --red-press:#B51B23; --red-soft:#FDEEEE;
+  --dark:#121212; --dark-2:#1D1D1C; --dark-line:#2E2E2C; --on-dark-muted:#A9A7A2;
+  --green:#1A9A55; --green-soft:#E7F5ED; --star:#F5A400;
+  --display:"Manrope","Segoe UI",system-ui,sans-serif;
+  --body:"Onest","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r-lg:28px; --r:22px; --r-sm:14px;
+  --shadow:0 1px 2px rgba(17,17,17,.04),0 12px 32px rgba(17,17,17,.07);
+  --gut-l:max(16px, env(safe-area-inset-left, 0px)); --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* ячейки сеток не растягиваются шире экрана из-за содержимого */
+.courses>*,.groups>*,.offices>*,.timeline>*,.proms>*,.prom-grid>*,.route-grid>*,.teen-grid>*,.signup-grid>*,.faq-grid>*,.perks>*,.proof>*,.incl-cols>*,.ex-grid>*{min-width:0}
+.course,.course-body,.grp,.ins,.ins-in,.car,.office,.rev,.hero-panel,.calc,.exams,.incl,.form,.trial{grid-template-columns:minmax(0,1fr)}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.has-bar{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+a{color:inherit}
+img,svg{max-width:100%}
+img{display:block}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+h2{font-size:clamp(30px,7.6vw,50px);font-weight:800;line-height:1.04;letter-spacing:-.035em}
+h3{font-size:19px;font-weight:700;line-height:1.25;letter-spacing:-.015em}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:10px}
+.wrap{max-width:1200px;margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.sec{padding-block:72px}
+.sec.white{background:var(--surface)}
+.sec.dark{background:var(--dark);color:#fff}
+.head{display:grid;gap:14px;margin-bottom:32px;max-width:720px}
+.head p{color:var(--muted);font-size:17px;max-width:54ch}
+.dark .head p{color:var(--on-dark-muted)}
+.kicker{font:600 13px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
+.dark .kicker{color:#FF6A70}
+.red{color:var(--red)}
+.num{font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
+.card.flat{box-shadow:inset 0 0 0 1px var(--line)}
+.sample{display:inline-flex;margin-top:14px;font-size:12.5px;color:var(--muted);border:1px dashed #B9B7B1;border-radius:8px;padding:4px 8px}
+.dark .sample{color:var(--on-dark-muted);border-color:#555}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 24px;border:0;border-radius:16px;font:600 16px/1.1 var(--body);text-decoration:none;cursor:pointer;background:var(--surface-2);color:var(--ink);transition:background .15s, transform .1s;text-align:center}
+.btn:active{transform:scale(.98)}
+@media (hover:hover){.btn:hover{background:#E4E4E0}}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 8px 20px rgba(215,35,44,.25)}
+@media (hover:hover){.btn-red:hover{background:var(--red-press)}}
+.btn-ink{background:var(--ink);color:#fff}
+@media (hover:hover){.btn-ink:hover{background:#2A2A2A}}
+.btn-glass{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+@media (hover:hover){.btn-glass:hover{background:rgba(255,255,255,.2)}}
+.btn-block{width:100%}
+.btn-sm{min-height:46px;font-size:15px;padding:0 18px;border-radius:13px}
+.link{font-weight:600;font-size:15px;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
+@media (hover:hover){.link:hover{text-decoration:underline;text-underline-offset:3px}}
+.chip{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:0;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font:600 14px/1 var(--body);cursor:pointer;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--gut-r)) 16px calc(-1 * var(--gut-l));padding:2px var(--gut-r) 2px var(--gut-l)}
+.chips::-webkit-scrollbar{display:none}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 12.5px/1 var(--body);padding:7px 10px;border-radius:999px;white-space:nowrap;background:var(--surface-2);color:var(--ink)}
+.pill.hot{background:var(--red);color:#fff}
+.pill.ok{background:var(--green-soft);color:#13693B}
+.pill.glass{background:rgba(17,17,17,.6);color:#fff;backdrop-filter:blur(6px)}
+
+/* prototype bar (не часть дизайна) */
+.proto{background:#262626;color:#EDEDED;font:500 13px/1.3 var(--body)}
+.proto .wrap{display:flex;align-items:center;gap:10px;min-height:44px;flex-wrap:wrap;padding-block:6px}
+.proto .sp{flex:1}
+.proto button,.proto a{background:transparent;border:1px solid #666;color:#EDEDED;border-radius:999px;padding:7px 12px;font:600 12px/1 var(--body);cursor:pointer;text-decoration:none}
+.proto button[aria-pressed="true"]{background:#FFE48A;color:var(--ink);border-color:#FFE48A}
+
+/* header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,243,.9);backdrop-filter:saturate(1.5) blur(12px);-webkit-backdrop-filter:saturate(1.5) blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+.hdr.scrolled{border-bottom-color:var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:8px;height:64px}
+.logo{display:block;flex:none}
+.logo img{height:34px;width:auto}
+.nav{display:none}
+.hdr-sp{flex:1}
+.hdr-phone{display:none;text-decoration:none;font:700 17px/1.1 var(--body);text-align:right}
+.hdr-phone small{display:block;font:500 12px/1 var(--body);color:var(--muted);margin-top:4px}
+.icon-btn{width:46px;height:46px;display:grid;place-items:center;border:0;border-radius:14px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;text-decoration:none;flex:none;color:var(--ink)}
+.hdr .btn{display:none}
+.menu{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-top,0px)) var(--gut-r) calc(20px + env(safe-area-inset-bottom,0px)) var(--gut-l);overflow:auto}
+.menu .top{display:flex;justify-content:space-between;align-items:center;height:52px;margin-bottom:12px}
+.menu a.m{display:flex;justify-content:space-between;align-items:center;font:700 22px/1.2 var(--display);letter-spacing:-.02em;text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line)}
+.menu a.m::after{content:"→";color:var(--muted);font-weight:500}
+.menu .contacts{margin-top:auto;display:grid;gap:10px;padding-top:24px}
+
+/* ===== hero ===== */
+.hero{padding-top:8px}
+.hero-wrap{position:relative}
+.hero-card{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#1a1a1a;color:#fff;isolation:isolate;height:340px;display:flex;flex-direction:column}
+.hero-card>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:100% 50%;z-index:-2}
+.hero-card::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,10,.8) 0%,rgba(10,10,10,.45) 40%,rgba(10,10,10,0) 62%)}
+.hero-copy{padding:20px 20px 0;display:grid;gap:12px}
+.live{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--body);color:#fff;background:rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-radius:999px;justify-self:start}
+.live i{width:8px;height:8px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 4px rgba(61,220,132,.25)}
+.h1-sub{display:block;font:600 14px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:10px}
+.h1-main{display:block;font-size:clamp(36px,10.4vw,72px);font-weight:800;line-height:.98;letter-spacing:-.045em}
+.hero-lead{display:none}
+.hero-photo-note{display:none}
+
+.hero-panel{position:relative;z-index:2;margin-top:-26px;padding:16px;display:grid;gap:14px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface-2);padding:4px;border-radius:15px}
+.seg button{min-height:48px;border:0;border-radius:12px;background:transparent;font:700 14.5px/1.1 var(--body);cursor:pointer;padding:4px 6px;color:var(--ink)}
+.seg button small{display:block;font:500 11.5px/1.1 var(--body);color:var(--muted);margin-top:3px}
+.seg button[aria-pressed="true"]{background:#fff;box-shadow:0 1px 3px rgba(17,17,17,.14)}
+.price-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.price{font:800 clamp(36px,10.5vw,46px)/1 var(--display);letter-spacing:-.04em;white-space:nowrap}
+.price-meta{font:500 14px/1.35 var(--body);color:var(--muted);text-align:right}
+.price-meta b{display:block;color:var(--ink);font-weight:600}
+.pay-line{font-size:14.5px;line-height:1.45;color:var(--ink-2);padding:12px 14px;background:var(--red-soft);border-radius:12px}
+.pay-line b{color:var(--red-press);white-space:nowrap}
+.cta2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cta2 .btn{min-height:50px;font-size:15px}
+.trust{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-size:13.5px;color:var(--muted);padding:2px 4px 0}
+.trust b{color:var(--ink);font-weight:700}
+.stars{color:var(--star);letter-spacing:1px}
+
+.proof{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.proof div{background:var(--surface);padding:16px}
+.proof b{display:block;font:800 26px/1 var(--display);letter-spacing:-.03em}
+.proof span{display:block;font-size:13px;line-height:1.35;color:var(--muted);margin-top:6px}
+
+/* dates strip */
+.strip{background:var(--dark);color:#fff;margin-top:40px}
+.strip .wrap{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-block:14px}
+.strip .wrap::-webkit-scrollbar{display:none}
+.strip .d{flex:none;display:grid;gap:3px;padding:10px 14px;border-radius:14px;background:var(--dark-2)}
+.strip .d span{font-size:12.5px;color:var(--on-dark-muted)}
+.strip .d b{font:700 15px/1.2 var(--body)}
+.strip .d.accent{background:var(--red)}
+.strip .d.accent span{color:rgba(255,255,255,.8)}
+
+/* ===== prices ===== */
+.courses{display:grid;gap:14px}
+.course{display:grid;overflow:hidden;align-content:start}
+.course .studio{position:relative;background:linear-gradient(180deg,#F4F4F2,var(--studio));aspect-ratio:16/9;max-width:100%;display:grid;place-items:end center;padding:10px 6% 0}
+.course .studio img{width:100%;height:auto;max-height:100%;object-fit:contain;object-position:bottom}
+.course .studio .pill{position:absolute;left:14px;top:14px}
+.course .studio .cat{position:absolute;right:14px;top:12px;font:800 15px/1 var(--display);background:#fff;border-radius:10px;padding:8px 10px;box-shadow:0 1px 3px rgba(17,17,17,.1)}
+.course-body{padding:20px;display:grid;gap:16px}
+.course-body .sub{font-size:14px;color:var(--muted);margin-top:4px}
+.course-price{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.course-price .price{font-size:34px}
+.course-price span{font-size:14px;color:var(--muted)}
+.facts{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:15px}
+.facts li{display:flex;gap:10px;align-items:flex-start}
+.facts li::before{content:"";flex:none;width:20px;height:20px;margin-top:1px;border-radius:50%;background:var(--green-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.4l2.6 2.6L12 5.4' fill='none' stroke='%231A9A55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+.split{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:14px}
+.split div{padding:12px 14px;font-size:13px;color:var(--muted)}
+.split div+div{border-left:1px solid var(--line)}
+.split b{display:block;color:var(--ink);font:700 16px/1.2 var(--body);margin-bottom:2px}
+
+.incl{margin-top:14px;display:grid;gap:14px;padding:22px 20px}
+.incl h3{font-size:20px}
+.incl-cols{display:grid;gap:18px}
+.incl-cols h4{margin:0 0 10px;font:600 13px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.incl ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:15px}
+.incl li{display:flex;gap:10px}
+.incl .yes li::before{content:"✓";flex:none;color:var(--green);font-weight:700}
+.incl .no li::before{content:"+";flex:none;color:var(--muted);font-weight:700;width:10px}
+.also{margin-top:14px;display:flex;align-items:center;gap:14px;padding:18px 20px}
+.also p{flex:1;font-size:14.5px;color:var(--muted)}
+.also b{display:block;font:700 16px/1.3 var(--body);color:var(--ink);margin-bottom:2px}
+
+/* ===== pay ===== */
+.timeline{display:grid;gap:10px}
+.tl{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:16px 18px}
+.tl .n{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:800 16px/1 var(--display);background:var(--surface-2);color:var(--ink)}
+.tl b{display:block;font:600 16px/1.25 var(--body)}
+.tl small{display:block;font-size:13.5px;color:var(--muted);margin-top:2px}
+.tl .amt{font:800 18px/1.1 var(--display);letter-spacing:-.02em;text-align:right;white-space:nowrap}
+.tl .amt.soft{font:600 13.5px/1.2 var(--body);color:var(--muted);letter-spacing:0}
+.perks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.perk{padding:16px;border-radius:18px;background:var(--bg);display:grid;gap:6px;align-content:start}
+.perk b{font:800 21px/1.1 var(--display);letter-spacing:-.03em;color:var(--red)}
+.perk span{font-size:13.5px;color:var(--muted);line-height:1.4}
+.calc{margin-top:14px;padding:22px 20px;display:grid;gap:16px;background:var(--dark);color:#fff;border-radius:var(--r)}
+.calc h3{font-size:21px}
+.calc .seg{background:var(--dark-2)}
+.calc .seg button{color:#fff}
+.calc .seg button small{color:var(--on-dark-muted)}
+.calc .seg button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.calc .seg button[aria-pressed="true"] small{color:var(--muted)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;cursor:pointer;min-height:48px;border-bottom:1px solid var(--dark-line)}
+.toggle input{appearance:none;-webkit-appearance:none;flex:none;width:50px;height:30px;border-radius:999px;background:#3A3A38;position:relative;cursor:pointer;margin:0;transition:background .15s}
+.toggle input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .15s}
+.toggle input:checked{background:var(--green)}
+.toggle input:checked::after{transform:translateX(20px)}
+.toggle input:disabled{opacity:.4}
+.calc-out{display:grid;gap:8px}
+.calc-out .row{display:flex;justify-content:space-between;gap:12px;font-size:15px;color:var(--on-dark-muted)}
+.calc-out .row b{color:#fff;font-weight:600}
+.calc-out .total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:12px;margin-top:4px;border-top:1px solid var(--dark-line)}
+.calc-out .total span{font-size:15px;color:var(--on-dark-muted)}
+.calc-out .total b{font:800 36px/1 var(--display);letter-spacing:-.04em}
+.calc small{color:#8A8883;font-size:12.5px;line-height:1.4}
+
+/* ===== reviews ===== */
+.rev-sum{display:flex;align-items:center;gap:18px;padding:20px;margin-bottom:14px}
+.rev-sum .score{font:800 56px/1 var(--display);letter-spacing:-.05em}
+.rev-sum p{font-size:14.5px;color:var(--muted);margin-top:4px}
+.rev-sum p b{color:var(--ink)}
+.scroller{display:grid;grid-auto-flow:column;grid-auto-columns:84%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--gut-r) 20px var(--gut-l);margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));scrollbar-width:none;overscroll-behavior-x:contain}
+.scroller::-webkit-scrollbar{display:none}
+.scroller>*{scroll-snap-align:start}
+.rev{padding:20px;display:grid;gap:14px;align-content:start}
+.rev-top{display:flex;align-items:center;gap:12px}
+.ava{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:700 15px/1 var(--display);background:var(--surface-2)}
+.rev-top b{display:block;font-weight:600}
+.rev-top small{display:block;font-size:13px;color:var(--muted)}
+.rev p{font-size:16px;line-height:1.55}
+.rev .tags{display:flex;gap:6px;flex-wrap:wrap}
+.scroll-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dots{display:flex;gap:6px}
+.dots i{width:6px;height:6px;border-radius:50%;background:#CFCDC8}
+.dots i.on{width:18px;border-radius:3px;background:var(--ink)}
+
+/* ===== promises ===== */
+.prom-grid{display:grid;gap:14px}
+.prom-photo{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;max-width:100%;margin:0}
+.prom-photo img{width:100%;height:100%;object-fit:cover}
+.prom-photo figcaption{position:absolute;left:14px;right:14px;bottom:14px;color:#fff;font:600 15px/1.4 var(--body);background:rgba(17,17,17,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:14px;padding:12px 14px}
+.proms{display:grid;gap:10px}
+.prom{padding:20px;display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.prom .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--red-soft);color:var(--red)}
+.prom b{display:block;font:700 17px/1.3 var(--display);letter-spacing:-.015em;margin-bottom:4px}
+.prom p{font-size:15px;color:var(--muted)}
+.trial{margin-top:14px;display:grid;gap:14px;padding:22px 20px;background:var(--ink);color:#fff;border-radius:var(--r)}
+.trial p{color:var(--on-dark-muted);font-size:15px}
+.trial b{font:700 19px/1.3 var(--display);letter-spacing:-.015em;color:#fff;display:block;margin-bottom:6px}
+
+/* ===== route ===== */
+.route{display:grid}
+.rt{display:grid;grid-template-columns:40px 1fr;gap:16px;position:relative;padding-bottom:26px}
+.rt::before{content:"";position:absolute;left:19px;top:42px;bottom:2px;width:2px;background:var(--line)}
+.rt:last-child{padding-bottom:0}
+.rt:last-child::before{display:none}
+.rt .dot{width:40px;height:40px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);display:grid;place-items:center;font:700 15px/1 var(--display)}
+.rt:last-child .dot{background:var(--red);color:#fff;box-shadow:none}
+.rt .when{display:block;font:600 12.5px/1 var(--body);letter-spacing:.05em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.rt b{display:block;font:700 18px/1.3 var(--display);letter-spacing:-.015em}
+.rt p{font-size:15px;color:var(--muted);margin-top:2px}
+.route-side{display:grid;gap:14px;align-content:start;margin-top:32px}
+.route-side figure{margin:0;border-radius:var(--r);overflow:hidden;aspect-ratio:3/2;max-width:100%}
+.route-side figure img{width:100%;height:100%;object-fit:cover}
+.exams{padding:20px;display:grid;gap:12px}
+.ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ex{border-radius:14px;padding:12px 14px;background:var(--bg)}
+.ex span{display:block;font-size:12.5px;color:var(--muted)}
+.ex b{font:800 22px/1.2 var(--display);letter-spacing:-.03em}
+
+/* ===== groups ===== */
+.groups{display:grid;gap:12px}
+.grp{padding:20px;display:grid;gap:14px;align-content:start}
+.grp-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.grp-date{font:800 24px/1 var(--display);letter-spacing:-.03em}
+.grp-date small{display:block;font:500 13.5px/1.2 var(--body);color:var(--muted);margin-top:6px;letter-spacing:0}
+.grp dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14.5px}
+.grp dt{color:var(--muted)}
+.grp dd{margin:0;font-weight:600}
+.grp.online{background:var(--ink);color:#fff;box-shadow:none}
+.grp.online dt,.grp.online .grp-date small{color:var(--on-dark-muted)}
+.seats{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.seats i{display:block;height:100%;background:var(--red);border-radius:3px}
+.seats-l{font-size:13px;color:var(--muted);margin-top:-6px}
+
+/* ===== team ===== */
+.ins{overflow:hidden;display:grid;align-content:start}
+.ins .ph{position:relative;aspect-ratio:4/4.3;max-width:100%;background:#E7E7E7}
+.ins .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 6%;filter:saturate(.92) contrast(1.03)}
+.ins .ph::after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(180deg,rgba(17,17,17,0),rgba(17,17,17,.82))}
+.ins .ph .who{position:absolute;left:16px;right:16px;bottom:14px;z-index:1;color:#fff}
+.ins .ph .who b{display:block;font:700 19px/1.2 var(--display);letter-spacing:-.02em}
+.ins .ph .who span{font-size:13.5px;color:rgba(255,255,255,.8)}
+.ins .ph .pill{position:absolute;left:14px;top:14px;z-index:1;background:#fff}
+.ins-in{padding:16px 18px 18px;display:grid;gap:12px}
+.ins dl{margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ins dl div{background:var(--bg);border-radius:12px;padding:10px}
+.ins dt{font-size:12px;color:var(--muted)}
+.ins dd{margin:2px 0 0;font:700 14px/1.25 var(--body)}
+.ins .quote{font-size:14.5px;color:var(--ink-2);line-height:1.45}
+
+/* ===== fleet ===== */
+.car{padding:12px;display:grid;gap:10px;align-content:start}
+.car .studio{background:linear-gradient(180deg,#F7F7F5,var(--studio));border-radius:16px;aspect-ratio:3/2;max-width:100%;display:grid;place-items:center;overflow:hidden}
+.car .studio img{width:94%;height:auto}
+.car-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 6px 6px}
+.car-row b{font:700 16.5px/1.2 var(--display);letter-spacing:-.015em}
+.car-row small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+
+/* ===== offices ===== */
+.offices{display:grid;gap:12px}
+.office{padding:20px;display:grid;gap:14px;align-content:start}
+.office-top{display:flex;gap:14px;align-items:flex-start}
+.pin{flex:none;width:42px;height:42px;border-radius:14px;background:var(--red-soft);color:var(--red);display:grid;place-items:center}
+.office b{display:block;font:700 18px/1.25 var(--display);letter-spacing:-.015em}
+.office p{font-size:14px;color:var(--muted);margin-top:2px}
+.office .meta{display:grid;gap:4px;font-size:14px;color:var(--ink-2)}
+.office .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ===== teen ===== */
+.teen-grid{display:grid;gap:24px}
+.teen figure{margin:0;border-radius:var(--r);overflow:hidden;aspect-ratio:3/2;max-width:100%}
+.teen figure img{width:100%;height:100%;object-fit:cover}
+.ages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.age{background:var(--bg);border-radius:18px;padding:16px 10px;text-align:center}
+.age b{display:block;font:800 34px/1 var(--display);letter-spacing:-.04em;color:var(--red)}
+.age span{display:block;font-size:13px;line-height:1.3;margin-top:8px;color:var(--muted)}
+.teen-acts{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ===== faq ===== */
+.faq{display:grid;gap:8px}
+.faq details{background:var(--surface);border-radius:18px;box-shadow:inset 0 0 0 1px var(--line)}
+.faq details[open]{box-shadow:var(--shadow)}
+.faq summary{list-style:none;cursor:pointer;padding:18px 58px 18px 20px;font:600 16px/1.4 var(--body);position:relative;min-height:44px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:22px;top:50%;width:10px;height:10px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+.faq details[open] summary::after{transform:translateY(-25%) rotate(-135deg)}
+.faq details p{padding:0 20px 20px;color:var(--ink-2);font-size:15.5px;line-height:1.6}
+
+/* ===== signup ===== */
+.signup{position:relative;isolation:isolate;background:var(--dark) url("../img/hero-bg.webp") center 70%/cover no-repeat;color:#fff}
+.signup::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,12,12,.93),rgba(12,12,12,.8));z-index:-1}
+.form{display:grid;gap:12px}
+.field{display:grid;gap:7px}
+.field label{font:500 13.5px/1 var(--body);color:var(--on-dark-muted)}
+.field input,.field select{min-height:56px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(255,255,255,.07);color:#fff;padding:0 16px;font:500 17px/1 var(--body);width:100%;-webkit-appearance:none;appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23fff' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px}
+.field select option{color:var(--ink)}
+.field input::placeholder{color:#85837E}
+.field input:focus,.field select:focus{border-color:#fff;outline:none}
+.field .err{display:none;font-size:13px;color:#FF8A8F}
+.field.bad input{border-color:#FF6A70}
+.field.bad .err{display:block}
+.consent{display:flex;gap:10px;font-size:13px;color:var(--on-dark-muted);align-items:flex-start;line-height:1.45}
+.consent input{width:20px;height:20px;flex:none;margin-top:0;accent-color:var(--red)}
+.form-note{font-size:13px;color:#85837E}
+.ok-msg{display:none;padding:22px;border-radius:18px;background:rgba(255,255,255,.08)}
+.ok-msg b{display:block;font:800 22px/1.2 var(--display);letter-spacing:-.02em;margin-bottom:6px}
+.signup .cta2 .btn{min-height:52px}
+
+/* ===== seo, footer ===== */
+.about h2{font-size:clamp(21px,5vw,26px);letter-spacing:-.02em;line-height:1.2}
+.about p{color:var(--muted);font-size:15px;max-width:74ch;margin-top:12px}
+.about summary{cursor:pointer;font:600 15px/1.3 var(--body);color:var(--red);list-style:none;min-height:44px;display:inline-flex;align-items:center;margin-top:8px}
+.about summary::-webkit-details-marker{display:none}
+.ftr{background:var(--surface);border-top:1px solid var(--line);padding-block:44px 28px;font-size:14px}
+.ftr-grid{display:grid;gap:28px}
+.ftr h4{margin:0 0 12px;font:600 12px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ftr a{text-decoration:none}
+@media (hover:hover){.ftr a:hover{color:var(--red)}}
+.ftr .sved{display:inline-flex;font-weight:600;border-radius:12px;padding:12px 14px;background:var(--bg)}
+.ftr .legal{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;display:grid;gap:6px}
+
+/* ===== sticky bar, sheets ===== */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px var(--gut-r) calc(10px + env(safe-area-inset-bottom,0px)) var(--gut-l);display:grid;grid-template-columns:56px 56px 1fr;gap:8px;transform:translateY(110%);transition:transform .25s ease}
+.bar.on{transform:none}
+.bar .btn{min-height:56px;padding:0}
+dialog.sheet{border:0;border-radius:26px 26px 0 0;padding:10px var(--gut-r) calc(22px + env(safe-area-inset-bottom,0px)) var(--gut-l);width:100%;max-width:520px;margin:auto auto 0;background:#fff;color:var(--ink);box-shadow:0 -10px 40px rgba(0,0,0,.2);max-height:92vh;overflow:auto}
+dialog.sheet::backdrop{background:rgba(12,12,12,.5)}
+.grab{width:40px;height:5px;border-radius:3px;background:#D6D5D1;margin:0 auto 14px}
+.sheet-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.sheet h3{font-size:23px;letter-spacing:-.025em}
+.sheet .sub{color:var(--muted);font-size:14.5px;margin-top:6px}
+.sheet .field label{color:var(--muted)}
+.sheet .field input,.sheet .field select{background-color:var(--bg);color:var(--ink);border-color:transparent}
+.sheet .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23111' stroke-width='1.8'/%3E%3C/svg%3E")}
+.sheet .field input:focus,.sheet .field select:focus{border-color:var(--ink)}
+.sheet .field .err{color:var(--red)}
+.sheet .field.bad input{border-color:var(--red)}
+.sheet .consent{color:var(--muted)}
+.sheet .ok-msg{background:var(--green-soft)}
+.msg-list{display:grid;gap:8px}
+.msg-list .btn{justify-content:space-between}
+
+/* analyst notes */
+.note{display:none;margin:0 0 26px;background:#FFF7D6;border-radius:6px 16px 16px 6px;box-shadow:inset 4px 0 0 #E2AE00;padding:16px 18px;font:500 14px/1.55 var(--body);color:var(--ink)}
+.note::before{content:"Заметка аналитика";display:block;font:700 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:#8A6A00;margin-bottom:8px}
+.note ul{margin:6px 0 0;padding-left:18px}
+.note li{margin:3px 0}
+body.notes .note{display:block}
+
+/* ===== tablet ===== */
+@media (min-width:720px){
+  .sec{padding-block:100px}
+  .proof{grid-template-columns:repeat(4,1fr)}
+  .courses{grid-template-columns:repeat(3,1fr);align-items:start}
+  .incl-cols{grid-template-columns:1fr 1fr;gap:40px}
+  .perks{grid-template-columns:repeat(4,1fr)}
+  .scroller{grid-auto-columns:calc((100% - 24px)/3);margin-inline:0;padding-inline:0}
+  .groups{grid-template-columns:repeat(3,1fr)}
+  .offices{grid-template-columns:repeat(3,1fr)}
+  .prom-grid{grid-template-columns:1fr 1fr;align-items:stretch}
+  .prom-photo{aspect-ratio:auto;min-height:100%}
+  .teen-grid{grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+  .ftr-grid{grid-template-columns:2fr 1fr 1fr 1.4fr}
+  .faq-grid{display:grid;grid-template-columns:1fr 1.7fr;gap:56px;align-items:start}
+  .signup-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+  .route-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:start}
+  .route-side{margin-top:0}
+  .bar{display:none}
+  body.has-bar{padding-bottom:0}
+  dialog.sheet{border-radius:26px;margin:auto;padding-top:24px}
+  .grab{display:none}
+  .dots{display:none}
+}
+/* ===== desktop ===== */
+@media (min-width:1080px){
+  .nav{display:flex;gap:2px;margin-left:20px}
+  .nav a{text-decoration:none;font:500 15px/1 var(--body);padding:11px 12px;border-radius:12px;color:var(--ink-2)}
+  .nav a:hover{background:var(--surface-2);color:var(--ink)}
+  .hdr .wrap{height:78px}
+  .logo img{height:40px}
+  .hdr-phone{display:block;margin-right:8px}
+  .hdr .btn{display:inline-flex;min-height:50px}
+  .hdr .burger,.hdr .call{display:none}
+  .hero{padding-top:12px}
+  .hero-card{height:auto;min-height:830px}
+  .hero-card>img{object-position:72% 70%}
+  .hero-card::before{background:linear-gradient(90deg,rgba(10,10,10,.85) 0%,rgba(10,10,10,.55) 36%,rgba(10,10,10,0) 60%)}
+  .hero-copy{padding:48px 48px 0;gap:18px;max-width:640px}
+  .h1-main{font-size:62px}
+  .hero-lead{display:block;font-size:18px;line-height:1.5;color:rgba(255,255,255,.85);max-width:40ch}
+  .hero-photo-note{display:block;position:absolute;right:28px;top:28px}
+  .hero-panel{position:absolute;left:48px;bottom:48px;width:440px;margin:0;padding:18px}
+  .trust-out{display:none}
+  .proof{margin-top:20px}
+  .prom-grid{grid-template-columns:1fr 1fr}
+  .trial{grid-template-columns:1fr auto;align-items:center;padding:26px 28px}
+  .trial .btn{width:auto;padding:0 28px}
+}
+@media (min-width:720px) and (max-width:1079px){
+  .hero-card{height:460px}
+  .hero-copy{padding:36px 36px 0}
+  .hero-panel{max-width:560px;margin:-56px auto 0}
+}
+@media (max-width:1079px){ .trust-in{display:none} }
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn,.bar,.faq summary::after,.hdr{transition:none}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5l2.6.4 1.3 3.9-1.9 1.5a12 12 0 006.1 6.1l1.5-1.9 3.9 1.3.4 2.6c-.2 1.3-1.3 2.2-2.6 2.1C10.3 19 5 13.7 4.5 6.1c-.1-1.3.8-2.4 2.1-2.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H9.5L5 19.5v-3.5H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0113 0c0 5-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.3" fill="currentColor"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 017 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M5 8h13l-3.5-3.5M19 16H6l3.5 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-brake" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5v5.5M12 15v5.5" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6.5 3.5h8l4 4v13h-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 13.5l2 2 3.5-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- Полоса прототипа: не входит в дизайн сайта -->
+<div class="proto">
+  <div class="wrap">
+    <b>Прототип главной · virazh-tomsk.ru</b>
+    <span class="sp"></span>
+    <button id="notesBtn" type="button" aria-pressed="false">Заметки аналитика: выкл</button>
+    <a href="../docs/strategy.html">Стратегия и SEO →</a>
+  </div>
+</div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Автошкола Авто-Вираж, на главную"><img src="../img/logo.png" alt="Автошкола Авто-Вираж" width="520" height="169"></a>
+    <nav class="nav" aria-label="Основное меню">
+      <a href="#prices">Цены</a><a href="#pay">Оплата</a><a href="#reviews">Отзывы</a><a href="#route">Обучение</a><a href="#team">Инструкторы</a><a href="#fleet">Автопарк</a><a href="#offices">Адреса</a>
+    </nav>
+    <span class="hdr-sp"></span>
+    <a class="hdr-phone num" href="tel:+73822345252">+7 (3822) 34-52-52<small>Пн–Сб, звонок бесплатный</small></a>
+    <button class="btn btn-red" type="button" data-signup>Записаться</button>
+    <a class="icon-btn call" href="tel:+73822345252" aria-label="Позвонить: +7 (3822) 34-52-52"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
+    <button class="icon-btn burger" type="button" id="menuBtn" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="top">
+    <img src="../img/logo.png" alt="Авто-Вираж" style="height:32px;width:auto">
+    <button class="icon-btn" type="button" id="menuClose" aria-label="Закрыть меню"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <a class="m" href="#prices">Цены</a><a class="m" href="#pay">Оплата частями</a><a class="m" href="#reviews">Отзывы</a><a class="m" href="#route">Как проходит обучение</a><a class="m" href="#groups">Ближайшие группы</a><a class="m" href="#team">Инструкторы</a><a class="m" href="#fleet">Автопарк</a><a class="m" href="#offices">Адреса</a><a class="m" href="#faq">Вопросы</a>
+  <div class="contacts">
+    <button class="btn btn-red btn-block" type="button" data-signup>Записаться на обучение</button>
+    <a class="btn btn-block num" href="tel:+73822345252">+7 (3822) 34-52-52</a>
+  </div>
+</div>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <aside class="note">Первый экран телефона отвечает на 4 вопроса в том порядке, в котором их задаёт человек из поиска: <b>это автошкола в Томске? → сколько стоит → можно ли частями → как записаться</b>. Всё это помещается до прокрутки на экране 375×667.
+      <ul><li>Приём из Яндекс Практикума: большая фото-карточка, а выбор и цена на белой панели, которая «наезжает» на фото. Фото ваше: Omoda C5 на вечерней улице Томска. Это и бренд, и местность.</li><li>H1 = «Автошкола в Томске» (главный запрос) + оффер крупно.</li><li>Одна красная кнопка. Вторая строка — «Позвонить» и «Написать»: у «Вектора» прямо написано «Не любишь звонки? Просто напиши!», молодёжь пишет, а не звонит.</li><li>Под кнопкой — рейтинг 2ГИС: доверие рядом с решением.</li></ul></aside>
+    <div class="hero-wrap">
+    <div class="hero-card">
+      <img src="../img/hero-bg.webp" alt="Учебная Omoda C5 автошколы Авто-Вираж на улице Томска" width="1536" height="1024" fetchpriority="high">
+      <div class="hero-copy">
+        <span class="live"><i></i>Набор открыт · группа с 27 октября</span>
+        <h1><span class="h1-sub">Автошкола в Томске</span><span class="h1-main">Права за <span style="white-space:nowrap">2,5–3 месяца</span></span></h1>
+        <p class="hero-lead">Категории B на автомате и механике и A. Спокойные инструкторы, цена без звёздочек, вождение оплачиваете по занятиям.</p>
+      </div>
+      <div class="hero-photo-note"><span class="pill glass">Учимся на экзаменационных маршрутах Томска</span></div>
+    </div>
+
+      <div class="card hero-panel" id="picker">
+        <div class="seg" role="group" aria-label="Выберите категорию">
+          <button type="button" data-c="bA" aria-pressed="true">B · АКПП<small>автомат</small></button>
+          <button type="button" data-c="bM" aria-pressed="false">B · МКПП<small>механика</small></button>
+          <button type="button" data-c="a" aria-pressed="false">A<small>мотоцикл</small></button>
+        </div>
+        <div class="price-row">
+          <span class="price num" id="hpPrice">66 000 ₽</span>
+          <span class="price-meta"><b id="hpHours">56 ч вождения</b>и теория</span>
+        </div>
+        <p class="pay-line">На старте только <b>5 000 ₽</b>, дальше <b>2 000 ₽</b> за занятие по мере езды</p>
+        <button class="btn btn-red btn-block" type="button" id="heroCta" data-signup="bA">Записаться на B · АКПП</button>
+        <div class="cta2">
+          <a class="btn" href="tel:+73822345252"><svg width="19" height="19" aria-hidden="true"><use href="#i-phone"/></svg>Позвонить</a>
+          <button class="btn" type="button" data-msg><svg width="19" height="19" aria-hidden="true"><use href="#i-chat"/></svg>Написать</button>
+        </div>
+        <div class="trust trust-in"><span><span class="stars" aria-hidden="true">★★★★★</span> <b>5.0</b> в 2ГИС · 369 оценок</span></div>
+      </div>
+    </div>
+    <div class="trust trust-out" style="margin-top:12px"><span><span class="stars" aria-hidden="true">★★★★★</span> <b>5.0</b> в 2ГИС · 369 оценок</span><span>Лицензия и заключение ГИБДД</span></div>
+
+    <div class="proof">
+      <div><b>5.0</b><span>рейтинг в 2ГИС, 369 оценок</span></div>
+      <div><b>95%</b><span>сдают ГИБДД с первого раза</span></div>
+      <div><b>с 2006</b><span>учим водить в Томске</span></div>
+      <div><b>3 офиса</b><span>Киевская, Ив. Черных, Ленина</span></div>
+    </div>
+  </div>
+
+  <div class="strip" aria-label="Ближайшие даты">
+    <div class="wrap">
+      <div class="d accent"><span>Новая группа</span><b>с 27 октября</b></div>
+      <div class="d"><span>Экзамен ГИБДД, теория</span><b class="num">21.10</b></div>
+      <div class="d"><span>Экзамен ГИБДД, практика</span><b class="num">27.10</b></div>
+      <div class="d"><span>Онлайн-теория</span><b>старт в любой день</b></div>
+      <div class="d"><span>Студентам</span><b class="num">−3 000 ₽</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICES ================= -->
+<section class="sec" id="prices">
+  <div class="wrap">
+    <aside class="note">«Автошкола томск цена» — самый частый уточняющий запрос, поэтому цены сразу за первым экраном. Главный конкурент «Вектор» пишет «от 30 500 ₽*» со звёздочкой и пугает подорожанием с 1 ноября. Ваш ответ: <b>цена без звёздочек</b> и прозрачный список «что входит / что отдельно». Это честнее и снимает страх «потом насчитают».
+      <ul><li>Карточки в одном «студийном» стиле: машина на светлом фоне, как в каталоге.</li><li>Кнопка в карточке сразу подставляет категорию в форму.</li><li>Список «Оплачивается отдельно» сверьте с реальностью: это самое чувствительное место.</li></ul></aside>
+    <div class="head">
+      <span class="kicker">Цены 2026</span>
+      <h2>Цена без звёздочек</h2>
+      <p>Сумма на сайте равна сумме в договоре. Топливо, автодром и внутренний экзамен уже внутри.</p>
+    </div>
+    <div class="courses">
+      <article class="card course">
+        <div class="studio"><span class="pill ok">Выбирают чаще</span><span class="cat">B</span><img src="../img/car-omoda-c5.png" alt="Учебная Omoda C5 на автомате" width="720" height="483" loading="lazy"></div>
+        <div class="course-body">
+          <div><h3>Автомобиль на автомате</h3><p class="sub">АКПП · Omoda C5, Chery Tiggo, VW Polo и др.</p></div>
+          <div class="course-price"><span class="price num">66 000 ₽</span><span>56 ч вождения</span></div>
+          <ul class="facts"><li>Теория онлайн 24/7 или в классе</li><li>Топливо и автодром включены</li><li>Документы и сопровождение в ГИБДД</li></ul>
+          <div class="split"><div><b class="num">5 000 ₽</b>на старте</div><div><b class="num">2 000 ₽</b>за занятие, 2 ч</div></div>
+          <button class="btn btn-red btn-block" type="button" data-signup="bA">Записаться на автомат</button>
+          <a class="link" href="#">Подробнее о категории B на АКПП <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </article>
+      <article class="card course">
+        <div class="studio"><span class="cat">B</span><img src="../img/car-kia-rio.png" alt="Учебная Kia Rio на механике" width="720" height="483" loading="lazy"></div>
+        <div class="course-body">
+          <div><h3>Автомобиль на механике</h3><p class="sub">МКПП · Kia Rio, Solaris, Granta и др.</p></div>
+          <div class="course-price"><span class="price num">68 000 ₽</span><span>58 ч вождения</span></div>
+          <ul class="facts"><li>Права без отметки «только АКПП»</li><li>Топливо и автодром включены</li><li>Документы и сопровождение в ГИБДД</li></ul>
+          <div class="split"><div><b class="num">5 000 ₽</b>на старте</div><div><b class="num">2 000 ₽</b>за занятие, 2 ч</div></div>
+          <button class="btn btn-ink btn-block" type="button" data-signup="bM">Записаться на механику</button>
+          <a class="link" href="#">Подробнее о категории B на МКПП <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </article>
+      <article class="card course">
+        <div class="studio"><span class="cat">A</span><img src="../img/moto-bajaj.png" alt="Учебный мотоцикл Bajaj Boxer" width="720" height="450" loading="lazy"></div>
+        <div class="course-body">
+          <div><h3>Мотоцикл</h3><p class="sub">Без ограничения по объёму · Bajaj Boxer</p></div>
+          <div class="course-price"><span class="price num">23 000 ₽</span><span>18 ч вождения</span></div>
+          <ul class="facts"><li>Обучение около 1 месяца</li><li>Сезон: апрель — октябрь</li><li>Можно вместе с категорией B</li></ul>
+          <div class="split"><div><b class="num">5 000 ₽</b>на старте</div><div><b class="num">2 000 ₽</b>за занятие, 2 ч</div></div>
+          <button class="btn btn-ink btn-block" type="button" data-signup="a">Записаться на A</button>
+          <a class="link" href="#">Подробнее о категории A <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </article>
+    </div>
+
+    <div class="card flat incl">
+      <h3>Что входит в цену, а что оплачивается отдельно</h3>
+      <div class="incl-cols">
+        <div class="yes"><h4>Входит</h4><ul><li>Теория: класс или личный кабинет онлайн</li><li>Все часы вождения по программе</li><li>Топливо и аренда автодрома</li><li>Внутренний экзамен</li><li>Подготовка документов для ГИБДД</li><li>Сопровождение на экзамен</li></ul></div>
+        <div class="no"><h4>Отдельно</h4><ul><li>Госпошлина за экзамен и выдачу прав — платится государству</li><li>Медицинская справка водителя — в любой клинике</li><li>Дополнительные занятия — только если захотите</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card flat also">
+      <p><b>Квадроцикл, снегоход, трактор</b>Самоходная техника: цену и сроки скажем по телефону</p>
+      <a class="btn btn-sm" href="#">Узнать</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAY ================= -->
+<section class="sec white" id="pay">
+  <div class="wrap">
+    <aside class="note">Главное возражение при цене 66–68 тыс. — «у меня нет столько сразу». Блок снимает его до того, как человек уйдёт сравнивать. Порядок: схема оплаты (страх суммы) → способы сэкономить → калькулятор с итоговой суммой. Использование калькулятора стоит отслеживать целью в Метрике: это сильный признак интереса.</aside>
+    <div class="route-grid" style="align-items:start">
+      <div>
+        <div class="head">
+          <span class="kicker">Оплата частями</span>
+          <h2>Платите по ходу обучения</h2>
+          <p>Без банка, кредита и процентов. Платите только за то, что уже прошли.</p>
+        </div>
+        <div class="timeline">
+          <div class="card flat tl"><span class="n">1</span><div><b>Теория</b><small>в начале обучения</small></div><span class="amt num">5 000 ₽</span></div>
+          <div class="card flat tl"><span class="n">2</span><div><b>Вождение</b><small>одно занятие — 2 часа</small></div><span class="amt num">2 000 ₽</span></div>
+          <div class="card flat tl"><span class="n">3</span><div><b>Внутренний экзамен</b><small>перед ГИБДД</small></div><span class="amt num">5 000 ₽</span></div>
+          <div class="card flat tl"><span class="n">4</span><div><b>Экзамен в ГИБДД</b><small>платится государству</small></div><span class="amt soft">госпошлина</span></div>
+        </div>
+        <div class="perks">
+          <div class="perk"><b class="num">−3 000 ₽</b><span>студентам очной формы на категорию B</span></div>
+          <div class="perk"><b>13%</b><span>вернёт налоговая, документы дадим</span></div>
+          <div class="perk"><b>Маткапитал</b><span>можно оплатить материнским капиталом</span></div>
+          <div class="perk"><b>Друг</b><span>приведи друга — скидка обоим</span></div>
+        </div>
+      </div>
+      <div class="calc" id="calc">
+        <h3>Сколько выйдет у вас</h3>
+        <div class="seg" role="group" aria-label="Категория для расчёта">
+          <button type="button" data-c="bA" aria-pressed="true">B · АКПП<small>56 ч</small></button>
+          <button type="button" data-c="bM" aria-pressed="false">B · МКПП<small>58 ч</small></button>
+          <button type="button" data-c="a" aria-pressed="false">A<small>18 ч</small></button>
+        </div>
+        <div>
+          <label class="toggle"><span>Я студент очной формы</span><input type="checkbox" id="cStudent"></label>
+          <label class="toggle"><span>Оформлю налоговый вычет 13%</span><input type="checkbox" id="cTax" checked></label>
+        </div>
+        <div class="calc-out">
+          <div class="row"><span>Стоимость курса</span><b class="num" id="cBase">66 000 ₽</b></div>
+          <div class="row" id="cStudRow" hidden><span>Скидка студенту</span><b class="num">−3 000 ₽</b></div>
+          <div class="row" id="cTaxRow"><span>Вернёт налоговая</span><b class="num" id="cTaxVal">−8 580 ₽</b></div>
+          <div class="row"><span>Платите на старте</span><b class="num">5 000 ₽</b></div>
+          <div class="total"><span>Итого для вас</span><b class="num" id="cTotal">57 420 ₽</b></div>
+        </div>
+        <button class="btn btn-red btn-block" type="button" data-signup="bA" id="calcCta">Записаться по этой цене</button>
+        <small>Расчёт предварительный. Акции не суммируются, точные условия назовёт администратор.</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEWS ================= -->
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <aside class="note">Отзывы стоят сразу после цены: человек только что прикинул деньги и теперь спрашивает «а не пожалею?». Так же делает Coastline Academy: отзывы почти сразу под первым экраном. Отзывы с 2ГИС с датой и ссылкой убедительнее отзывов «с сайта». Три отзыва закрывают три страха: крикливый инструктор, механика, отношение администрации. Тексты в прототипе сокращены.</aside>
+    <div class="head">
+      <span class="kicker">Отзывы</span>
+      <h2>Что говорят выпускники</h2>
+    </div>
+    <div class="card rev-sum">
+      <span class="score">5.0</span>
+      <div><span class="stars" aria-hidden="true">★★★★★</span><p><b>369 оценок в 2ГИС.</b> Показываем отзывы как есть, с датой и ссылкой.</p></div>
+    </div>
+    <div class="scroller" id="revList">
+      <article class="card rev"><div class="rev-top"><span class="ava">ДН</span><div><b>Дарья Н.</b><small>2ГИС · 2026</small></div></div><p>«Инструктор никогда не повысит голос и всегда поддержит, когда что-то не получается».</p><div class="tags"><span class="pill">Ушаков Е. Е.</span><span class="pill">АКПП</span></div></article>
+      <article class="card rev"><div class="rev-top"><span class="ava">ДС</span><div><b>Даша С.</b><small>2ГИС · 1 августа 2026</small></div></div><p>«Благодаря инструктору полюбила механику и теперь не хочу пересаживаться на автомат».</p><div class="tags"><span class="pill">Ковалёнок А. В.</span><span class="pill">МКПП</span></div></article>
+      <article class="card rev"><div class="rev-top"><span class="ava">АМ</span><div><b>Анастасия М.</b><small>2ГИС · 4 июля 2026</small></div></div><p>«Терпеливые инструкторы, а администрация всегда шла навстречу».</p><div class="tags"><span class="pill">Комиссаров Д. В.</span><span class="pill ok">Сдала с первого раза</span></div></article>
+    </div>
+    <div class="scroll-foot"><div class="dots" data-dots="revList"></div><a class="link" href="https://2gis.ru/tomsk" target="_blank" rel="noopener">Все 369 отзывов в 2ГИС <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+  </div>
+</section>
+
+<!-- ================= PROMISES ================= -->
+<section class="sec white" id="promises">
+  <div class="wrap">
+    <aside class="note">Вместо «Почему выбирают нас» с общими словами — обещания, которые можно проверить. Идея из Coastline Academy: у них гарантия «переделаем урок с другим инструктором или вернём деньги» и отдельный блок про безопасность (второй тормоз, регистратор).
+      <ul><li><b>Фиксированная цена</b> — прямой ответ «Вектору», который грозит подорожанием с 1 ноября. Подтвердите, что готовы так обещать.</li><li><b>Смена инструктора</b> и <b>пробное занятие</b> — сильнейшие способы снять страх. Пробное занятие есть у «Вектора». Если у вас его нет, советую ввести.</li></ul></aside>
+    <div class="head">
+      <span class="kicker">Наши обещания</span>
+      <h2>Учим спокойно и до результата</h2>
+    </div>
+    <div class="prom-grid">
+      <figure class="prom-photo"><img src="../img/photo-driving.jpg" alt="Девушка уверенно ведёт автомобиль" width="1000" height="667" loading="lazy"><figcaption>«Инструктор никогда не повысит голос» — чаще всего о нас пишут именно это</figcaption></figure>
+      <div class="proms">
+        <div class="card flat prom"><span class="ic"><svg width="22" height="22"><use href="#i-lock"/></svg></span><div><b>Цена зафиксирована в договоре</b><p>Подорожает бензин — ваша цена не изменится.</p></div></div>
+        <div class="card flat prom"><span class="ic"><svg width="22" height="22"><use href="#i-swap"/></svg></span><div><b>Не сработались — сменим инструктора</b><p>Бесплатно и без объяснений. Главное, чтобы вам было спокойно.</p></div></div>
+        <div class="card flat prom"><span class="ic"><svg width="22" height="22"><use href="#i-brake"/></svg></span><div><b>Второй тормоз у инструктора</b><p>В каждой учебной машине дублирующие педали. Инструктор всегда подстрахует.</p></div></div>
+        <div class="card flat prom"><span class="ic"><svg width="22" height="22"><use href="#i-doc"/></svg></span><div><b>В ГИБДД едем вместе</b><p>Готовим документы, записываем на экзамен и сопровождаем группу.</p></div></div>
+      </div>
+    </div>
+    <div class="trial">
+      <div><b>Не уверены, что справитесь?</b><p>Приходите на пробное занятие на автодроме: посмотрите машину, познакомитесь с инструктором и решите без спешки.</p></div>
+      <button class="btn btn-red btn-block" type="button" data-signup data-topic="Пробное занятие">Записаться на пробное занятие</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROUTE ================= -->
+<section class="sec" id="route">
+  <div class="wrap">
+    <aside class="note">Неопределённость пугает сильнее цены: человек хочет понимать, что будет после звонка. 5 шагов с реальными сроками и живыми датами экзаменов показывают, что школа работает прямо сейчас. Даты нужно обновлять из админки: устаревшая дата хуже, чем никакой.</aside>
+    <div class="route-grid">
+      <div>
+        <div class="head">
+          <span class="kicker">Как проходит обучение</span>
+          <h2>От заявки до прав</h2>
+          <p>В среднем 2,5–3 месяца. Вождение начинается параллельно с теорией, а не после неё.</p>
+        </div>
+        <div class="route">
+          <div class="rt"><span class="dot">1</span><div><span class="when">День 1</span><b>Заявка и договор</b><p>Подбираем категорию, коробку, офис и удобное время.</p></div></div>
+          <div class="rt"><span class="dot">2</span><div><span class="when">≈ 1,5 месяца</span><b>Теория ПДД</b><p>Онлайн в личном кабинете с видеоуроками и билетами или в классе.</p></div></div>
+          <div class="rt"><span class="dot">3</span><div><span class="when">параллельно</span><b>Вождение</b><p>Сначала автодром, потом город и экзаменационные маршруты Томска.</p></div></div>
+          <div class="rt"><span class="dot">4</span><div><span class="when">в конце курса</span><b>Внутренний экзамен</b><p>Теория и практика в автошколе, по правилам ГИБДД.</p></div></div>
+          <div class="rt"><span class="dot">5</span><div><span class="when">финиш</span><b>Экзамен в ГИБДД и права</b><p>Едем группой с сопровождением автошколы.</p></div></div>
+        </div>
+      </div>
+      <div class="route-side">
+        <figure><img src="../img/photo-exam.jpg" alt="Инструктор объясняет упражнение на автодроме" width="1000" height="667" loading="lazy"></figure>
+        <div class="card exams">
+          <h3>Ближайшие экзамены</h3>
+          <div class="ex-grid">
+            <div class="ex"><span>ГИБДД · теория</span><b class="num">21.10</b></div>
+            <div class="ex"><span>ГИБДД · практика</span><b class="num">27.10</b></div>
+            <div class="ex"><span>Внутренний · теория</span><b class="num">04.11</b></div>
+            <div class="ex"><span>Внутренний · практика</span><b class="num">06.11</b></div>
+          </div>
+          <span class="sample" style="margin-top:0">Даты внутреннего экзамена — пример</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GROUPS ================= -->
+<section class="sec white" id="groups">
+  <div class="wrap">
+    <aside class="note">Расписание групп с датой старта есть у Автотеха, «Вектор» пишет «старт каждые 15 дней». У вас этого нет. Блок даёт конкретный повод записаться сейчас, закрывает «где» и «когда» и экономит звонок. Полоска заполненности показывает реальный дефицит мест без таймеров и давления. Данные ниже — пример.</aside>
+    <div class="head">
+      <span class="kicker">Ближайшие группы</span>
+      <h2>Когда можно начать</h2>
+    </div>
+    <div class="groups">
+      <article class="card grp online">
+        <div class="grp-top"><div class="grp-date">Сегодня<small>онлайн-теория</small></div><span class="pill ok">Любой день</span></div>
+        <dl><dt>Формат</dt><dd>видеоуроки и билеты</dd><dt>Когда</dt><dd>24/7, в своём темпе</dd><dt>Вождение</dt><dd>в ближайшем офисе</dd></dl>
+        <button class="btn btn-glass btn-block" type="button" data-signup data-topic="Онлайн-теория">Начать онлайн</button>
+      </article>
+      <article class="card grp">
+        <div class="grp-top"><div class="grp-date">27 октября<small>вечерняя группа</small></div><span class="pill hot">4 места</span></div>
+        <dl><dt>Где</dt><dd>ул. Киевская, 105/б</dd><dt>Дни</dt><dd>пн и ср, 18:30</dd><dt>Теория</dt><dd>2 месяца</dd></dl>
+        <div class="seats" aria-hidden="true"><i style="width:84%"></i></div><p class="seats-l">Занято 21 из 25 мест</p>
+        <button class="btn btn-red btn-block" type="button" data-signup data-topic="Группа 27 октября, Киевская">Занять место</button>
+      </article>
+      <article class="card grp">
+        <div class="grp-top"><div class="grp-date">1 ноября<small>группа выходного дня</small></div><span class="pill">Идёт набор</span></div>
+        <dl><dt>Где</dt><dd>ул. Ивана Черных, 40</dd><dt>Дни</dt><dd>сб и вс, 12:00</dd><dt>Теория</dt><dd>2,5 месяца</dd></dl>
+        <div class="seats" aria-hidden="true"><i style="width:48%"></i></div><p class="seats-l">Занято 12 из 25 мест</p>
+        <button class="btn btn-block" type="button" data-signup data-topic="Группа 1 ноября, Ивана Черных">Занять место</button>
+      </article>
+    </div>
+    <span class="sample">Расписание и места — пример, заполнить реальными данными</span>
+  </div>
+</section>
+
+<!-- ================= TEAM ================= -->
+<section class="sec" id="team">
+  <div class="wrap">
+    <aside class="note">Инструктор — главный страх новичка. Карточка отвечает на три вопроса: какая коробка, на какой машине, какой характер. Строка про характер взята из отзывов: это сильнее, чем «стаж от 10 лет». Фото с virazh-tomsk.ru сняты на разном фоне, поэтому имя лежит на затемнении снизу: так карточки выглядят ровно. В рабочей версии лучше переснять всех в одном стиле.</aside>
+    <div class="head">
+      <span class="kicker">Инструкторы</span>
+      <h2>С кем вы поедете</h2>
+      <p>Инструктора можно выбрать заранее, а если не сработаетесь — сменить.</p>
+    </div>
+    <div class="chips" role="group" aria-label="Фильтр инструкторов" id="teamFilter">
+      <button class="chip" type="button" data-f="all" aria-pressed="true">Все</button>
+      <button class="chip" type="button" data-f="АКПП" aria-pressed="false">Автомат</button>
+      <button class="chip" type="button" data-f="МКПП" aria-pressed="false">Механика</button>
+    </div>
+    <div class="scroller" id="teamList"></div>
+    <div class="scroll-foot"><div class="dots" data-dots="teamList"></div><a class="link" href="#">Все инструкторы <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+  </div>
+</section>
+
+<!-- ================= FLEET ================= -->
+<section class="sec white" id="fleet">
+  <div class="wrap">
+    <aside class="note">Выбор коробки — второй по важности вопрос после цены. Фильтр сразу показывает, на чём человек будет ездить. На телефоне — лента, а не 10 экранов карточек. Фото машин с avto-virazh.ru, в едином «студийном» стиле.</aside>
+    <div class="head">
+      <span class="kicker">Автопарк</span>
+      <h2>На чём будете ездить</h2>
+    </div>
+    <div class="chips" role="group" aria-label="Фильтр автопарка" id="fleetFilter">
+      <button class="chip" type="button" data-f="all" aria-pressed="true">Все</button>
+      <button class="chip" type="button" data-f="АКПП" aria-pressed="false">Автомат</button>
+      <button class="chip" type="button" data-f="МКПП" aria-pressed="false">Механика</button>
+      <button class="chip" type="button" data-f="A" aria-pressed="false">Мотоцикл</button>
+    </div>
+    <div class="scroller" id="fleetList"></div>
+    <div class="scroll-foot"><div class="dots" data-dots="fleetList"></div></div>
+  </div>
+</section>
+
+<!-- ================= OFFICES ================= -->
+<section class="sec" id="offices">
+  <div class="wrap">
+    <aside class="note">«Далеко ли ездить?» — один из последних вопросов перед звонком. Встроенная карта на телефоне тяжёлая и перехватывает прокрутку пальцем. Вместо неё — карточки офисов с кнопкой «Маршрут» (Яндекс Карты) и своим телефоном. Добавьте часы работы и фото входа.</aside>
+    <div class="head">
+      <span class="kicker">Адреса</span>
+      <h2>Офис рядом с вами</h2>
+    </div>
+    <div class="offices">
+      <article class="card office"><div class="office-top"><span class="pin"><svg width="22" height="22"><use href="#i-pin"/></svg></span><div><b>ул. Киевская, 105/б</b><p>Классы теории, запись, договор</p></div></div><div class="meta"><span class="num">+7 (3822) 34-52-52</span><span class="sample" style="margin:0;justify-self:start">часы работы — добавить</span></div><div class="acts"><a class="btn btn-sm" href="https://yandex.ru/maps/?text=%D0%A2%D0%BE%D0%BC%D1%81%D0%BA%2C%20%D0%9A%D0%B8%D0%B5%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%20105%D0%B1" target="_blank" rel="noopener">Маршрут</a><a class="btn btn-sm" href="tel:+73822345252">Позвонить</a></div></article>
+      <article class="card office"><div class="office-top"><span class="pin"><svg width="22" height="22"><use href="#i-pin"/></svg></span><div><b>ул. Ивана Черных, 40</b><p>Классы теории, запись, договор</p></div></div><div class="meta"><span class="num">+7 (3822) 34-53-53</span><span class="sample" style="margin:0;justify-self:start">часы работы — добавить</span></div><div class="acts"><a class="btn btn-sm" href="https://yandex.ru/maps/?text=%D0%A2%D0%BE%D0%BC%D1%81%D0%BA%2C%20%D0%98%D0%B2%D0%B0%D0%BD%D0%B0%20%D0%A7%D0%B5%D1%80%D0%BD%D1%8B%D1%85%2040" target="_blank" rel="noopener">Маршрут</a><a class="btn btn-sm" href="tel:+73822345353">Позвонить</a></div></article>
+      <article class="card office"><div class="office-top"><span class="pin"><svg width="22" height="22"><use href="#i-pin"/></svg></span><div><b>пр. Ленина, 94, 2 этаж</b><p>Запись и консультация</p></div></div><div class="meta"><span class="num">+7 (3822) 34-52-52</span><span class="sample" style="margin:0;justify-self:start">часы работы — добавить</span></div><div class="acts"><a class="btn btn-sm" href="https://yandex.ru/maps/?text=%D0%A2%D0%BE%D0%BC%D1%81%D0%BA%2C%20%D0%BF%D1%80.%20%D0%9B%D0%B5%D0%BD%D0%B8%D0%BD%D0%B0%2094" target="_blank" rel="noopener">Маршрут</a><a class="btn btn-sm" href="tel:+73822345252">Позвонить</a></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TEEN ================= -->
+<section class="sec white teen" id="teen">
+  <div class="wrap">
+    <aside class="note">Отдельный сегмент — школьники 16–17 лет и их родители. Решает и платит родитель, поэтому блок говорит с ним: возраст, согласие, маткапитал. Фото — сток, заменить на выпускника с правами.</aside>
+    <div class="teen-grid">
+      <div>
+        <div class="head">
+          <span class="kicker">Школьникам и родителям</span>
+          <h2>Начать можно с 16 лет</h2>
+          <p>К 18 годам на руках будут права. Нужно письменное согласие одного из родителей — форму дадим.</p>
+        </div>
+        <div class="ages">
+          <div class="age"><b>16</b><span>учёба в автошколе</span></div>
+          <div class="age"><b>17</b><span>экзамены в ГИБДД</span></div>
+          <div class="age"><b>18</b><span>получение прав</span></div>
+        </div>
+        <div class="teen-acts">
+          <a class="btn btn-sm" href="#">Скачать форму согласия</a>
+          <button class="btn btn-sm btn-ink" type="button" data-signup data-topic="Записать ребёнка">Записать ребёнка</button>
+        </div>
+      </div>
+      <figure><img src="../img/photo-keys.jpg" alt="Родитель передаёт ключи от машины" width="1000" height="667" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec" id="faq">
+  <div class="wrap faq-grid">
+    <aside class="note" style="grid-column:1/-1">FAQ закрывает последние сомнения и даёт расширенный сниппет в поиске: разметка FAQPage уже лежит в коде прототипа. Ответ — первой фразой, без воды.</aside>
+    <div class="head">
+      <span class="kicker">Вопросы</span>
+      <h2>Коротко о главном</h2>
+      <p>Не нашли ответ? Позвоните: <a href="tel:+73822345252" class="num" style="color:var(--ink);font-weight:600;text-decoration:none">+7 (3822) 34-52-52</a></p>
+    </div>
+    <div class="faq">
+      <details><summary>Есть ли доплаты кроме цены курса?</summary><p>Топливо, автодром и внутренний экзамен входят в стоимость. Отдельно платится госпошлина за экзамен и выдачу прав, медицинская справка и дополнительные занятия, если они понадобятся.</p></details>
+      <details><summary>Можно ли платить частями?</summary><p>Да. На старте 5 000 ₽ за теорию, вождение — по 2 000 ₽ за занятие по мере прохождения. Без банка и процентов. Можно оплатить материнским капиталом.</p></details>
+      <details><summary>Сколько длится обучение?</summary><p>В среднем 2,5–3 месяца на категорию B. Теория около 1,5 месяца, вождение идёт параллельно. Категория A — около месяца.</p></details>
+      <details><summary>Автомат или механика: что выбрать?</summary><p>На автомате учиться проще и на 2 000 ₽ дешевле, но в правах будет отметка «АКПП». Механика даёт права без ограничений. Не уверены — инструктор поможет решить после первого занятия.</p></details>
+      <details><summary>Можно ли учить теорию онлайн?</summary><p>Да. Личный кабинет с видеоуроками и экзаменационными билетами доступен 24/7. Вождение — с инструктором в Томске.</p></details>
+      <details><summary>С какого возраста можно учиться?</summary><p>С 16 лет с письменного согласия родителей. Экзамен в ГИБДД — с 17 лет, права выдают с 18.</p></details>
+      <details><summary>Как вернуть 13% налоговым вычетом?</summary><p>После обучения подайте заявление через Госуслуги или декларацию 3-НДФЛ. Справку и копию лицензии выдадим. С курса за 66 000 ₽ вернётся до 8 580 ₽.</p></details>
+      <details><summary>Что если не сдам с первого раза?</summary><p>Подготовим к пересдаче: дополнительные занятия по нужным упражнениям и повторная запись в ГИБДД с группой автошколы.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SIGNUP ================= -->
+<section class="sec signup" id="signup">
+  <div class="wrap">
+    <aside class="note">Финальная форма для тех, кто дочитал до конца. Два обязательных поля, маска телефона, понятная ошибка. Категория подставляется, если человек выбрал её выше. «Перезвоним за 15 минут» обещайте только если это правда, иначе напишите реальный срок.</aside>
+    <div class="signup-grid">
+      <div class="head" style="margin-bottom:24px">
+        <span class="kicker">Запись</span>
+        <h2>Начните с одной заявки</h2>
+        <p>Перезвоним в течение 15 минут в рабочее время, подберём офис, группу и инструктора. Ни к чему не обязывает.</p>
+        <div class="cta2" style="margin-top:6px">
+          <a class="btn btn-glass" href="tel:+73822345252"><svg width="19" height="19" aria-hidden="true"><use href="#i-phone"/></svg>Позвонить</a>
+          <button class="btn btn-glass" type="button" data-msg><svg width="19" height="19" aria-hidden="true"><use href="#i-chat"/></svg>Написать</button>
+        </div>
+      </div>
+      <div>
+        <form class="form" id="mainForm" novalidate>
+          <div class="field"><label for="f-name">Имя</label><input id="f-name" name="name" autocomplete="given-name" placeholder="Как к вам обращаться"><span class="err">Напишите, как к вам обращаться</span></div>
+          <div class="field"><label for="f-phone">Телефон</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><span class="err">Проверьте номер: нужно 10 цифр после +7</span></div>
+          <div class="field"><label for="f-cat">Категория</label><select id="f-cat" name="cat"><option value="bA">B · автомат — 66 000 ₽</option><option value="bM">B · механика — 68 000 ₽</option><option value="a">A · мотоцикл — 23 000 ₽</option><option value="x">Пока не решил(а)</option></select></div>
+          <label class="consent"><input type="checkbox" id="f-ok" checked><span>Согласен(на) на обработку персональных данных по политике конфиденциальности</span></label>
+          <button class="btn btn-red btn-block" type="submit">Записаться на обучение</button>
+          <p class="form-note">Номер используем только для связи по заявке.</p>
+        </form>
+        <div class="ok-msg" id="mainOk" role="status"><b>Заявка принята</b>Это прототип: заявка никуда не отправлена. В рабочей версии здесь подтверждение и цель в Метрике.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SEO TEXT ================= -->
+<section class="sec about" style="padding-block:52px">
+  <div class="wrap">
+    <aside class="note">SEO-текст нужен поисковику, но стена текста посреди страницы мешает человеку. Первый абзац виден, остальное раскрывается. Текст доступен для индексации, это не скрытый текст.</aside>
+    <h2>Автошкола «Авто-Вираж» — обучение вождению в Томске с 2006 года</h2>
+    <p>«Авто-Вираж» готовит водителей категорий B и A по программам Минпросвещения России. У автошколы есть образовательная лицензия и заключение ГИБДД о соответствии учебной базы. Теорию можно пройти в классах на ул. Киевской, 105/б и ул. Ивана Черных, 40 или онлайн в личном кабинете.</p>
+    <details>
+      <summary>Читать полностью</summary>
+      <p>Практические занятия проходят на автодроме и по экзаменационным маршрутам ГИБДД в Томске. В автопарке — автомобили с автоматической и механической коробкой: Omoda C5, Chery Tiggo 4 Pro, Jetour Dashing, Belgee S50, Volkswagen Polo, Kia Rio, Hyundai Solaris, Lada Granta и Nissan Note, а также мотоцикл Bajaj Boxer для категории A.</p>
+      <p>Стоимость обучения на категорию B — 66 000 ₽ на АКПП и 68 000 ₽ на МКПП, на категорию A — 23 000 ₽. Обучение начинается с оплаты теории 5 000 ₽, вождение оплачивается по занятиям. Студентам — скидка, доступна оплата материнским капиталом и налоговый вычет 13%.</p>
+      <p>Учиться можно с 16 лет с согласия родителей. Средний срок обучения на категорию B — 2,5–3 месяца.</p>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <img src="../img/logo.png" alt="Авто-Вираж" style="height:36px;width:auto" loading="lazy">
+        <p style="color:var(--muted);max-width:36ch;margin-top:12px">Автошкола в Томске с 2006 года. Категории B и A, самоходная техника.</p>
+        <p style="margin-top:16px"><a class="sved" href="#">Сведения об образовательной организации</a></p>
+      </div>
+      <div><h4>Обучение</h4><ul><li><a href="#prices">Цены</a></li><li><a href="#">Категория B · АКПП</a></li><li><a href="#">Категория B · МКПП</a></li><li><a href="#">Категория A</a></li><li><a href="#">Самоходная техника</a></li><li><a href="#">Акции</a></li></ul></div>
+      <div><h4>Школа</h4><ul><li><a href="#team">Инструкторы</a></li><li><a href="#fleet">Автопарк</a></li><li><a href="#reviews">Отзывы</a></li><li><a href="#">Фотогалерея</a></li><li><a href="#">Блог</a></li></ul></div>
+      <div><h4>Контакты</h4><ul><li><a class="num" href="tel:+73822345252"><b>+7 (3822) 34-52-52</b></a></li><li><a class="num" href="tel:+73822345353"><b>+7 (3822) 34-53-53</b></a></li><li>ул. Киевская, 105/б</li><li>ул. Ивана Черных, 40</li><li>пр. Ленина, 94</li><li style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap"><a class="chip" href="https://vk.com/" target="_blank" rel="noopener">VK</a><a class="chip" href="https://t.me/" target="_blank" rel="noopener">Telegram</a><a class="chip" href="https://max.ru/" target="_blank" rel="noopener">MAX</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>© 2006–2026 Автошкола «Авто-Вираж», Томск</span>
+      <span><a href="#">Политика конфиденциальности</a> · <a href="#">Версия для слабовидящих</a></span>
+      <span>Информация на сайте не является публичной офертой.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="bar" id="bar" aria-label="Быстрые действия">
+  <a class="btn" href="tel:+73822345252" aria-label="Позвонить"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
+  <button class="btn" type="button" data-msg aria-label="Написать в мессенджер"><svg width="22" height="22"><use href="#i-chat"/></svg></button>
+  <button class="btn btn-red" type="button" data-signup>Записаться</button>
+</div>
+
+<dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+  <div class="grab" aria-hidden="true"></div>
+  <div class="sheet-top">
+    <div><h3 id="sheetTitle">Запись на обучение</h3><p class="sub" id="sheetSub">Перезвоним за 15 минут и подберём группу</p></div>
+    <button class="icon-btn" type="button" data-close aria-label="Закрыть"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <form class="form" id="sheetForm" novalidate>
+    <div class="field"><label for="s-name">Имя</label><input id="s-name" autocomplete="given-name" placeholder="Как к вам обращаться"><span class="err">Напишите, как к вам обращаться</span></div>
+    <div class="field"><label for="s-phone">Телефон</label><input id="s-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><span class="err">Проверьте номер: нужно 10 цифр после +7</span></div>
+    <div class="field"><label for="s-cat">Категория</label><select id="s-cat"><option value="bA">B · автомат — 66 000 ₽</option><option value="bM">B · механика — 68 000 ₽</option><option value="a">A · мотоцикл — 23 000 ₽</option><option value="x">Пока не решил(а)</option></select></div>
+    <label class="consent"><input type="checkbox" id="s-ok" checked><span>Согласен(на) на обработку персональных данных</span></label>
+    <button class="btn btn-red btn-block" type="submit">Отправить заявку</button>
+  </form>
+  <div class="ok-msg" id="sheetOk" role="status"><b>Заявка принята</b>Это прототип: заявка никуда не отправлена.</div>
+</dialog>
+
+<dialog class="sheet" id="msgSheet" aria-labelledby="msgTitle">
+  <div class="grab" aria-hidden="true"></div>
+  <div class="sheet-top"><div><h3 id="msgTitle">Написать нам</h3><p class="sub">Отвечаем в рабочее время, обычно за 10 минут</p></div><button class="icon-btn" type="button" data-close aria-label="Закрыть"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="msg-list">
+    <a class="btn btn-block" href="https://vk.com/" target="_blank" rel="noopener">ВКонтакте <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <a class="btn btn-block" href="https://t.me/" target="_blank" rel="noopener">Telegram <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <a class="btn btn-block" href="https://max.ru/" target="_blank" rel="noopener">MAX <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </div>
+</dialog>
+
+<!-- Микроразметка для поиска (в рабочей версии — с реальными координатами и часами) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"DrivingSchool","name":"Автошкола «Авто-Вираж»","url":"https://virazh-tomsk.ru/","telephone":"+7 3822 34-52-52","foundingDate":"2006","areaServed":"Томск",
+ "address":{"@type":"PostalAddress","addressLocality":"Томск","streetAddress":"ул. Киевская, 105/б","addressCountry":"RU"},
+ "makesOffer":[{"@type":"Offer","name":"Категория B, АКПП","price":"66000","priceCurrency":"RUB"},{"@type":"Offer","name":"Категория B, МКПП","price":"68000","priceCurrency":"RUB"},{"@type":"Offer","name":"Категория A","price":"23000","priceCurrency":"RUB"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+ {"@type":"Question","name":"Можно ли платить частями?","acceptedAnswer":{"@type":"Answer","text":"Да. На старте 5 000 ₽ за теорию, вождение — по 2 000 ₽ за занятие. Без банка и процентов."}},
+ {"@type":"Question","name":"Сколько длится обучение?","acceptedAnswer":{"@type":"Answer","text":"В среднем 2,5–3 месяца на категорию B."}},
+ {"@type":"Question","name":"С какого возраста можно учиться?","acceptedAnswer":{"@type":"Answer","text":"С 16 лет с письменного согласия родителей. Права выдают с 18 лет."}}]}
+</script>
+
+<script>
+(function(){
+  const C = {
+    bA:{label:'B · АКПП', price:66000, hours:56},
+    bM:{label:'B · МКПП', price:68000, hours:58},
+    a:{label:'A', price:23000, hours:18}
+  };
+  const rub = n => n.toLocaleString('ru-RU') + ' ₽';
+  const $ = id => document.getElementById(id);
+  const pressOnly = (group, btn) => group.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b===btn)));
+
+  // header border on scroll
+  const hdr = $('hdr');
+  const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  // hero picker
+  document.querySelector('#picker .seg').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    pressOnly(b.parentElement, b);
+    const k = b.dataset.c, c = C[k];
+    $('hpPrice').textContent = rub(c.price);
+    $('hpHours').textContent = c.hours + ' ч вождения';
+    const cta = $('heroCta'); cta.textContent = 'Записаться на ' + c.label; cta.dataset.signup = k;
+  });
+
+  // calculator
+  let calcCat = 'bA';
+  const stud = $('cStudent'), tax = $('cTax');
+  function renderCalc(){
+    const base = C[calcCat].price, canStud = calcCat !== 'a';
+    stud.disabled = !canStud; if(!canStud) stud.checked = false;
+    const disc = stud.checked ? 3000 : 0, paid = base - disc, back = tax.checked ? Math.round(paid*0.13) : 0;
+    $('cBase').textContent = rub(base);
+    $('cStudRow').hidden = !disc;
+    $('cTaxRow').hidden = !tax.checked;
+    $('cTaxVal').textContent = '−' + rub(back);
+    $('cTotal').textContent = rub(paid - back);
+    $('calcCta').dataset.signup = calcCat;
+  }
+  document.querySelector('#calc .seg').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    calcCat = b.dataset.c; pressOnly(b.parentElement, b); renderCalc();
+  });
+  stud.addEventListener('change', renderCalc); tax.addEventListener('change', renderCalc); renderCalc();
+
+  // scroller dots
+  function bindDots(list){
+    const holder = document.querySelector('[data-dots="'+list.id+'"]'); if(!holder) return;
+    const draw = ()=>{
+      const n = list.children.length; if(!n){ holder.innerHTML=''; return; }
+      const w = list.children[0].getBoundingClientRect().width + 12;
+      const i = Math.min(n-1, Math.round(list.scrollLeft / w));
+      holder.innerHTML = Array.from({length:n},(_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+    };
+    list.addEventListener('scroll', ()=>requestAnimationFrame(draw), {passive:true});
+    list._draw = draw; draw();
+  }
+
+  // team (фото с virazh-tomsk.ru)
+  const TEAM = [
+    ['Ушаков Евгений','ins-ushakov.jpg','АКПП','Omoda C5','с 2010','6+ лет','Спокойный, работал на экзаменационной машине'],
+    ['Ковалёнок Александр','ins-kovalenok.jpg','АКПП','VW Polo','с 1992','15+ лет','Огромный опыт, в том числе на экзаменационной машине'],
+    ['Вольных Павел','ins-volnykh.jpg','МКПП','Kia Rio','с 2001','12+ лет','Экзаменатор на внутреннем экзамене — знает, где ошибаются'],
+    ['Новоселов Евгений','ins-novoselov.jpg','МКПП','Lada Granta','с 2003','10+ лет','Спокойный и рассудительный, по словам курсантов'],
+    ['Комиссаров Денис','ins-komissarov.jpg','АКПП','Belgee S50','с 2014','3+ лет','Терпеливый, хвалят за дружелюбную атмосферу'],
+    ['Володин Сергей','ins-volodin.jpg','МКПП','Lada Granta','с 2009','3+ лет','Судья по единоборствам — в стрессе не растеряется']
+  ];
+  const tl = $('teamList');
+  function renderTeam(f){
+    tl.innerHTML = TEAM.filter(t=>f==='all'||t[2]===f).map(t=>`
+      <article class="card ins">
+        <div class="ph"><img src="../img/${t[1]}" alt="Инструктор ${t[0]}" width="414" height="580" loading="lazy"><span class="pill">${t[2]==='АКПП'?'Автомат':'Механика'}</span><div class="who"><b>${t[0]}</b><span>инструктор по вождению</span></div></div>
+        <div class="ins-in">
+          <dl><div><dt>Машина</dt><dd>${t[3]}</dd></div><div><dt>За рулём</dt><dd>${t[4]}</dd></div><div><dt>Учит</dt><dd>${t[5]}</dd></div></dl>
+          <p class="quote">${t[6]}</p>
+          <button class="btn btn-sm btn-block" type="button" data-signup data-topic="К инструктору: ${t[0]}">Записаться к инструктору</button>
+        </div>
+      </article>`).join('');
+    tl.scrollLeft = 0; tl._draw && tl._draw();
+  }
+  $('teamFilter').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; pressOnly(b.parentElement,b); renderTeam(b.dataset.f); });
+  renderTeam('all'); bindDots(tl);
+
+  // fleet (фото с avto-virazh.ru)
+  const FLEET = [
+    ['Omoda C5','АКПП','car-omoda-c5.png','кроссовер'],['Chery Tiggo 4 Pro','АКПП','car-chery-tiggo-4.png','кроссовер'],['Jetour Dashing','АКПП','car-jetour.png','кроссовер'],
+    ['Belgee S50','АКПП','car-belgee.png','седан'],['Volkswagen Polo','АКПП','car-vw-polo.png','седан'],['Kia Rio','МКПП','car-kia-rio.png','седан'],
+    ['Hyundai Solaris','МКПП','car-solaris.png','седан'],['Lada Granta','МКПП','car-granta.png','седан'],['Nissan Note','МКПП','car-nissan-note.png','хэтчбек'],
+    ['Bajaj Boxer','A','moto-bajaj.png','мотоцикл']
+  ];
+  const fl = $('fleetList');
+  function renderFleet(f){
+    fl.innerHTML = FLEET.filter(c=>f==='all'||c[1]===f).map(c=>`
+      <article class="card car">
+        <div class="studio"><img src="../img/${c[2]}" alt="Учебный ${c[0]}" width="720" height="${c[1]==='A'?450:483}" loading="lazy"></div>
+        <div class="car-row"><div><b>${c[0]}</b><small>${c[3]}</small></div><span class="pill ${c[1]==='АКПП'?'ok':''}">${c[1]==='A'?'Категория A':(c[1]==='АКПП'?'Автомат':'Механика')}</span></div>
+      </article>`).join('');
+    fl.scrollLeft = 0; fl._draw && fl._draw();
+  }
+  $('fleetFilter').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; pressOnly(b.parentElement,b); renderFleet(b.dataset.f); });
+  renderFleet('all'); bindDots(fl);
+  bindDots($('revList'));
+
+  // phone mask +7 (XXX) XXX-XX-XX
+  function maskPhone(input){
+    input.addEventListener('input', ()=>{
+      let d = input.value.replace(/\D/g,'');
+      if(d.startsWith('8')) d = '7' + d.slice(1);
+      if(!d.startsWith('7')) d = '7' + d;
+      d = d.slice(0,11);
+      const p = d.slice(1);
+      let out = '+7';
+      if(p.length) out += ' (' + p.slice(0,3);
+      if(p.length >= 3) out += ')';
+      if(p.length > 3) out += ' ' + p.slice(3,6);
+      if(p.length > 6) out += '-' + p.slice(6,8);
+      if(p.length > 8) out += '-' + p.slice(8,10);
+      input.value = out;
+      input.closest('.field').classList.remove('bad');
+    });
+    input.addEventListener('focus', ()=>{ if(!input.value) input.value = '+7 ('; });
+  }
+  ['f-phone','s-phone'].forEach(id=>maskPhone($(id)));
+  ['f-name','s-name'].forEach(id=>$(id).addEventListener('input', e=>e.target.closest('.field').classList.remove('bad')));
+
+  function bindForm(formId, nameId, phoneId, okId){
+    $(formId).addEventListener('submit', e=>{
+      e.preventDefault();
+      const nameOk = $(nameId).value.trim().length > 1;
+      const phoneOk = $(phoneId).value.replace(/\D/g,'').length === 11;
+      $(nameId).closest('.field').classList.toggle('bad', !nameOk);
+      $(phoneId).closest('.field').classList.toggle('bad', !phoneOk);
+      if(!nameOk){ $(nameId).focus(); return; }
+      if(!phoneOk){ $(phoneId).focus(); return; }
+      e.target.style.display = 'none';
+      $(okId).style.display = 'block';
+    });
+  }
+  bindForm('mainForm','f-name','f-phone','mainOk');
+  bindForm('sheetForm','s-name','s-phone','sheetOk');
+
+  // sheets
+  const sheet = $('sheet'), msgSheet = $('msgSheet');
+  const openSheet = d => { if(typeof d.showModal==='function') d.showModal(); else d.setAttribute('open',''); };
+  document.addEventListener('click', e=>{
+    const s = e.target.closest('[data-signup]');
+    if(s){
+      const cat = s.dataset.signup;
+      if(cat && C[cat]) $('s-cat').value = cat;
+      $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + ' · перезвоним за 15 минут' : 'Перезвоним за 15 минут и подберём группу';
+      $('sheetForm').style.display = ''; $('sheetOk').style.display = 'none';
+      if(!menu.hidden) closeMenu();
+      openSheet(sheet); return;
+    }
+    if(e.target.closest('[data-msg]')){ openSheet(msgSheet); return; }
+    const c = e.target.closest('[data-close]'); if(c) c.closest('dialog').close();
+  });
+  [sheet,msgSheet].forEach(d=>d.addEventListener('click', e=>{ if(e.target===d) d.close(); }));
+
+  // menu
+  const menu = $('menu'), mb = $('menuBtn');
+  mb.addEventListener('click', ()=>{ menu.hidden=false; mb.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; $('menuClose').focus(); });
+  function closeMenu(){ menu.hidden=true; mb.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+  $('menuClose').addEventListener('click', closeMenu);
+  menu.addEventListener('click', e=>{ if(e.target.closest('a')) closeMenu(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !menu.hidden) closeMenu(); });
+
+  // sticky bar: появляется, когда главная кнопка первого экрана ушла из вида, и прячется у финальной формы
+  const bar = $('bar');
+  document.body.classList.add('has-bar');
+  if('IntersectionObserver' in window){
+    let heroVisible = true, signupVisible = false;
+    const upd = ()=> bar.classList.toggle('on', !heroVisible && !signupVisible);
+    new IntersectionObserver(es=>{ heroVisible = es[0].isIntersecting || es[0].boundingClientRect.top > 0; upd(); }).observe($('heroCta'));
+    new IntersectionObserver(es=>{ signupVisible = es[0].isIntersecting; upd(); },{threshold:.2}).observe($('signup'));
+  } else { bar.classList.add('on'); }
+
+  // analyst notes
+  const nb = $('notesBtn');
+  function setNotes(on){
+    document.body.classList.toggle('notes', on);
+    nb.setAttribute('aria-pressed', String(on));
+    nb.textContent = 'Заметки аналитика: ' + (on?'вкл':'выкл');
+    try{ localStorage.setItem('vz-notes', on?'1':'0'); }catch(_){}
+  }
+  nb.addEventListener('click', ()=>setNotes(!document.body.classList.contains('notes')));
+  let saved = null; try{ saved = localStorage.getItem('vz-notes'); }catch(_){}
+  setNotes(saved === '1' || location.hash === '#notes');
+})();
+</script>
+</body></html>
