@@ -14,7 +14,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.55 var(--font);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.55 var(--font);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased}
 body.has-bar{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
 a{color:inherit}
 img,svg{max-width:100%}
@@ -50,7 +50,7 @@ button{font:inherit;color:inherit}
 .btn-vk{background:var(--vk);color:#fff}
 .btn-max{background:var(--max);color:#fff}
 .btn-msg{min-height:50px;font:900 italic 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;padding:0 10px}
-.msgs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.msgs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .link{font-weight:700;font-size:15px;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
 .chip{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border:0;border-radius:12px;background:var(--grey);font:700 14px/1 var(--font);cursor:pointer;white-space:nowrap;color:var(--ink)}
 .chip[aria-pressed="true"]{background:var(--red);color:#fff}
@@ -119,7 +119,7 @@ button{font:inherit;color:inherit}
 .hero-bullets .checks li{background:var(--grey)}
 
 /* полоса доверия */
-.trust-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.trust-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
 .ts{background:var(--grey);border-radius:var(--r-sm);padding:16px 14px}
 .ts b{display:block;font:900 italic 26px/1 var(--font);color:var(--head)}
 .ts b .acc{color:var(--red)}

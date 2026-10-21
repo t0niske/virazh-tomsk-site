@@ -4,11 +4,14 @@
 (function () {
   'use strict';
 
-  // цены и часы — единое место для переключателей и калькулятора
+  // цены, часы и порядок оплаты — единое место для переключателей и калькулятора
+  // (B: теория 5 000 + вождение 2 000 за занятие + внутренний экзамен 5 000, ГИБДД 5 000 отдельно;
+  //  A: вождение 16 000 + внутренний экзамен 3 000 + ГИБДД 4 000, всё включено)
+  const PAY_B = 'На старте <b>5 000 ₽</b>, дальше <b>2 000 ₽</b> за занятие по мере езды';
   const C = {
-    bA: { label: 'B · АКПП', price: 66000, hours: 56 },
-    bM: { label: 'B · МКПП', price: 68000, hours: 58 },
-    a:  { label: 'A', price: 23000, hours: 18 }
+    bA: { label: 'B · АКПП', price: 66000, hours: 56, start: 5000, pay: PAY_B },
+    bM: { label: 'B · МКПП', price: 68000, hours: 58, start: 5000, pay: PAY_B },
+    a:  { label: 'A', price: 23000, hours: 18, start: 0, pay: 'Внутренний экзамен и экзамен в ГИБДД <b>уже в цене</b>' }
   };
   const rub = n => n.toLocaleString('ru-RU') + ' ₽';
   const $ = id => document.getElementById(id);
@@ -26,6 +29,7 @@
     const c = C[k];
     $('hpPrice').textContent = rub(c.price);
     $('hpHours').textContent = c.hours + ' ч вождения';
+    if ($('hpPay')) $('hpPay').innerHTML = c.pay;
     const cta = $('heroCta'); cta.textContent = 'Записаться на ' + c.label; cta.dataset.signup = k;
   });
 
@@ -40,14 +44,14 @@
     let cat = 'bA';
     const stud = $('cStudent'), tax = $('cTax');
     const render = () => {
-      const base = C[cat].price, canStud = cat !== 'a';
-      stud.disabled = !canStud; if (!canStud) stud.checked = false;
+      const base = C[cat].price;
       const disc = stud.checked ? 3000 : 0, paid = base - disc, back = tax.checked ? Math.round(paid * 0.13) : 0;
       $('cBase').textContent = rub(base);
       $('cStudRow').hidden = !disc;
       $('cTaxRow').hidden = !tax.checked;
       $('cTaxVal').textContent = '−' + rub(back);
       $('cTotal').textContent = rub(paid - back);
+      $('cStartRow').hidden = !C[cat].start;
       $('calcCta').dataset.signup = cat;
     };
     segClick(calc.querySelector('.seg'), k => { cat = k; render(); });

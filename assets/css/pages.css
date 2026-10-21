@@ -173,3 +173,8 @@ html.a11y-fs-2 .scroller,html.a11y-fs-3 .scroller,html.a11y-fs-2 .chips,html.a11
 
 /* Длинные русские слова в крупных заголовках переносятся, а не расширяют страницу */
 .h1,.h2,h1,h2{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+.ins .ph-none{display:grid;place-items:center;background:linear-gradient(135deg,#E7E7E7,#D9D9D9)}
+.ins .ph-none .ini{font:900 italic 64px/1 var(--font);color:#BDBDBD;letter-spacing:.02em}
+.rev-list{display:grid;gap:12px}
+@media (min-width:900px){.rev-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rev-list .rev{width:auto;max-width:none}

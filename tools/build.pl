@@ -110,6 +110,8 @@ for my $file (@pages) {
       content => $content, version => $version,
     );
     ($html = $layout) =~ s/\{\{(\w+)\}\}/exists $v{$1} ? $v{$1} : "{{$1}}"/ge;
+    # служебные комментарии (TODO, разметка блоков) остаются только в исходниках
+    $html =~ s{[ \t]*<!--(?!\[).*?-->\n?}{}gs;
     $built++;
     push @sitemap, [$path, $m{priority}] unless $noindex || $path eq '/404';
   }
