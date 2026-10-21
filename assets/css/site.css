@@ -497,3 +497,5 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 .rd-ico{display:block;width:72px;height:72px;object-fit:contain;margin:-4px 0 4px}
 span.rd-ico{display:none}
 @media (min-width:1080px){.rd-ico{width:96px;height:96px;margin:-8px 0 6px} span.rd-ico{display:block;visibility:hidden}}
+/* фото-предметы почти чёрные: тонкий светлый контур отделяет их от тёмного блока */
+.sec.dark img.rd-ico{filter:drop-shadow(0 0 1px rgba(255,255,255,.5)) drop-shadow(0 10px 20px rgba(0,0,0,.55))}
