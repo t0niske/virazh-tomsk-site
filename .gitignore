@@ -5,3 +5,8 @@ desktop.ini
 node_modules/
 .vscode/
 .idea/
+
+# сборка и локальные настройки
+_site/
+.claude/
+_preview/

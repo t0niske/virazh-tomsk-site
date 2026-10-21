@@ -1,0 +1,30 @@
+<section class="sec final" id="signup">
+  <div class="wrap final-grid">
+    <div class="head" style="margin:0">
+      <h2 class="it h2">Начните <span class="acc">с одного звонка</span></h2>
+      <p class="lead">Подберём категорию, офис, группу и инструктора. Ни к чему не обязывает.</p>
+      <ul class="checks plain" style="margin-top:6px"><li>Перезвоним в рабочее время</li><li>Номер используем только для связи по заявке</li></ul>
+    </div>
+    <div class="final-card">
+      <h3 class="it" style="font-size:22px">В цену включено всё!</h3>
+      <p class="lead">Без скрытых платежей. Оставьте номер:</p>
+      <form class="form" id="mainForm" data-lead="mainOk" novalidate>
+        <div class="cats" role="group" aria-label="Категория" id="fCats">
+          <button class="chip" type="button" data-c="bA" aria-pressed="true">B · автомат</button>
+          <button class="chip" type="button" data-c="bM" aria-pressed="false">B · механика</button>
+          <button class="chip" type="button" data-c="a" aria-pressed="false">A</button>
+        </div>
+        <div class="field"><label for="f-phone">Телефон</label><input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><span class="err">Проверьте номер: нужно 10 цифр после +7</span></div>
+        <label class="consent"><input type="checkbox" id="f-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a> и знаком(а) с <a href="/politika-konfidentsialnosti" target="_blank">политикой конфиденциальности</a></span></label>
+        <button class="btn btn-red btn-block" type="submit">Записаться на обучение</button>
+      </form>
+      <div class="ok-msg" id="mainOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время. (Прототип: отправка заявок ещё не подключена.)</div>
+      <p class="or">или напишите нам</p>
+      <div class="msgs">
+        <a class="btn btn-msg btn-vk" href="https://vk.com/autoschool_virazh_tomsk" target="_blank" rel="noopener">ВКонтакте</a>
+        <a class="btn btn-msg btn-tg" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+        <a class="btn btn-msg btn-max" href="https://max.ru/" target="_blank" rel="noopener">MAX</a>
+      </div>
+    </div>
+  </div>
+</section>
