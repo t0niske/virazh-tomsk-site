@@ -73,7 +73,9 @@
   const cache = new Map();
   function tokens(text) {
     let s = ' ' + String(text).toLowerCase().replace(/ё/g, 'е').replace(/<[^>]+>/g, ' ').replace(/[^a-zа-я0-9]+/g, ' ') + ' ';
-    s = s.replace(/ (категори\S*|кат) (a1|а1|a|а) /g, ' мотоцикл ').replace(/ (категори\S*|кат) (b|в) /g, ' легковой ')
+    s = s.replace(/ (категори\S*|кат) (a1|а1|a|а) /g, ' мотоцикл ').replace(/ (категори\S*|кат) (b|в|б) /g, ' легковой ')
+      // «а на б?», «а для А?» — категория одной буквой
+      .replace(/ (на|для|про) (b|б|в) /g, ' легковой ').replace(/ (на|для|про) (a1|а1|a|а) /g, ' мотоцикл ')
       .replace(/ не (сдал\S*|сдам|сдать|сдаст\S*|сдадите|сдашь|сдаю) /g, ' пересдача ')
       // «сколько» значит разное: время работы, срок обучения, возраст
       .replace(/ (во|до|со|с) (скольк\S*|скок) (вы )?(работа\S*|открыва\S*|закрыва\S*|открыт\S*) /g, ' график ')
@@ -81,7 +83,7 @@
       .replace(/ (скольк\S*|скок) (по времени |времени |месяцев )?(учиться|учатся|учат|обучаться|обучение длится|идет обучение|занимает обучение) /g, ' длится ');
     const out = new Set();
     for (const w of s.split(' ')) {
-      if (!w || STOP.has(w)) continue;
+      if (!w || STOP.has(w) || (w.length === 1 && !/\d/.test(w))) continue;
       if (!cache.has(w)) { const st = stem(w); cache.set(w, group(st) || st); }
       out.add(cache.get(w));
     }
@@ -107,9 +109,19 @@
   function load() {
     return loading || (loading = fetch(kbUrl).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(prepare));
   }
-  function search(text) {
-    const qt = tokens(text);
+  // категории: вопрос про одну не должен получать ответ про другую
+  const CAT = {};
+  [['легковой', 'автомат механика'], ['автомат', 'легковой'], ['механика', 'легковой'], ['мотоцикл', ''], ['квадроцикл', '']]
+    .forEach(([w, near]) => { CAT[tokens(w)[0]] = [w, ...near.split(' ').filter(Boolean)].map(x => tokens(x)[0]); });
+  const isCat = t => t in CAT;
+  function catFit(qc, ic) {
+    if (!ic.length) return 1;
+    if (!qc.length) return 0.9;   // спросили в общем — общий ответ лучше ответа про одну категорию
+    return qc.some(c => ic.some(x => CAT[c].includes(x))) ? 1 : 0.6;
+  }
+  function search(qt) {
     if (!qt.length) return [];
+    const qc = qt.filter(isCat);
     // незнакомое слово весит меньше: опечатка или лишнее слово не должны топить хороший ответ
     const idf = t => KB.df.has(t) ? Math.log(1 + KB.n / (1 + KB.df.get(t))) : Math.log(1 + KB.n) * 0.5;
     const total = qt.reduce((s, t) => s + idf(t), 0);
@@ -120,7 +132,7 @@
         for (const [f, w] of FIELDS) for (const t of it.t[f]) { const m = match(q, t) * w; if (m > best) best = m; }
         got += best * idf(q);
       }
-      return { it, score: (got / total) * it.w };
+      return { it, score: (got / total) * it.w * catFit(qc, it.t.q.filter(isCat)) };
     }).sort((a, b) => b.score - a.score || a.it.q.length - b.it.q.length);
   }
 
@@ -133,7 +145,8 @@
     log.appendChild(m);
     log.scrollTop = log.scrollHeight;
   }
-  const chip = q => `<button class="bot-chip" type="button" data-ask="${esc(q)}">${esc(q)}</button>`;
+  let prev = null;   // о чём спрашивали в прошлый раз — для коротких уточнений
+  const chip = q =>`<button class="bot-chip" type="button" data-ask="${esc(q)}">${esc(q)}</button>`;
   function special(name) { return (KB && KB.special[name]) || ''; }
   function answer(text) {
     const digits = text.replace(/\D/g, '');
@@ -142,9 +155,17 @@
     const words = tokens(text).length;
     if (/спасиб|благодар/.test(low) && words <= 3) return special('спасибо');
     if (/^(привет|здравствуй|добр(ый|ое)|хай|ау|алло)/.test(low.trim()) && words <= 2) return special('приветствие');
-    const res = search(text);
+    // уточнение к прошлому вопросу: «а на б?», «а на механике?», «а сколько стоит?»
+    let qt = tokens(text);
+    const cats = qt.filter(isCat), topic = qt.filter(t => !isCat(t));
+    if (prev && !topic.length && cats.length) qt = [...prev.topic, ...cats];
+    else if (prev && !cats.length && prev.cats.length && /^\s*(а|и|ну а)(\s|$)/.test(low)) qt = [...topic, ...prev.cats];
+    const res = search(qt);
+    // на уточнение не повторяем прошлый ответ, если есть близкий ответ именно про названную категорию
+    if (prev && res[0] && res[0].it === prev.it && res[1] && res[1].score >= res[0].score * 0.8 && res[1].it.t.q.some(isCat)) res.shift();
     const top = res[0];
     if (!top || top.score < 0.42) return special('не нашёл');
+    prev = { topic: qt.filter(t => !isCat(t)), cats: qt.filter(isCat), it: top.it };
     const more = res.slice(1, 3).filter(r => r.score >= Math.max(0.42, top.score * 0.75));
     return top.it.a + (more.length ? `<div class="bot-rel"><span>Ещё по теме:</span>${more.map(r => chip(r.it.q)).join('')}</div>` : '');
   }
