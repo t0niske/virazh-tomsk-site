@@ -2,25 +2,34 @@
 
 Все иконки — **один набор в одном стиле**. Поэтому у каждой иконки промпт = **общий стиль** + **описание предмета**. Генерируйте по одной иконке, в одной и той же модели (Midjourney, Flux, DALL·E, Ideogram, Kandinsky — неважно, главное одна на весь набор). Промпты на английском: так модели точнее держат стиль.
 
-**Что прислать:** PNG с прозрачным фоном, 1024×1024 (или больше), имя файла — как в таблице. Я положу их в `img/icons/` и встрою в блоки, указанные в колонке «Где».
+**Что прислать:** картинку 1024×1024 или больше на белом фоне (webp, png или jpg) с названием из таблицы — или просто напишите, какая это иконка. Я уберу фон и встрою её в блок из колонки «Где».
 
-Если модель не умеет прозрачный фон — генерируйте на чисто белом `#FFFFFF`, фон я уберу сам.
+## Эталон стиля
+
+Первая готовая иконка — `step-driving` (руль) — стала эталоном: полуреалистичный 3D-рендер, белый пластик, графитовая перфорированная кожа, фирменные красные акценты. Она уже на сайте, в шаге «Вождение». Остальные иконки делайте **в этом же стиле**: в Midjourney — `--sref` на картинку руля, в других моделях — приложите руль как референс и допишите `in the exact same style as the reference image`.
+
+Что учесть по опыту руля:
+
+- **Меньше чёрного.** На тёмном блоке большие графитовые поверхности сливаются с фоном. Основной цвет предмета — белый или светло-серый, графит — только детали, красный — акценты.
+- **Крупные формы, мало мелочей.** На сайте иконка 72–96 px: перфорация и тонкие детали не читаются, важен силуэт.
+- **Фон — чисто белый.** Прозрачный не обязателен: белый фон, в том числе внутри предмета (как между спицами руля), убирает скрипт `tools/icon-cut.ps1`.
+- **Ракурс как у руля:** почти фронтально, лёгкий наклон, предмет по центру, занимает 80–85% кадра.
 
 ## Общий стиль (вставлять в начало каждого промпта)
 
 ```
-3D icon, soft glossy clay style, chunky rounded shapes, smooth matte-plastic surfaces with subtle gloss highlights,
-brand color palette strictly limited to: signal red #E2232B, deep graphite #2B2B2B, pure white #FFFFFF, light grey #EDEDED,
-soft studio lighting from the top-left, gentle ambient occlusion, a soft contact shadow directly under the object,
-three-quarter isometric view at about 30 degrees, single object centered, object fills about 70% of the frame,
-clean silhouette readable at 48 px, transparent background, no text, no letters, no numbers, no logos, no watermark,
+premium semi-realistic 3D product icon, clean studio render, smooth white and light-grey matte plastic as the main material,
+deep graphite #2B2B2B perforated leather or rubber only as small details, glossy signal red #E2232B accents,
+soft diffused studio lighting from the top-left, subtle reflections, gentle soft shadows,
+front view with a slight three-quarter tilt, single object centered, object fills about 85% of the frame,
+bold readable silhouette at 72 px, pure white #FFFFFF background, no text, no letters, no numbers, no logos, no watermark,
 consistent icon set, 1024x1024
 ```
 
 ## Негативный промпт (если модель поддерживает)
 
 ```
-text, letters, numbers, typography, logo, watermark, photorealistic, realistic human, face, hands, busy background,
+text, letters, numbers, typography, logo, watermark, realistic human, face, hands, busy background,
 gradient background, scene, multiple objects, flat 2D, line art, outline icon, sketch, noise, blur, cropped object,
 neon, purple, blue, green, orange, yellow (except the single gold star where specified)
 ```
@@ -33,7 +42,7 @@ neon, purple, blue, green, orange, yellow (except the single gold star where spe
 |---|---|---|
 | `step-contract.png` | Шаг 01 «Заявка и договор» | `a white paper contract sheet with a few grey text lines (no readable text), a red round checkmark badge in the corner, a graphite fountain pen lying diagonally across the sheet` |
 | `step-theory.png` | Шаг 02 «Теория ПДД» | `an open graphite laptop, on its screen a simple white triangular road warning sign with a red border (empty, no symbol inside), a small red play-button bubble floating near the screen` |
-| `step-driving.png` | Шаг 03 «Вождение» | `a graphite car steering wheel with three spokes and a red center hub, slightly tilted, seen three-quarter from the driver's seat` |
+| `step-driving.png` | Шаг 03 «Вождение» | ✅ готово — эталон стиля |
 | `step-inner-exam.png` | Шаг 04 «Внутренний экзамен» | `a white clipboard with a graphite clip, three checklist rows with red round checkmarks, a small red-and-white traffic cone standing next to it` |
 | `step-license.png` | Шаг 05 «Экзамен в ГИБДД и права» | `a driver's license plastic card with a red top stripe and a grey photo placeholder square (no text, no face), a small red-and-white checkered finish flag on a pole behind the card` |
 
@@ -78,6 +87,5 @@ neon, purple, blue, green, orange, yellow (except the single gold star where spe
 
 ## Советы
 
-- Сначала сгенерируйте **одну** иконку (например, `step-driving.png`), пришлите — проверю, как смотрится на сайте, и при необходимости поправлю общий стиль. Потом остальные в том же стиле (в Midjourney удобно использовать `--sref` первой удачной картинки, в других моделях — «in the same style as the reference image»).
 - Красный должен быть именно фирменным `#E2232B`, без ухода в оранжевый или розовый.
 - Не нужно ни букв, ни цифр — модели их искажают; все подписи и суммы уже есть на сайте текстом.
