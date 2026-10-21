@@ -8,49 +8,68 @@ priority: 0.9
     <nav class="crumbs" aria-label="Навигация"><a href="/">Главная</a><span>/</span><span>Цены</span></nav>
     <h1 class="it h1">Стоимость обучения в автошколе <span class="acc">«Вираж»</span></h1>
     <p class="page-lead">Цена без звёздочек: сумма на сайте равна сумме в договоре. Стоимость утверждена <a href="/media/attachments/2026/10/07/Prikaz-o-stoimosti-obucenia.pdf" target="_blank" rel="noopener" style="color:var(--red)">приказом о стоимости обучения</a>.</p>
+    <div class="ptags">
+      <a class="ptag" href="#prices" data-show-tariff="bA"><img src="/img/icons/cat-b-auto.png" alt="" width="320" height="320"><span class="ptag-name">B на автомате</span><span class="ptag-sub">56 часов вождения</span><b class="num">66 000 ₽</b></a>
+      <a class="ptag" href="#prices" data-show-tariff="bM"><img src="/img/icons/cat-b-manual.png" alt="" width="320" height="320"><span class="ptag-name">B на механике</span><span class="ptag-sub">58 часов вождения</span><b class="num">68 000 ₽</b></a>
+      <a class="ptag" href="#prices" data-show-tariff="a"><img src="/img/icons/cat-a-moto.png" alt="" width="320" height="320"><span class="ptag-name">A, мотоцикл</span><span class="ptag-sub">18 часов, экзамены в цене</span><b class="num">23 000 ₽</b></a>
+      <a class="ptag" href="#ai"><img src="/img/icons/cat-ai.png" alt="" width="320" height="320"><span class="ptag-name">AI, квадроцикл и снегоход</span><span class="ptag-sub">Гостехнадзор</span><b class="num">15 000 ₽</b></a>
+      <a class="ptag" href="#biz"><img src="/img/icons/cat-pro.png" alt="" width="320" height="320"><span class="ptag-name">Курсы для компаний</span><span class="ptag-sub">Переподготовка и повышение квалификации</span><b class="num">от 1 000 ₽</b></a>
+    </div>
   </div>
 </section>
 
 <section class="sec sec-tight" id="prices">
   <div class="wrap">
-    <div class="head"><h2 class="it h2">Профессиональное <span class="acc">обучение водителей</span></h2><span class="sub-it">Выберите категорию:</span></div>
+    <div class="head"><h2 class="it h2">Из чего складывается <span class="acc">цена</span></h2><span class="sub-it">Выберите категорию:</span></div>
 <!--#include tariff-panels-->
+    <div class="also" id="ai"><img class="also-ico" src="/img/icons/cat-ai.png" alt="" width="320" height="320" loading="lazy">
+      <p><b>Квадроцикл и снегоход — 15 000 ₽</b>Категория AI (Гостехнадзор): внедорожные мототранспортные средства</p>
+      <a class="btn btn-sm btn-white" href="/obuchenie/gostekhnadzor-kategoriya-ai">Подробнее</a>
+    </div>
   </div>
 </section>
 
-<section class="sec grey">
+<section class="sec grey" id="pay">
   <div class="wrap">
-    <div class="pl-group">
-      <h2 class="it h2">Все <span class="acc">программы и цены</span></h2>
-      <div class="pricelist">
-        <div class="pl"><b>Обучение водителей на категорию «В», МКПП</b><small>58 часов вождения</small><span class="p num">68 000 ₽</span></div>
-        <div class="pl"><b>Обучение водителей на категорию «В», АКПП</b><small>56 часов вождения</small><span class="p num">66 000 ₽</span></div>
-        <div class="pl"><b>Обучение водителей на категорию «А» — мотоциклы</b><small>18 часов вождения</small><span class="p num">23 000 ₽</span></div>
+    <div class="head">
+      <h2 class="it h2">Всю сумму сразу <span class="acc">платить не нужно</span></h2>
+      <span class="sub-it">Скидки, вычет и оплата по ходу обучения:</span>
+    </div>
+<!--#include pay-block-->
+    <p style="margin-top:18px"><a class="link" href="/oplata">Подробнее об оплате частями, маткапитале и налоговом вычете <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+  </div>
+</section>
+
+<section class="sec dark" id="biz">
+  <div class="wrap">
+    <div class="head">
+      <h2 class="it h2">Курсы для <span class="acc">транспортных компаний</span></h2>
+      <p class="lead">Профессиональная переподготовка и повышение квалификации сотрудников.</p>
+    </div>
+    <div class="biz">
+      <div class="biz-col">
+        <div class="biz-top"><h3 class="it">Профессиональная переподготовка</h3><span class="pill">256 часов</span></div>
+        <ul class="biz-list">
+          <li><span>Специалист, ответственный за обеспечение безопасности движения</span><b class="num">8 000 ₽</b></li>
+          <li><span>Контролёр технического состояния автотранспортных средств</span><b class="num">8 500 ₽</b></li>
+          <li><span>Диспетчер автотранспортных средств</span><b class="num">8 500 ₽</b></li>
+        </ul>
+      </div>
+      <div class="biz-col">
+        <div class="biz-top"><h3 class="it">Повышение квалификации</h3></div>
+        <ul class="biz-list">
+          <li><span>Повышение квалификации специалистов по безопасности движения на автомобильном транспорте<small>32 часа</small></span><b class="num">4 000 ₽</b></li>
+          <li><span>Повышение квалификации контролёров технического состояния автотранспортных средств<small>40 часов</small></span><b class="num">5 500 ₽</b></li>
+          <li><span>Ежегодные занятия с водителями по БД и ПДД<small>20 часов</small></span><b class="num">1 000 ₽</b></li>
+        </ul>
       </div>
     </div>
-    <div class="pl-group">
-      <h2 class="it h2">Гостехнадзор</h2>
-      <div class="pricelist">
-        <div class="pl"><b><a href="/obuchenie/gostekhnadzor-kategoriya-ai" style="color:inherit">Категория AI</a></b><small>Внедорожные мототранспортные средства</small><span class="p num">15 000 ₽</span></div>
-      </div>
+    <div class="biz-cta">
+      <img src="/img/icons/cat-pro.png" alt="" width="320" height="320" loading="lazy">
+      <p><b>Обучение сотрудников компании</b>Оставьте заявку: перезвоним и подберём программу и даты.</p>
+      <button class="btn btn-red" type="button" data-signup="" data-topic="Курсы для транспортных компаний">Оставить заявку</button>
+      <a class="link" href="/obuchenie/perepodgotovka-i-povyshenie-kvalifikatsii">Подробнее о курсах <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
-    <div class="pl-group">
-      <h2 class="it h2">Профессиональная переподготовка</h2>
-      <div class="pricelist">
-        <div class="pl"><b>Специалист, ответственный за обеспечение безопасности движения</b><small>256 часов</small><span class="p num">8 000 ₽</span></div>
-        <div class="pl"><b>Контролёр технического состояния автотранспортных средств</b><small>256 часов</small><span class="p num">8 500 ₽</span></div>
-        <div class="pl"><b>Диспетчер автотранспортных средств</b><small>256 часов</small><span class="p num">8 500 ₽</span></div>
-      </div>
-    </div>
-    <div class="pl-group">
-      <h2 class="it h2">Повышение квалификации</h2>
-      <div class="pricelist">
-        <div class="pl"><b>Повышение квалификации специалистов по безопасности движения на автомобильном транспорте</b><small>32 часа</small><span class="p num">4 000 ₽</span></div>
-        <div class="pl"><b>Повышение квалификации контролёров технического состояния автотранспортных средств</b><small>40 часов</small><span class="p num">5 500 ₽</span></div>
-        <div class="pl"><b>Ежегодные занятия с водителями по БД и ПДД</b><small>20 часов</small><span class="p num">1 000 ₽</span></div>
-      </div>
-    </div>
-    <p style="margin-top:22px"><a class="link" href="/oplata">Как платить частями, скидки, маткапитал и налоговый вычет <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
   </div>
 </section>
 

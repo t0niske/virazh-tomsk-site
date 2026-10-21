@@ -37,6 +37,10 @@
   segClick($('tariffTabs'), k => {
     document.querySelectorAll('[data-tariff]').forEach(p => { p.hidden = p.dataset.tariff !== k; });
   });
+  // ценники на странице цен открывают нужную вкладку
+  document.querySelectorAll('[data-show-tariff]').forEach(a => a.addEventListener('click', () => {
+    const b = document.querySelector('#tariffTabs [data-c="' + a.dataset.showTariff + '"]'); if (b) b.click();
+  }));
 
   // калькулятор
   const calc = $('calc');
