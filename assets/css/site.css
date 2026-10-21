@@ -494,14 +494,3 @@ span.rd-ico{display:none}
 /* фото-предметы почти чёрные: тонкий светлый контур отделяет их от тёмного блока */
 .sec.dark img.rd-ico{filter:drop-shadow(0 0 1px rgba(255,255,255,.5)) drop-shadow(0 10px 20px rgba(0,0,0,.55))}
 
-/* ===== фотофоны блоков (img/bg, исходники в design/bg). Поверх — слой цвета блока, чтобы читался текст ===== */
-.hero{background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.9) 38%,rgba(255,255,255,.6) 100%),url("/img/bg/bg-hero.jpg") 70% 50%/cover no-repeat #fff}
-.promo{background:linear-gradient(110deg,rgba(226,35,43,.97) 0%,rgba(200,22,29,.9) 42%,rgba(120,8,12,.45) 100%),url("/img/bg/bg-red-trails.jpg") 30% 45%/cover no-repeat #C8161D}
-.sec.grey{background:linear-gradient(rgba(244,244,244,.88),rgba(244,244,244,.88)),url("/img/bg/bg-light-asphalt.jpg") center/cover no-repeat var(--grey)}
-.final{background:linear-gradient(90deg,rgba(244,244,244,.96) 0%,rgba(244,244,244,.9) 40%,rgba(244,244,244,.45) 100%),url("/img/bg/bg-autodrome.jpg") right center/cover no-repeat var(--grey)}
-.sec.dark{background:linear-gradient(90deg,rgba(14,14,14,.94) 0%,rgba(14,14,14,.82) 45%,rgba(14,14,14,.45) 100%),url("/img/bg/bg-night-road.jpg") right center/cover no-repeat #121212;color:#EDEDED}
-@media (max-width:719px){
-  .hero{background:linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),url("/img/bg/bg-hero.jpg") 30% 0/220% auto no-repeat #fff}
-  .sec.dark{background:linear-gradient(rgba(14,14,14,.86),rgba(14,14,14,.86)),url("/img/bg/bg-night-road.jpg") 75% 0/auto 100% no-repeat #121212}
-  .final{background:linear-gradient(rgba(244,244,244,.9),rgba(244,244,244,.9)),url("/img/bg/bg-autodrome.jpg") 80% 0/auto 100% no-repeat var(--grey)}
-}
