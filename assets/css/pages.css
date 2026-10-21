@@ -177,3 +177,8 @@ html.a11y .sec::before,html.a11y .final::before,html.a11y .hero::before,html.a11
 html.a11y-fs-2 .hdr-row,html.a11y-fs-3 .hdr-row{flex-wrap:wrap;height:auto;padding-block:8px}
 html.a11y-fs-2 .hdr .hdr-sp,html.a11y-fs-3 .hdr .hdr-sp{display:none}
 html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;padding-block:8px}
+
+/* полный список на своей странице («Инструкторы», «Автопарк»): сетка вместо карусели */
+.all .scroller{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));overflow:visible;margin-inline:0;padding-inline:0;scroll-snap-type:none}
+.all .dots{display:none}
+.foot .link[aria-current]{display:none}

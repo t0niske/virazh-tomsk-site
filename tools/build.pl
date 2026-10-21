@@ -83,6 +83,8 @@ for my $file (@pages) {
   }
   # активный пункт во внутренних меню (раздел «Сведения» и т.п.)
   $content =~ s{<a class="sv" href="\Q$path\E"}{<a class="sv" href="$path" aria-current="page"}g;
+  # ссылка «Все …» под каруселью на её же странице не нужна: помечаем, CSS её прячет
+  $content =~ s{<a class="link" href="\Q$path\E"}{<a class="link" href="$path" aria-current="page"}g;
 
   my $canonical = $opt{site} . ($m{canonical} // $path);
   my $html;
