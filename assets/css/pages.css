@@ -52,9 +52,6 @@
 }
 
 /* активный пункт главного меню */
-.nav a[aria-current="page"]{color:var(--red)}
-.nav a.soc[aria-current="page"]{color:#fff;background:var(--red-dark)}
-.menu a.m.sub{font-size:17px;padding:10px 0 10px 16px;color:var(--muted)}
 .menu a.m[aria-current="page"]{color:var(--red)}
 
 /* карточки-ссылки */
@@ -118,10 +115,6 @@ dialog.lightbox::backdrop{background:rgba(0,0,0,.92)}
 @media (min-width:900px){.two{grid-template-columns:1fr 1fr;gap:40px;align-items:start}}
 
 /* кнопка «версия для слабовидящих» */
-.eye{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 12px;border-radius:12px;background:var(--grey);color:var(--ink);text-decoration:none;font:700 13px/1.15 var(--font);flex:none}
-.eye span{display:none}
-@media (min-width:1280px){.eye span{display:inline;max-width:9em}}
-@media (hover:hover){.eye:hover{background:var(--grey-2)}}
 
 /* =====================================================================
    Версия для слабовидящих (ГОСТ Р 52872-2019)
@@ -178,3 +171,9 @@ html.a11y-fs-2 .scroller,html.a11y-fs-3 .scroller,html.a11y-fs-2 .chips,html.a11
 .rev-list{display:grid;gap:12px}
 @media (min-width:900px){.rev-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .rev-list .rev{width:auto;max-width:none}
+
+/* декоративная дорога в версии для слабовидящих не нужна */
+html.a11y .sec::before,html.a11y .final::before,html.a11y .hero::before,html.a11y .ring{display:none!important}
+html.a11y-fs-2 .hdr-row,html.a11y-fs-3 .hdr-row{flex-wrap:wrap;height:auto;padding-block:8px}
+html.a11y-fs-2 .hdr .hdr-sp,html.a11y-fs-3 .hdr .hdr-sp{display:none}
+html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;padding-block:8px}

@@ -8,6 +8,12 @@
     <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6.5 3h8l4 4v14h-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3v4.5h4.5M9 12.5h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4.5 20.5c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.5 4.5h12l-2.5 4 2.5 4h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
 
@@ -25,25 +31,27 @@
   </div>
 </div>
 
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <nav class="city" aria-label="Выбор города"><a href="/" data-city="tomsk">Томск</a><a href="/novosibirsk">Новосибирск</a></nav>
+    <span class="hdr-sp"></span>
+    <a class="ut" href="https://lk.virazh-tomsk.ru" target="_blank" rel="noopener"><svg width="16" height="16" aria-hidden="true"><use href="#i-user"/></svg>Личный кабинет</a>
+    <a class="ut" href="#a11y" id="a11yBtn" itemprop="copy"><svg width="16" height="16" aria-hidden="true"><use href="#i-eye"/></svg>Версия для слабовидящих</a>
+    <a class="ut sv" href="/osnovnye-svedeniya"><svg width="16" height="16" aria-hidden="true"><use href="#i-shield"/></svg>Сведения об образовательной организации</a>
+  </div>
+</div>
 <header class="hdr">
   <div class="wrap hdr-row">
     <a class="logo" href="/" aria-label="Автошкола Авто-Вираж, на главную"><img src="/img/logo.png" alt="Автошкола Авто-Вираж" width="520" height="169"></a>
-    <div class="hdr-info">
-      <span>Томск · Новосибирск:<b>Киевская, 105/б · пр. К. Маркса, 57</b></span>
-      <a href="tel:+73822345252">телефон:<b class="num">+7 (3822) 34-52-52</b></a>
-      <a href="https://lk.virazh-tomsk.ru" target="_blank" rel="noopener">онлайн-обучение:<b>личный кабинет</b></a>
-    </div>
-    <span class="hdr-sp"></span>
-    <a class="eye" href="#a11y" id="a11yBtn" itemprop="copy" aria-label="Версия для слабовидящих" title="Версия для слабовидящих"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Версия для слабовидящих</span></a>
-    <button class="btn btn-red" type="button" data-signup>Записаться</button>
-    <a class="call" href="tel:+73822345252" aria-label="Позвонить: +7 (3822) 34-52-52"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
-    <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu">Меню</button>
-  </div>
-  <div class="wrap nav-row">
     <nav class="nav" aria-label="Основное меню">
       <a href="/obuchenie">Обучение</a><a href="/tseny/tseny-tomsk">Цены</a><a href="/oplata">Оплата</a><a href="/instruktory">Инструкторы</a><a href="/avtopark">Автопарк</a><a href="/otzyvy">Отзывы</a><a href="/blog">Блог</a><a href="/kontakty">Контакты</a>
-      <a class="soc" href="/osnovnye-svedeniya">Сведения об образовательной организации</a>
     </nav>
+    <span class="hdr-sp"></span>
+    <a class="hdr-tel" href="tel:+73822345252"><b class="num">+7 (3822) 34-52-52</b><small>Пн–Пт 9:00–18:00</small></a>
+    <button class="btn btn-red" type="button" data-signup>Записаться</button>
+    <a class="ic eye-m" href="#a11y" data-a11y-open aria-label="Версия для слабовидящих"><svg width="22" height="22" aria-hidden="true"><use href="#i-eye"/></svg></a>
+    <a class="ic call" href="tel:+73822345252" aria-label="Позвонить: +7 (3822) 34-52-52"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
+    <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu"><span class="burger" aria-hidden="true"><i></i><i></i></span>Меню</button>
   </div>
 </header>
 
@@ -52,10 +60,11 @@
     <img src="/img/logo.png" alt="Авто-Вираж" style="height:32px;width:auto">
     <button class="x" type="button" id="menuClose" aria-label="Закрыть меню"><svg width="20" height="20"><use href="#i-x"/></svg></button>
   </div>
+  <nav class="city" aria-label="Выбор города"><a href="/" data-city="tomsk">Томск</a><a href="/novosibirsk">Новосибирск</a></nav>
   <a class="m" href="/obuchenie">Обучение</a>
-  <a class="m sub" href="/obuchenie/kategoriya-b-akpp">Категория B · автомат</a>
-  <a class="m sub" href="/obuchenie/kategoriya-b-mkpp">Категория B · механика</a>
-  <a class="m sub" href="/obuchenie/kategoriya-a-motocikl">Категория A · мотоцикл</a>
+  <a class="m sub" href="/obuchenie/kategoriya-b-akpp">Категория B на автомате</a>
+  <a class="m sub" href="/obuchenie/kategoriya-b-mkpp">Категория B на механике</a>
+  <a class="m sub" href="/obuchenie/kategoriya-a-motocikl">Категория A, мотоцикл</a>
   <a class="m sub" href="/obuchenie/uchis-online">Учись онлайн</a>
   <a class="m" href="/tseny/tseny-tomsk">Цены</a>
   <a class="m" href="/oplata">Оплата и скидки</a>
@@ -66,7 +75,6 @@
   <a class="m" href="/voprosy">Вопросы</a>
   <a class="m" href="/o-shkole">Об автошколе</a>
   <a class="m" href="/kontakty">Контакты</a>
-  <a class="m" href="/novosibirsk">Новосибирск</a>
   <a class="m" href="/osnovnye-svedeniya">Сведения об образовательной организации</a>
   <a class="m" href="#a11y" data-a11y-open>Версия для слабовидящих</a>
   <div class="contacts">

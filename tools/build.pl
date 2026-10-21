@@ -109,6 +109,11 @@ for my $file (@pages) {
       body_class => $m{body} // '', header => $hdr, footer => $footer, overlays => $overlays,
       content => $content, version => $version,
     );
+    # своя страница города: в шапке и плавающих кнопках — его телефон (meta phone: +7 (383) 205-24-34 | +73832052434)
+    if (my $ph = $m{phone}) {
+      my ($disp, $tel) = split /\s*\|\s*/, $ph;
+      for (@v{qw(header overlays)}) { s/\+7 \(3822\) 34-52-52/$disp/g; s/tel:\+73822345252/tel:$tel/g }
+    }
     ($html = $layout) =~ s/\{\{(\w+)\}\}/exists $v{$1} ? $v{$1} : "{{$1}}"/ge;
     # служебные комментарии (TODO, разметка блоков) остаются только в исходниках
     $html =~ s{[ \t]*<!--(?!\[).*?-->\n?}{}gs;

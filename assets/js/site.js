@@ -9,8 +9,8 @@
   //  A: вождение 16 000 + внутренний экзамен 3 000 + ГИБДД 4 000, всё включено)
   const PAY_B = 'На старте <b>5 000 ₽</b>, дальше <b>2 000 ₽</b> за занятие по мере езды';
   const C = {
-    bA: { label: 'B · АКПП', price: 66000, hours: 56, start: 5000, pay: PAY_B },
-    bM: { label: 'B · МКПП', price: 68000, hours: 58, start: 5000, pay: PAY_B },
+    bA: { label: 'B АКПП', price: 66000, hours: 56, start: 5000, pay: PAY_B },
+    bM: { label: 'B МКПП', price: 68000, hours: 58, start: 5000, pay: PAY_B },
     a:  { label: 'A', price: 23000, hours: 18, start: 0, pay: 'Внутренний экзамен и экзамен в ГИБДД <b>уже в цене</b>' }
   };
   const rub = n => n.toLocaleString('ru-RU') + ' ₽';
@@ -140,7 +140,7 @@
     if (s && sheet) {
       const cat = s.dataset.signup;
       if (cat && C[cat]) $('s-cat').value = cat;
-      $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + ' · перезвоним за 15 минут' : 'Перезвоним за 15 минут и подберём группу';
+      $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + '. Перезвоним в рабочее время' : 'Перезвоним в рабочее время и подберём группу';
       const f = $('sheetForm'); f.hidden = false; $('sheetOk').style.display = 'none';
       closeMenu();
       openSheet(sheet); return;
