@@ -202,9 +202,6 @@ button{font:inherit;color:inherit}
 .wc .tx{padding:26px 18px 20px;display:grid;gap:6px}
 .wc h3{font:900 italic 18px/1.15 var(--font);text-transform:uppercase;color:var(--head)}
 .wc p{font-size:15px;color:var(--muted)}
-.trial{margin-top:12px;background:var(--red);color:#fff;border-radius:var(--r);padding:22px 18px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
-.trial .it{color:#fff;font-size:22px}
-.trial p{font-size:15px;color:#fff}
 
 /* ===== цифры с картинками ===== */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -417,8 +414,6 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
   .tariff{grid-template-columns:1fr 1fr 1fr}
   .tariff .checks{grid-row:span 2}
   .official-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
-  .trial{grid-template-columns:1fr auto;align-items:center;padding:28px}
-  .trial .btn{width:auto}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
