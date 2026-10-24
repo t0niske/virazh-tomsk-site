@@ -13,17 +13,8 @@ priority: 1.0
         <p class="hero-sub">Категории B и A, автомат и механика. Инструкторы, которые не повышают голос, 10 учебных машин и свой автодром. Учим водить с 2007 года.</p>
       </div>
       <div class="hero-vis" aria-hidden="true">
-        <div class="ring"></div>
-        <img src="/img/hero-omoda.webp" alt="" width="1782" height="765" fetchpriority="high">
-      </div>
-      <div class="hero-bullets">
-        <ul class="checks">
-          <li><span><b>5.0 в 2ГИС</b> — 369 оценок</span></li>
-          <li><span><b>95%</b> сдают ГИБДД с первого раза</span></li>
-          <li><span>Первый платёж — <b>5 000 ₽</b></span></li>
-          <li><span>Теория <b>онлайн 24/7</b> или в классе</span></li>
-          <li><span><b>Три офиса</b> в Томске и свой автодром</span></li>
-        </ul>
+        <img class="hero-podium" src="/img/hero-podium.webp" alt="" width="1200" height="170">
+        <img class="hero-car" src="/img/hero-omoda.webp" alt="" width="1782" height="765" fetchpriority="high">
       </div>
       <div class="hero-card" id="picker">
         <p class="t">Цена без звёздочек<small>Стоимость и часы известны заранее</small></p>
@@ -58,16 +49,19 @@ priority: 1.0
 <section class="sec" style="padding-block:24px 8px">
   <div class="wrap">
     <div class="promo">
-      <div style="display:grid;gap:10px;position:relative;z-index:1">
-        <h2 class="it">Запись открыта круглый год</h2>
+      <div style="display:grid;gap:10px">
+        <h2 class="it">Запись открыта <span class="acc">круглый год</span></h2>
         <p>Группы набираются постоянно, мест хватит всем. Теорию можно начать онлайн хоть сегодня. Оставьте номер — перезвоним в рабочее время и подберём офис и инструктора.</p>
       </div>
-      <form class="promo-form" id="promoForm" data-lead="promoOk" novalidate style="position:relative;z-index:1">
-        <div class="field"><input id="p-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" aria-label="Телефон"><span class="err" style="color:#fff">Нужно 10 цифр после +7</span></div>
-        <label class="consent" style="color:#fff"><input type="checkbox" id="p-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank" style="color:#fff">согласие на обработку персональных данных</a></span></label>
-        <button class="btn btn-black btn-block" type="submit">Записаться</button>
+      <form class="promo-form" id="promoForm" data-lead="promoOk" novalidate>
+        <div class="promo-row">
+          <div class="field"><input id="p-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" aria-label="Телефон"><span class="err">Нужно 10 цифр после +7</span></div>
+          <button class="btn btn-red" type="submit">Записаться</button>
+        </div>
+        <label class="consent"><input type="checkbox" id="p-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a></span></label>
       </form>
-      <div class="ok-msg" id="promoOk" role="status" style="position:relative;z-index:1"><b>Заявка принята</b>Перезвоним в рабочее время.</div>
+      <div class="ok-msg" id="promoOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время.</div>
+      <img class="promo-art" src="/img/art/art-promo.webp" alt="" width="720" height="720" loading="lazy">
     </div>
   </div>
 </section>

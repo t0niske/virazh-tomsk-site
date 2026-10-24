@@ -303,3 +303,24 @@ html.a11y-noimg .sign3d{display:none!important}
 
 /* карточки «Почему нас»: предметная съёмка на светлом фоне в цвет карточки — номер красный */
 .wc .ph .n{color:var(--red);text-shadow:none}
+
+/* первый экран главной: машина на красном подиуме (Blender), без кольца и красной полосы */
+.hero-vis .hero-podium{left:-4%;right:auto;width:108%;bottom:-6px;z-index:0}
+.hero-vis .hero-car{z-index:1;bottom:-2px}
+.hero-vis::after{content:"";position:absolute;left:6%;right:2%;bottom:-14px;height:26px;background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.16),transparent 72%);z-index:-1}
+.hero .hero-card{order:3}
+@media (min-width:900px){
+  .hero-vis{grid-row:1 / span 2;height:540px}
+  .hero-vis .hero-car{left:-70px;width:124%;bottom:112px}
+  .hero-vis .hero-podium{left:-60px;width:122%;bottom:110px}
+  .hero-vis::after{left:-20px;right:-60px;bottom:92px;height:44px}
+  .hero-card{grid-row:2;margin-top:26px}
+}
+html.a11y-noimg .hero-podium{display:none!important}
+@media (max-width:899px){
+  .hero-vis{height:230px}
+  .hero-vis .hero-podium{left:3%;width:94%;bottom:10px}
+  .hero-vis .hero-car{bottom:14px}
+  .hero-vis::after{bottom:0}
+  .hero .hero-card{margin-top:12px}
+}
