@@ -300,3 +300,6 @@ html.a11y-noimg .sign3d{display:none!important}
   .page-hero.art-sm .ph-art{margin:-14px 0 -24px}
 }
 .page-hero.art-sm .ph-art{max-width:130px}
+
+/* карточки «Почему нас»: предметная съёмка на светлом фоне в цвет карточки — номер красный */
+.wc .ph .n{color:var(--red);text-shadow:none}
