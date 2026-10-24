@@ -10,3 +10,6 @@ node_modules/
 _site/
 .claude/
 _preview/
+
+# вырезанные копии картинок (собираются заново tools/icon-cut.ps1)
+design/art/cut/

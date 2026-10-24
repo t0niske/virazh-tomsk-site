@@ -271,3 +271,32 @@ html.a11y-noimg .exd-top{grid-template-columns:minmax(0,1fr)}
 .ex-price div{background:var(--grey);border-radius:var(--r-sm);padding:12px 14px;font-size:13.5px;color:var(--muted);line-height:1.35}
 .ex-price b{display:block;font:900 italic 22px/1.1 var(--font);color:var(--ink);margin-bottom:4px}
 @media (min-width:900px){.ex-how{grid-template-columns:1fr 1fr}}
+
+/* ===== предмет-фото в первом экране внутренних страниц (meta art:) ===== */
+.page-hero.has-art .wrap::after{content:"";display:block;clear:both}
+.ph-art{float:right;width:40%;max-width:190px;margin:-6px -4px 6px 12px;pointer-events:none}
+.ph-art img{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 22px rgba(0,0,0,.13));animation:phIn .8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes phIn{from{opacity:0;transform:translateY(18px) scale(.96)}}
+@media (min-width:900px){
+  .page-hero.has-art .wrap{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,31vw,430px);column-gap:56px;align-items:center}
+  .page-hero.has-art .wrap::after{display:none}
+  .page-hero.has-art .wrap > *{grid-column:1}
+  .page-hero.has-art .ph-art{grid-column:2;grid-row:1 / span 6;float:none;width:100%;max-width:none;margin:-10px 0 -20px}
+}
+@media (prefers-reduced-motion:reduce){.ph-art img{animation:none}}
+html.a11y-noimg .ph-art{display:none!important}
+html.a11y .page-hero.has-art .wrap{display:block}
+html.a11y .ph-art{max-width:150px}
+
+/* ===== 3D-знак «У» в блоке записи: поворачивается за курсором и при прокрутке ===== */
+.sign3d{width:240px;aspect-ratio:1;margin-top:18px;background-repeat:no-repeat;background-size:500% 500%;background-position:50% 50%;filter:drop-shadow(0 22px 26px rgba(0,0,0,.16))}
+.sign3d.ready{background-image:url(/img/art/sign-u-sprite.webp)}
+@media (max-width:899px){.sign3d{float:right;width:104px;margin:-8px -6px 4px 10px}}
+html.a11y-noimg .sign3d{display:none!important}
+@media (min-width:900px){.final .head{display:flex;flex-direction:column;gap:0}.final .head .sign3d{order:9;align-self:flex-start}}
+@media (min-width:900px){
+  .page-hero.has-art .wrap{grid-template-columns:minmax(0,1fr) clamp(260px,27vw,380px)}
+  .page-hero.art-sm .wrap{grid-template-columns:minmax(0,1fr) 220px}
+  .page-hero.art-sm .ph-art{margin:-14px 0 -24px}
+}
+.page-hero.art-sm .ph-art{max-width:130px}

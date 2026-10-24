@@ -246,6 +246,32 @@
     apply();
   }
 
+  // 3D-знак «У»: 25 ракурсов в одной картинке (5×5), кадр выбираем по курсору или по прокрутке
+  document.querySelectorAll('.sign3d').forEach(el => {
+    const N = 25, MID = 12;
+    const sec = el.closest('section') || document.body;
+    const show = i => { i = Math.max(0, Math.min(N - 1, Math.round(i))); el.style.backgroundPosition = (i % 5) * 25 + '% ' + Math.floor(i / 5) * 25 + '%'; };
+    show(MID);
+    const start = () => {
+      el.classList.add('ready');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      let target = MID, cur = MID, raf = 0;
+      const tick = () => { cur += (target - cur) * 0.12; show(cur); raf = Math.abs(target - cur) > 0.05 ? requestAnimationFrame(tick) : 0; };
+      const go = t => { target = t; if (!raf) raf = requestAnimationFrame(tick); };
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        sec.addEventListener('pointermove', e => { const r = sec.getBoundingClientRect(); go((e.clientX - r.left) / r.width * (N - 1)); });
+        sec.addEventListener('pointerleave', () => go(MID));
+      } else {
+        const onScroll = () => { const r = sec.getBoundingClientRect(); const p = 1 - (r.top + r.height / 2) / (innerHeight + r.height / 2); go(p * (N - 1)); };
+        addEventListener('scroll', onScroll, { passive: true }); onScroll();
+      }
+    };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '400px' });
+      io.observe(el);
+    } else start();
+  });
+
   // заметки аналитика: откройте страницу с адресом #notes
   const showNotes = () => document.body.classList.toggle('notes', location.hash === '#notes');
   window.addEventListener('hashchange', showNotes); showNotes();

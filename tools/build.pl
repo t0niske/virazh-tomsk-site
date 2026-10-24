@@ -71,6 +71,14 @@ for my $file (@pages) {
   my $head = '';
   $head = $1 if $src =~ s{<!--head-->(.*?)<!--/head-->\s*}{}s;
   my $content = expand_includes($src);
+  # предмет-фото в первом экране страницы (meta art: art-ekzameny | подпись | sm — маленький) — после «хлебных крошек»
+  if (my $art = $m{art}) {
+    my ($name, $alt, $mod) = split /\s*\|\s*/, $art, 3;
+    $alt = esc($alt // ''); my $cls = $mod ? " art-$mod" : '';
+    $content =~ s{<section class="page-hero">(\s*<div class="wrap">\s*<nav class="crumbs".*?</nav>)}
+      {<section class="page-hero has-art$cls">$1\n    <div class="ph-art"><img src="/img/art/$name.webp" alt="$alt" width="720" height="720" fetchpriority="high"></div>}s
+      or warn "art: нет page-hero в $file\n";
+  }
   # разметка FAQPage из блоков вопросов <div class="faq"><details><summary>…</summary><p>…</p></details>
   if ($content =~ /<div class="faq">/) {
     my @qa;
