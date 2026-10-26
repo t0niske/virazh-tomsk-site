@@ -246,25 +246,6 @@
     apply();
   }
 
-  // виджет отзывов в первом экране: листается сам, пауза при наведении, точки и стрелки
-  const rw = $('rw');
-  if (rw) {
-    const slides = [...rw.querySelectorAll('.rw-slide')], dots = rw.querySelector('.rw-dots');
-    let cur = 0, timer = 0;
-    slides.forEach((_, i) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Отзыв ' + (i + 1)); b.addEventListener('click', () => { go(i); restart(); }); dots.appendChild(b); });
-    const go = i => {
-      cur = (i + slides.length) % slides.length;
-      slides.forEach((s, j) => { s.classList.toggle('off', j !== cur); s.setAttribute('aria-hidden', String(j !== cur)); });
-      [...dots.children].forEach((d, j) => d.setAttribute('aria-current', String(j === cur)));
-    };
-    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const restart = () => { clearInterval(timer); if (!still) timer = setInterval(() => go(cur + 1), 7000); };
-    rw.querySelectorAll('[data-rw]').forEach(b => b.addEventListener('click', () => { go(cur + Number(b.dataset.rw)); restart(); }));
-    rw.addEventListener('mouseenter', () => clearInterval(timer));
-    rw.addEventListener('mouseleave', restart);
-    go(0); restart();
-  }
-
   // 3D-знак «У»: 25 ракурсов в одной картинке (5×5), кадр выбираем по курсору или по прокрутке
   document.querySelectorAll('.sign3d').forEach(el => {
     const N = 25, MID = 12;
