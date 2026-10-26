@@ -20,6 +20,21 @@
   <div class="ok-msg" id="sheetOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время.</div>
 </dialog>
 
+<!-- окно при уходе со страницы: скидка до даты из data-until (в этот день окно перестаёт показываться) -->
+<dialog class="sheet exit-offer" id="exitOffer" aria-labelledby="exitTitle" data-until="2026-12-01">
+  <button class="x" type="button" data-close aria-label="Закрыть"><svg width="20" height="20"><use href="#i-x"/></svg></button>
+  <img class="exit-pic" src="/img/icons/perk-holiday.webp" alt="" width="320" height="320" loading="lazy">
+  <h3 class="it" id="exitTitle">Скидка <span class="acc" style="white-space:nowrap">2&nbsp;000&nbsp;₽</span> на обучение</h3>
+  <p class="sub">Оставьте номер до 1 декабря — закрепим скидку за вами и подберём группу.</p>
+  <form class="form" id="exitForm" data-lead="exitOk" novalidate>
+    <div class="field"><label for="e-phone">Телефон</label><input id="e-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><span class="err">Проверьте номер: нужно 10 цифр после +7</span></div>
+    <label class="consent"><input type="checkbox" id="e-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a> и знаком(а) с <a href="/politika-konfidentsialnosti" target="_blank">политикой конфиденциальности</a></span></label>
+    <button class="btn btn-red btn-block" type="submit">Получить скидку</button>
+  </form>
+  <div class="ok-msg" id="exitOk" role="status"><b>Скидка закреплена</b>Перезвоним в рабочее время.</div>
+  <p class="exit-note">Акции не суммируются. Условия назовёт администратор.</p>
+</dialog>
+
 <dialog class="sheet" id="msgSheet" aria-labelledby="msgTitle">
   <div class="grab" aria-hidden="true"></div>
   <div class="sheet-top"><div><h3 class="it" id="msgTitle">Напишите нам</h3><p class="sub">Отвечаем в рабочее время</p></div><button class="x" type="button" data-close aria-label="Закрыть"><svg width="20" height="20"><use href="#i-x"/></svg></button></div>

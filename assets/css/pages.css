@@ -326,3 +326,13 @@ html.a11y-noimg .sign3d{display:none!important}
   .rw{grid-column:2;grid-row:3;margin-top:-6px;padding:22px}
 }
 @media (max-width:899px){.promo{margin-top:22px}.promo-art{top:-26px}}
+
+/* окно со скидкой при уходе со страницы */
+.exit-offer{text-align:center;position:relative}
+.exit-offer .x{position:absolute;right:14px;top:14px}
+.exit-pic{width:132px;height:auto;margin:6px auto 4px;display:block;filter:drop-shadow(0 14px 18px rgba(0,0,0,.14))}
+.exit-offer .it{font-size:clamp(24px,6.4vw,32px)}
+.exit-offer .sub{margin:8px auto 18px;max-width:34ch}
+.exit-offer .form{text-align:left}
+.exit-note{font-size:12.5px;color:var(--muted);margin-top:12px}
+html.a11y-noimg .exit-pic{display:none!important}

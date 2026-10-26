@@ -148,6 +148,7 @@
       const okMsg = $(form.dataset.lead);
       form.hidden = true;
       if (okMsg) okMsg.style.display = 'block';
+      try { localStorage.setItem('leadSent', '1'); } catch (e) {}
     });
   });
 
@@ -168,7 +169,40 @@
     if (e.target.closest('[data-msg]')) { openSheet(msgSheet); return; }
     const c = e.target.closest('[data-close]'); if (c) c.closest('dialog').close();
   });
-  [sheet, msgSheet].forEach(d => d && d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+  [sheet, msgSheet, $('exitOffer')].forEach(d => d && d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+
+  // окно со скидкой при уходе: на компьютере — мышь уходит к вкладкам, на телефоне — быстрая прокрутка вверх
+  // после середины страницы. Не показываем, если заявка уже оставлена, окно было за последние 7 дней,
+  // акция закончилась или это служебная страница.
+  const exit = $('exitOffer');
+  if (exit) {
+    const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    const until = new Date(exit.dataset.until + 'T00:00:00');
+    const service = document.querySelector('.sv-grid') || /^\/(politika|soglasie|novosibirsk|404)/.test(location.pathname.replace(/^\/virazh-tomsk-site/, ''));
+    const recently = Date.now() - Number(get('exitShown') || 0) < 7 * 864e5;
+    if (!get('leadSent') && !recently && !service && new Date() < until) {
+      let armed = false, done = false;
+      setTimeout(() => { armed = true; }, 10000);
+      const show = () => {
+        if (!armed || done || get('leadSent') || document.querySelector('dialog[open]')) return;
+        done = true;
+        try { localStorage.setItem('exitShown', String(Date.now())); } catch (e) {}
+        openSheet(exit);
+      };
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.addEventListener('mouseout', e => { if (!e.relatedTarget && e.clientY <= 0) show(); });
+      } else {
+        // быстрый жест вверх: за последние 300 мс страница ушла вверх больше чем на 250 px
+        let deep = false; const trail = [];
+        addEventListener('scroll', () => {
+          const y = scrollY, t = Date.now();
+          if (y > (document.documentElement.scrollHeight - innerHeight) * 0.5) deep = true;
+          trail.push([t, y]); while (trail.length && t - trail[0][0] > 300) trail.shift();
+          if (deep && Math.max(...trail.map(p => p[1])) - y > 250) show();
+        }, { passive: true });
+      }
+    }
+  }
 
   // меню на телефоне
   if (menu && mb) {
