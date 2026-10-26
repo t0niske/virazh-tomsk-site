@@ -5,58 +5,53 @@ priority: 1.0
 -->
 <!--head--><script type="application/ld+json">{"@context":"https://schema.org","@type":"DrivingSchool","name":"Автошкола «Авто-Вираж»","legalName":"АНО ДПО «Авто-Вираж»","url":"https://virazh-tomsk.ru/","logo":"https://virazh-tomsk.ru/img/logo.png","image":"https://virazh-tomsk.ru/img/hero-bg.webp","telephone":"+7 3822 34-52-52","email":"virazh-tomsk@yandex.ru","foundingDate":"2007-10-22","taxID":"7000004720","sameAs":["https://vk.ru/autoschool_virazh_tomsk","https://2gis.ru/tomsk/firm/70000001033643502","https://yandex.ru/maps/org/avto_virazh/131273231597/"],"aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","ratingCount":"369","bestRating":"5"},"address":{"@type":"PostalAddress","addressLocality":"Томск","streetAddress":"ул. Киевская, 105/б","addressCountry":"RU"},"openingHours":"Mo-Fr 09:00-18:00","makesOffer":[{"@type":"Offer","name":"Обучение на категорию B (АКПП)","price":"66000","priceCurrency":"RUB"},{"@type":"Offer","name":"Обучение на категорию B (МКПП)","price":"68000","priceCurrency":"RUB"},{"@type":"Offer","name":"Обучение на категорию A","price":"23000","priceCurrency":"RUB"}]}</script><!--/head-->
 <!-- ================= HERO ================= -->
-<section class="hero">
+<section class="hx">
   <div class="wrap">
-    <div class="hero-grid">
-      <div class="hero-text">
+    <div class="hx-top">
+      <div class="hx-text">
         <h1 class="it"><span class="l1">Автошкола в Томске</span><span class="l2">Научим водить уверенно</span></h1>
-        <p class="hero-sub">Категории B и A, автомат и механика. Инструкторы, которые не повышают голос, 10 учебных машин и свой автодром. Учим водить с 2007 года.</p>
+        <p class="hx-sub">Категории B и A, автомат и механика. Инструкторы, которые не повышают голос, 10 учебных машин и свой автодром. Учим водить с 2007 года.</p>
+        <form class="hx-form" id="heroForm" data-lead="heroOk" novalidate>
+          <div class="hx-row">
+            <div class="field"><label for="h-phone">Телефон</label><input id="h-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><span class="err">Проверьте номер: нужно 10 цифр после +7</span></div>
+            <button class="btn btn-red" type="submit">Записаться</button>
+          </div>
+          <label class="consent"><input type="checkbox" id="h-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a> и знаком(а) с <a href="/politika-konfidentsialnosti" target="_blank">политикой конфиденциальности</a></span></label>
+        </form>
+        <div class="ok-msg" id="heroOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время.</div>
       </div>
-      <div class="hero-vis" aria-hidden="true">
-        <div class="ring"></div>
-        <img src="/img/hero-omoda.webp" alt="" width="1782" height="765" fetchpriority="high">
-      </div>
-      <div class="hero-bullets">
-        <ul class="checks">
-          <li><span><b>5.0 в 2ГИС</b> — 369 оценок</span></li>
-          <li><span><b>95%</b> сдают ГИБДД с первого раза</span></li>
-          <li><span>Первый платёж — <b>5 000 ₽</b></span></li>
-          <li><span>Теория <b>онлайн 24/7</b> или в классе</span></li>
-          <li><span><b>Три офиса</b> в Томске и свой автодром</span></li>
-        </ul>
-      </div>
-      <div class="hero-card" id="picker">
-        <p class="t">Цена без звёздочек<small>Стоимость и часы известны заранее</small></p>
+      <div class="hx-vis" aria-hidden="true"></div>
+      <picture class="hx-scene">
+        <source media="(max-width:959px)" srcset="/img/hero-scene-m.webp" width="912" height="831">
+        <img src="/img/hero-scene.webp" alt="Учебная Omoda C5 автошколы «Авто-Вираж»" width="1672" height="941" fetchpriority="high">
+      </picture>
+    </div>
+    <div class="hx-bar" id="picker">
+      <div class="hx-c hx-price">
         <div class="seg" role="group" aria-label="Выберите категорию">
           <button type="button" data-c="bA" aria-pressed="true">B АКПП<small>автомат</small></button>
           <button type="button" data-c="bM" aria-pressed="false">B МКПП<small>механика</small></button>
           <button type="button" data-c="a" aria-pressed="false">A<small>мотоцикл</small></button>
         </div>
-        <div class="price-row">
-          <span class="price num" id="hpPrice">66 000 ₽</span>
-          <span class="price-meta"><b id="hpHours">56 ч вождения</b>и теория</span>
-        </div>
-        <p class="pay-line" id="hpPay">На старте <b>5 000 ₽</b>, дальше <b>2 000 ₽</b> за занятие по мере езды</p>
-        <button class="btn btn-red btn-block" type="button" id="heroCta" data-signup="bA">Записаться на B АКПП</button>
-        <div class="msgs">
-          <a class="btn btn-msg btn-vk" href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener"><img class="brand" src="/img/brand/vk.svg" alt="" width="22" height="22">ВКонтакте</a>
-          <a class="btn btn-msg btn-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener"><img class="brand" src="/img/brand/max.svg" alt="" width="22" height="22">MAX</a>
+        <p class="hx-p"><span class="num" id="hpPrice">66 000 ₽</span><small><b id="hpHours">56 ч вождения</b> и теория</small></p>
+      </div>
+      <div class="hx-c hx-pay">
+        <p class="hx-k">Как платить</p>
+        <p id="hpPay">На старте <b>5 000 ₽</b>, дальше <b>2 000 ₽</b> за занятие по мере езды</p>
+      </div>
+      <div class="hx-c hx-rate">
+        <p class="hx-k">Рейтинг</p>
+        <div class="hx-score"><span class="num">5.0</span><span><i aria-hidden="true">★★★★★</i>369 оценок в 2ГИС</span></div>
+        <div class="hx-links">
+          <a href="https://2gis.ru/tomsk/firm/70000001033643502/tab/reviews" target="_blank" rel="noopener"><img src="/img/brand/2gis.svg" alt="" width="18" height="18">2ГИС</a>
+          <a href="https://yandex.ru/maps/org/avto_virazh/131273231597/reviews/" target="_blank" rel="noopener"><img src="/img/brand/yandex-maps.svg" alt="" width="18" height="18">Яндекс Карты</a>
         </div>
       </div>
-      <div class="rw">
-        <p class="rw-title">Рейтинг автошколы</p>
-        <div class="rw-score">
-          <span class="rw-num">5.0</span>
-          <div><span class="rw-stars" aria-hidden="true">★★★★★</span><span class="rw-cnt">369 оценок в 2ГИС</span></div>
-        </div>
-        <div class="rw-links">
-          <a class="rw-src" href="https://2gis.ru/tomsk/firm/70000001033643502/tab/reviews" target="_blank" rel="noopener"><img src="/img/brand/2gis.svg" alt="" width="30" height="30"><span><b>2ГИС</b><small>5.0, 369 оценок</small></span><svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-          <a class="rw-src" href="https://yandex.ru/maps/org/avto_virazh/131273231597/reviews/" target="_blank" rel="noopener"><img src="/img/brand/yandex-maps.svg" alt="" width="30" height="30"><span><b>Яндекс Карты</b><small>отзывы курсантов</small></span><svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        </div>
-        <a class="btn btn-block rw-all" href="/otzyvy">Все отзывы</a>
+      <div class="hx-c hx-go">
+        <button class="btn btn-red btn-block" type="button" id="heroCta" data-signup="bA">Записаться на B АКПП</button>
+        <a class="btn btn-block hx-all" href="/tseny/tseny-tomsk">Все цены</a>
       </div>
     </div>
-
   </div>
 </section>
 

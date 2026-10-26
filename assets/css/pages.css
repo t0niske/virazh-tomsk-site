@@ -148,7 +148,7 @@ html.a11y .a11y-bar .sw-bw{background-color:#fff!important;color:#000!important;
 html.a11y .a11y-bar .sw-blue{background-color:#9dd1ff!important;color:#063462!important;border-color:#9dd1ff!important}
 html.a11y .btn,html.a11y .chip,html.a11y .doc,html.a11y input,html.a11y select{border:2px solid currentColor!important}
 html.a11y a{text-decoration:underline!important}
-html.a11y-noimg img,html.a11y-noimg .hero-vis,html.a11y-noimg .ph,html.a11y-noimg .pic,html.a11y-noimg .post-img,html.a11y-noimg .stat-car img{display:none!important}
+html.a11y-noimg img,html.a11y-noimg .hero-vis,html.a11y-noimg .hx-scene,html.a11y-noimg .ph,html.a11y-noimg .pic,html.a11y-noimg .post-img,html.a11y-noimg .stat-car img{display:none!important}
 html.a11y :focus-visible{outline:4px solid #ffd400!important;outline-offset:2px}
 
 /* таблицы «название — значение»: на телефоне в столбик */
@@ -305,26 +305,6 @@ html.a11y-noimg .sign3d{display:none!important}
 .wc .ph .n{color:var(--red);text-shadow:none}
 
 
-/* карточка рейтинга в первом экране: рядом с карточкой цены, той же высоты */
-.rw{order:5;margin-top:20px;background:var(--grey);border-radius:var(--r);padding:22px 20px;display:flex;flex-direction:column;gap:16px}
-.rw-title{font:900 italic 20px/1.1 var(--font);text-transform:uppercase;color:var(--head)}
-.rw-score{display:flex;align-items:center;gap:16px;background:#fff;border-radius:var(--r-sm);padding:18px 20px}
-.rw-num{font:900 italic 64px/.9 var(--font);color:var(--head);letter-spacing:-.02em}
-.rw-stars{display:block;color:var(--red);font-size:26px;letter-spacing:3px;line-height:1}
-.rw-cnt{display:block;font-size:14.5px;color:var(--muted);margin-top:6px}
-.rw-links{display:grid;gap:10px}
-.rw-src{display:flex;align-items:center;gap:14px;background:#fff;border-radius:var(--r-sm);padding:14px 18px;text-decoration:none;color:var(--ink);transition:box-shadow .15s}
-.rw-src:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}
-.rw-src img{flex:none}
-.rw-src span{flex:1}
-.rw-src b{display:block;font-weight:800;font-size:15.5px;line-height:1.2}
-.rw-src small{display:block;font-size:13px;color:var(--muted)}
-.rw-src svg{flex:none;color:var(--red)}
-.rw-all{margin-top:auto;background:#fff}
-@media (min-width:900px){
-  .hero-card,.rw{align-self:stretch}
-  .rw{grid-column:2;grid-row:3;margin-top:-6px;padding:22px}
-}
 @media (max-width:899px){.promo{margin-top:22px}.promo-art{top:-26px}}
 
 /* окно со скидкой при уходе со страницы */
@@ -336,3 +316,68 @@ html.a11y-noimg .sign3d{display:none!important}
 .exit-offer .form{text-align:left}
 .exit-note{font-size:12.5px;color:var(--muted);margin-top:12px}
 html.a11y-noimg .exit-pic{display:none!important}
+
+/* первый экран главной: сцена «вираж трека» с Omoda (design/hero-scene), номер сразу в форме, под машиной панель цены.
+   На компьютере сцена лежит под колонками и привязана к низу блока: колёса всегда чуть выше панели цены */
+.hx{position:relative;isolation:isolate;overflow:hidden;overflow:clip;padding-top:18px}
+.hx-top{position:relative;display:grid}
+.hx-text{position:relative;z-index:2}
+.hx h1{display:grid;gap:4px}
+.hx h1 .l1{font-size:clamp(24px,6.6vw,46px)}
+.hx h1 .l2{font-size:clamp(33px,9.2vw,68px);color:var(--red);line-height:1.02}
+.hx-sub{margin-top:10px;font-size:16px;line-height:1.55;max-width:46ch}
+.hx-form{display:grid;gap:10px;margin-top:18px;max-width:520px}
+.hx-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}
+.hx-row .field label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hx-row .field input{min-height:58px;border-radius:16px}
+.hx-row .btn{min-height:58px;padding:0 24px;font-size:16px}
+.hx .ok-msg{margin-top:18px;max-width:520px}
+.hx-scene{display:block;position:relative;z-index:0;margin:6px calc(-1 * var(--gut-r)) 0 calc(-1 * var(--gut-l));pointer-events:none}
+@media (min-width:720px){.hx-scene{max-width:640px;margin:6px auto 0}}
+.hx-scene img{display:block;width:100%;height:auto}
+.hx-bar{position:relative;z-index:3;margin:-56px 0 40px;background:#fff;border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.10);display:grid}
+.hx-c{padding:18px 16px;display:grid;gap:10px;align-content:center}
+.hx-c + .hx-c{border-top:1px solid var(--line)}
+.hx-k{font:900 italic 14px/1 var(--font);text-transform:uppercase;color:var(--head);letter-spacing:.02em}
+.hx-p{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:4px}
+.hx-p .num{font:900 italic clamp(36px,10.5vw,44px)/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.hx-p small{font-size:13.5px;color:var(--muted);line-height:1.3;text-align:right}
+.hx-p small b{display:block;color:var(--ink);font-weight:800}
+.hx-pay p:last-child{font-size:14.5px;line-height:1.45}.hx-pay b{color:var(--red);font-weight:800;white-space:nowrap}
+.hx-score{display:flex;align-items:center;gap:12px}
+.hx-score .num{font:900 italic 44px/1 var(--font);color:var(--head)}
+.hx-score span:last-child{font-size:13px;color:var(--muted);line-height:1.35}
+.hx-score i{display:block;font-style:normal;color:var(--red);font-size:18px;letter-spacing:2px}
+.hx-links{display:flex;gap:16px;flex-wrap:wrap}
+.hx-links a{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--ink);text-decoration:none}
+@media (hover:hover){.hx-links a:hover{color:var(--red)}}
+.hx-go{gap:8px}.hx-go .btn{min-height:52px}.hx-all{background:var(--grey)}
+@media (min-width:720px){
+  .hx-bar{grid-template-columns:1fr 1fr}
+  .hx-c + .hx-c{border-top:0}
+  .hx-c:nth-child(n+3){border-top:1px solid var(--line)}
+  .hx-c:nth-child(2n){border-left:1px solid var(--line)}
+}
+@media (min-width:960px){
+  .hx{padding-top:44px}
+  .hx-top{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:20px;align-items:center}
+  .hx-sub{font-size:17px;margin-top:14px}
+  .hx-form{margin-top:22px}
+  .hx-row .field input,.hx-row .btn{min-height:60px}
+  .hx-row .btn{padding:0 30px;font-size:17px}
+  .hx-vis{height:min(520px,36vw)}
+  /* картинка 1672×941: колёса на 81% высоты; ширина до 1380px, правый край — на 740px правее центра */
+  .hx-scene{position:absolute;max-width:none;margin:0;width:min(1380px,96vw);right:calc(50% - min(740px,51.4vw));bottom:calc(70px - min(145px,10.1vw))}
+  .hx-bar{margin:8px 0 56px;border-radius:28px}
+  .hx-c{padding:22px 26px}
+}
+/* панель цены в одну строку — когда колонкам хватает ширины */
+@media (min-width:1200px){
+  .hx-bar{grid-template-columns:1.35fr 1fr 1.05fr 1.2fr}
+  .hx-go .btn{padding:0 14px;font-size:15px;white-space:nowrap}
+  .hx-c{padding:24px 26px}
+  .hx-c:nth-child(n){border-top:0}
+  .hx-c + .hx-c{border-left:1px solid var(--line)}
+  .hx-p{display:grid;justify-content:start;gap:4px;margin-top:6px}
+  .hx-p small{text-align:left}.hx-p small b{display:inline}
+}
