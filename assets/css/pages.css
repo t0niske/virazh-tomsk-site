@@ -304,3 +304,20 @@ html.a11y-noimg .sign3d{display:none!important}
 /* карточки «Почему нас»: предметная съёмка на светлом фоне в цвет карточки — номер красный */
 .wc .ph .n{color:var(--red);text-shadow:none}
 
+
+/* плитки фактов в первом экране: на компьютере — справа от карточки цены, 2×2 с фото-иконками */
+.hero .trust-strip{order:5}
+.ts{position:relative;overflow:hidden}
+.ts-ico{position:absolute;right:-4px;bottom:-6px;width:58px;height:auto;pointer-events:none}
+.ts b{position:relative;z-index:1}
+.ts>span{position:relative;z-index:1;padding-right:30px}
+@media (min-width:900px){
+  .hero-vis{grid-row:1 / span 2}
+  .hero .trust-strip{grid-column:2;grid-row:3;grid-template-columns:1fr 1fr;align-self:stretch;margin-top:-6px;gap:14px}
+  .hero .ts{padding:24px 22px;border-radius:var(--r)}
+  .hero .ts b{font-size:38px;padding-right:0}
+  .hero .ts>span{font-size:14.5px;max-width:15ch;padding-right:0}
+  .hero .ts-ico{width:132px;right:8px;bottom:6px}
+}
+html.a11y-noimg .ts-ico{display:none!important}
+@media (max-width:899px){.promo{margin-top:22px}.promo-art{top:-26px}}
