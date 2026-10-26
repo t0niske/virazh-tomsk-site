@@ -3,7 +3,7 @@
    красное кольцо за машиной, красная лента с преимуществами, яркие кнопки мессенджеров. */
 :root{
   --white:#FFFFFF; --bg:#FFFFFF; --grey:#F4F4F4; --grey-2:#ECECEC; --ink:#1E1E1E; --head:#383838; --muted:#6E6E6E; --line:#E4E4E4;
-  --red:#D7193A; --red-dark:#AD1230; --red-soft:#FCE8EC; --green:#38B24A; --pale:#E6E6E6;
+  --red:#9E1220; --red-dark:#7C0D18; --red-soft:#F8E7E9; --green:#38B24A; --pale:#E6E6E6;
   --tg:#2AABEE; --vk:#0077FF; --max:#7A4DFF;
   --font:"Montserrat","Arial",system-ui,sans-serif;
   --r:24px; --r-sm:16px;
@@ -40,7 +40,7 @@ button{font:inherit;color:inherit}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 26px;border:0;border-radius:14px;font:700 16px/1.1 var(--font);text-decoration:none;cursor:pointer;background:var(--grey-2);color:var(--ink);transition:transform .1s, filter .15s;text-align:center}
 .btn:active{transform:scale(.98)}
 @media (hover:hover){.btn:hover{filter:brightness(.95)}}
-.btn-red{background:var(--red);color:#fff;box-shadow:0 8px 18px rgba(215,25,58,.28)}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 8px 18px rgba(158,18,32,.28)}
 .btn-black{background:#111;color:#fff}
 .btn-white{background:#fff;color:var(--ink)}
 .btn-block{width:100%}
@@ -430,7 +430,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 
 /* ===== фоны блоков: тёмный блок, позже — фотофоны (docs/backgrounds.md) ===== */
 .sec.grey,.sec.dark,.final,.hero{position:relative;isolation:isolate;overflow:clip}
-.sec.dark{background:radial-gradient(900px 420px at 100% 0,rgba(215,25,58,.22),transparent 60%),#121212;color:#EDEDED}
+.sec.dark{background:radial-gradient(900px 420px at 100% 0,rgba(158,18,32,.22),transparent 60%),#121212;color:#EDEDED}
 .sec.dark .it{color:#fff}
 .sec.dark .it .acc{color:#FF3D44}
 .sec.dark .sub-it{color:#E6E6E6}
@@ -523,7 +523,7 @@ span.rd-ico{display:none}
 .bot-note{padding:0 14px 12px;font-size:12px;color:var(--muted);line-height:1.4;flex:none}
 .bot-note button{border:0;background:none;padding:0;color:var(--red);font:inherit;text-decoration:underline;cursor:pointer}
 @media (min-width:720px){
-  .bot-fab{position:fixed;right:24px;bottom:24px;z-index:55;display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 22px 0 18px;border:0;border-radius:999px;background:var(--red);color:#fff;font:800 15px/1 var(--font);box-shadow:0 10px 26px rgba(215,25,58,.35);cursor:pointer}
+  .bot-fab{position:fixed;right:24px;bottom:24px;z-index:55;display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 22px 0 18px;border:0;border-radius:999px;background:var(--red);color:#fff;font:800 15px/1 var(--font);box-shadow:0 10px 26px rgba(158,18,32,.35);cursor:pointer}
   body.bot-open .bot-fab{display:none}
   .bot{inset:auto 24px 24px auto;width:400px;height:min(620px,calc(100vh - 48px));border-radius:22px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.28)}
   .bot-top{padding-top:14px}
