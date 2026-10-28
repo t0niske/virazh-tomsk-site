@@ -374,20 +374,26 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
   .ratings{grid-template-columns:1fr}
   .scroller{grid-auto-columns:calc((100% - 24px)/3);margin-inline:0;padding-inline:0}
   .steps{grid-template-columns:repeat(2,1fr)}
-  .offices{grid-template-columns:repeat(3,1fr)}
+  .offices{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
   .teen-grid{grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
   .ftr-grid{grid-template-columns:1.3fr 1fr 1fr 1.25fr;gap:40px}
   .faq-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:48px;align-items:start}
   .tariff{padding:28px;grid-template-columns:1.1fr 1fr;align-items:start;gap:20px}
   .tariff .tariff-top{grid-column:1/-1}
-  .pay-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
-  .pay-grid .calc{margin-top:0;position:sticky;top:96px}
   .final-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
   .bar{display:none}
   body.has-bar{padding-bottom:0}
   dialog.sheet{border-radius:26px;margin:auto;padding-top:24px}
   .grab,.dots{display:none}
 }
+/* оплата: калькулятор рядом со списком с 900 px (на планшете ему тесно — стоит под списком);
+   рядом с калькулятором четыре льготы в ряд влезают только с 1280 px */
+@media (min-width:900px){
+  .pay-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
+  .pay-grid .calc{margin-top:0;position:sticky;top:96px}
+  .pay-grid .perks{grid-template-columns:1fr 1fr}
+}
+@media (min-width:1280px){.pay-grid .perks{grid-template-columns:repeat(4,1fr)}}
 @media (min-width:1320px){
   .hdr .wrap,.topbar .wrap{max-width:1320px}
   .hdr-tel{display:grid;gap:4px;flex:none;white-space:nowrap;text-decoration:none;text-align:right;color:#fff}

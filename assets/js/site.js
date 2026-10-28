@@ -321,6 +321,57 @@
     } else start();
   });
 
+  // заголовки: слово не рвётся посередине («РАСПИСАНИ / Е»). Если длинное слово не влезает в строку, шрифт заголовка
+  // чуть уменьшается; на телефоне, если слову тесно рядом с картинкой первого экрана, картинка встаёт под заголовок
+  // (рядом с абзацем), и заголовок занимает всю ширину
+  const WORD = /[^\s\-‐‑–—\/]+/g;   // по дефису и косой черте переносить можно
+  const torn = h => {
+    const w = document.createTreeWalker(h, NodeFilter.SHOW_TEXT), r = document.createRange();
+    for (let n; (n = w.nextNode());) {
+      for (const m of n.data.matchAll(WORD)) {
+        if (m[0].length < 2) continue;
+        r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
+        const rs = [...r.getClientRects()].filter(x => x.width > .5);
+        if (rs.length > 1 && rs[rs.length - 1].top - rs[0].top > rs[0].height / 2) return true;
+      }
+    }
+    return false;
+  };
+  const shrink = (h, min) => {   // по 1 px от исходного размера, но не меньше min от него
+    h.style.fontSize = '';
+    const base = parseFloat(getComputedStyle(h).fontSize);
+    for (let s = base - 1; torn(h) && s >= base * min; s--) h.style.fontSize = s + 'px';
+    return !torn(h);
+  };
+  const phArt = document.querySelector('.page-hero .ph-art');
+  const phArtHome = phArt && phArt.nextElementSibling;
+  const fitHeads = () => {
+    document.querySelectorAll('[data-fit]').forEach(h => { h.style.fontSize = h.style.overflowWrap = ''; delete h.dataset.fit; });
+    if (phArtHome && phArt.nextElementSibling !== phArtHome) phArtHome.before(phArt);
+    if (phArt) phArt.style.display = '';
+    if (/\ba11y-fs-[23]\b/.test(document.documentElement.className)) return;   // крупный шрифт для слабовидящих: там перенос допустим
+    document.querySelectorAll('h1, h2, h3, .it').forEach(h => {
+      if (!h.getClientRects().length || !torn(h)) return;
+      h.dataset.fit = '';
+      if (shrink(h, .88)) return;
+      if (phArt && phArt.nextElementSibling === h && getComputedStyle(phArt).float !== 'none') {
+        h.style.fontSize = ''; h.after(phArt);
+        // под заголовком нет текста, рядом с которым она встанет (или он короче картинки): на телефоне картинку не показываем
+        const rest = [...phArt.parentNode.children].filter(e => e !== phArt).pop();
+        if (phArt.getBoundingClientRect().bottom > rest.getBoundingClientRect().bottom + 24) phArt.style.display = 'none';
+        if (!torn(h) || shrink(h, .6)) return;
+      }
+      if (!shrink(h, .6)) h.style.overflowWrap = 'normal';
+    });
+  };
+  let fitRaf = 0, fitW = innerWidth;
+  const fitSoon = () => { if (!fitRaf) fitRaf = requestAnimationFrame(() => { fitRaf = 0; fitHeads(); }); };
+  fitHeads();
+  if (document.fonts) document.fonts.ready.then(fitHeads);
+  addEventListener('resize', () => { if (innerWidth !== fitW) { fitW = innerWidth; fitSoon(); } });
+  document.addEventListener('toggle', fitSoon, true);
+  new MutationObserver(fitSoon).observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['class', 'open', 'hidden'] });
+
   // заметки аналитика: откройте страницу с адресом #notes
   const showNotes = () => document.body.classList.toggle('notes', location.hash === '#notes');
   window.addEventListener('hashchange', showNotes); showNotes();
