@@ -36,7 +36,13 @@ perl tools/build.pl
 perl tools/check.pl
 ```
 
-Готовый сайт — в `_site`. Предпросмотр для GitHub Pages собирается так (адреса с префиксом, всё закрыто от индексации):
+Готовый сайт — в `_site`. Если папка проекта лежит в OneDrive, собирайте локальный предпросмотр вне неё: OneDrive подменяет только что собранные файлы облачными копиями (свежие уходят в `*-<имя ПК>.*`), и в браузере видна старая версия. Локальный сервер (`.claude/launch.json`) отдаёт папку `C:\Users\anton\dev\virazh-site-build`:
+
+```bash
+perl tools/build.pl --out=C:/Users/anton/dev/virazh-site-build && perl tools/check.pl C:/Users/anton/dev/virazh-site-build
+```
+
+Предпросмотр для GitHub Pages собирается так (адреса с префиксом, всё закрыто от индексации):
 
 ```bash
 perl tools/build.pl --preview --base=/virazh-tomsk-site --out=_preview

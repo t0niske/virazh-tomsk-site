@@ -112,12 +112,14 @@ for my $file (@pages) {
   my ($modified, $published) = git_dates($file);
   for my $inc (includes_of($src)) { my ($d) = git_dates("src/partials/$inc.html"); $modified = $d if $d gt $modified }
   $modified ||= strftime('%Y-%m-%d', localtime); $published ||= $modified;
-  # предмет-фото в первом экране страницы (meta art: art-ekzameny | подпись | sm — маленький) — после «хлебных крошек»
+  # предмет-фото в первом экране страницы (meta art: art-ekzameny | подпись | sm — маленький) — после «хлебных крошек»;
+  # late — после H1: на телефоне картинка обтекается вводным абзацем, а длинное первое слово заголовка не рвётся
   if (my $art = $m{art}) {
     my ($name, $alt, $mod) = split /\s*\|\s*/, $art, 3;
     $alt = esc($alt // ''); my $cls = $mod ? " art-$mod" : '';
-    $content =~ s{<section class="page-hero">(\s*<div class="wrap">\s*<nav class="crumbs".*?</nav>)}
-      {<section class="page-hero has-art$cls">$1\n    <div class="ph-art"><img src="/img/art/$name.webp" alt="$alt" width="720" height="720" fetchpriority="high"></div>}s
+    my $img = qq{<div class="ph-art"><img src="/img/art/$name.webp" alt="$alt" width="720" height="720" fetchpriority="high"></div>};
+    my $at = ($mod // '') eq 'late' ? qr{\s*<div class="wrap">\s*<nav class="crumbs".*?</h1>}s : qr{\s*<div class="wrap">\s*<nav class="crumbs".*?</nav>}s;
+    $content =~ s{<section class="page-hero">($at)}{<section class="page-hero has-art$cls">$1\n    $img}s
       or warn "art: нет page-hero в $file\n";
   }
   # разметка FAQPage из блоков вопросов <div class="faq"><details><summary>…</summary><p>…</p></details>
