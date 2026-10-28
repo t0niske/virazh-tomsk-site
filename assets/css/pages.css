@@ -164,8 +164,8 @@ html.a11y-fs-2 body *,html.a11y-fs-3 body *{overflow-wrap:anywhere;min-width:0}
 html.a11y-fs-2 main *,html.a11y-fs-3 main *,html.a11y-fs-2 footer *,html.a11y-fs-3 footer *{grid-template-columns:minmax(0,1fr)!important;flex-wrap:wrap!important}
 html.a11y-fs-2 .scroller,html.a11y-fs-3 .scroller,html.a11y-fs-2 .chips,html.a11y-fs-3 .chips{flex-wrap:nowrap!important}
 
-/* Длинные русские слова в крупных заголовках переносятся, а не расширяют страницу */
-.h1,.h2,h1,h2{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+/* заголовки без автопереносов («РЕЙ-ТИНГИ»): слово целиком уходит на новую строку; рвётся, только если не влезает совсем */
+.h1,.h2,h1,h2{hyphens:manual;-webkit-hyphens:manual;overflow-wrap:break-word}
 .ins .ph-none{display:grid;place-items:center;background:linear-gradient(135deg,#E7E7E7,#D9D9D9)}
 .ins .ph-none .ini{font:900 italic 64px/1 var(--font);color:#BDBDBD;letter-spacing:.02em}
 .rev-list{display:grid;gap:12px}
@@ -381,3 +381,26 @@ html.a11y-noimg .exit-pic{display:none!important}
   .hx-p{display:grid;justify-content:start;gap:4px;margin-top:6px}
   .hx-p small{text-align:left}.hx-p small b{display:inline}
 }
+
+/* подпись редакции и дата обновления под заголовком статьи */
+.byline{margin-top:12px;font-size:13.5px;color:var(--muted)}
+
+/* состав цены и сроки на страницах программ: компактная таблица «что — сколько» */
+.sv-table.pc{min-width:0}
+.sv-table.pc caption{caption-side:top;text-align:left;font-weight:700;padding:10px 12px;background:var(--grey)}
+.sv-table.pc td{text-align:right;white-space:nowrap;font-weight:700}
+.sv-table.pc .sum th,.sv-table.pc .sum td{font-size:16px;font-weight:900}
+.prose .tbl{margin:14px 0}
+
+/* таблица программ и цен на главной: помещается в 375 px без прокрутки */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sv-table.prog{min-width:0;font-size:14px}
+.sv-table.prog th[scope=row] a{color:var(--ink);font-weight:800;text-decoration:none}
+@media (hover:hover){.sv-table.prog th[scope=row] a:hover{color:var(--red)}}
+.sv-table.prog td:last-child{font-weight:900;white-space:nowrap}
+.sv-table.prog thead th{font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.note-sm{margin-top:12px;font-size:13.5px;color:var(--muted);line-height:1.45}
+.acts-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+@media (min-width:720px){.sv-table.prog{font-size:15px}.sv-table.prog th,.sv-table.prog td{padding:14px 16px}}
+
+.prose .sv-table.pc{display:table;width:100%}

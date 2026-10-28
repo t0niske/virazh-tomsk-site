@@ -40,9 +40,47 @@ sub esc { my $s = shift // ''; $s =~ s/&(?!\w+;|#\d+;)/&amp;/g; $s =~ s/"/&quot;
 sub expand_includes {
   my ($s, $depth) = @_; $depth //= 0;
   die "Слишком глубокие вставки\n" if $depth > 8;
-  $s =~ s{<!--#include\s+([\w./-]+)\s*-->}{ expand_includes(slurp("src/partials/$1.html"), $depth + 1) }ge;
+  $s =~ s{<!--#include\s+([\w./-]+)((?:\s+\w+=[\w-]+)*)\s*-->}{ include_with(expand_includes(slurp("src/partials/$1.html"), $depth + 1), $2) }ge;
   return $s;
 }
+# параметры вставки: only=akpp — только карточки этой группы (data-f) и без кнопок фильтра; limit=4 — первые 4 карточки
+sub include_with {
+  my ($s, $args) = @_;
+  my %a = ($args // '') =~ /(\w+)=([\w-]+)/g;
+  if (my $f = $a{only}) {
+    $s =~ s{[ \t]*<article\b[^>]*\bdata-f="(?!\Q$f\E")[^"]*".*?</article>\s*}{}gs;
+  }
+  # в выжимке и в одной группе фильтровать нечего — кнопки фильтра убираем
+  $s =~ s{[ \t]*<div[^>]*\bdata-filter-for=.*?</div>\s*}{}s if $a{only} || $a{limit};
+  return limit_cards($s, $a{limit});
+}
+# limit: полный список живёт на своей странице, в выжимках — только первые карточки
+sub limit_cards {
+  my ($s, $n) = @_;
+  return $s unless $n;
+  my $i = 0;
+  $s =~ s{[ \t]*<article\b.*?</article>\s*}{ ++$i > $n ? '' : $& }gse;
+  return $s;
+}
+# все вставки страницы (с вложенными) — чтобы дата изменения учитывала и их
+sub includes_of {
+  my ($s, $seen) = @_; $seen //= {};
+  for my $n ($s =~ /<!--#include\s+([\w.\/-]+)/g) {
+    next if $seen->{$n}++;
+    includes_of(slurp("src/partials/$n.html"), $seen) if -f "src/partials/$n.html";
+  }
+  return keys %$seen;
+}
+# даты из git: последняя и первая правка файла (для dateModified, datePublished и sitemap)
+my %gitdate;
+sub git_dates {
+  my ($f) = @_;
+  $gitdate{$f} //= [ split /\n/, (`git log --follow --format=%cs -- "$f"` // '') ];
+  my @d = @{ $gitdate{$f} };
+  return ($d[0] // '', $d[-1] // '');
+}
+my @MON = qw(января февраля марта апреля мая июня июля августа сентября октября ноября декабря);
+sub ru_date { my ($y, $m, $d) = split /-/, shift; return ($d + 0) . " $MON[$m - 1] $y" }
 
 my $version = strftime('%Y%m%d%H%M', localtime);
 my $layout = slurp('src/layout.html');
@@ -71,6 +109,9 @@ for my $file (@pages) {
   my $head = '';
   $head = $1 if $src =~ s{<!--head-->(.*?)<!--/head-->\s*}{}s;
   my $content = expand_includes($src);
+  my ($modified, $published) = git_dates($file);
+  for my $inc (includes_of($src)) { my ($d) = git_dates("src/partials/$inc.html"); $modified = $d if $d gt $modified }
+  $modified ||= strftime('%Y-%m-%d', localtime); $published ||= $modified;
   # предмет-фото в первом экране страницы (meta art: art-ekzameny | подпись | sm — маленький) — после «хлебных крошек»
   if (my $art = $m{art}) {
     my ($name, $alt, $mod) = split /\s*\|\s*/, $art, 3;
@@ -88,8 +129,29 @@ for my $file (@pages) {
       for ($q, $a) { s/<[^>]+>//g; s/\s+/ /g; s/^\s+|\s+$//g; s/\\/\\\\/g; s/"/\\"/g; }
       push @qa, qq({"\@type":"Question","name":"$q","acceptedAnswer":{"\@type":"Answer","text":"$a"}});
     }
-    $head .= qq{<script type="application/ld+json">{"\@context":"https://schema.org","\@type":"FAQPage","mainEntity":[} . join(',', @qa) . qq{]}</script>\n} if @qa;
+    $head .= '<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[' . join(',', @qa) . "]}</script>\n" if @qa;
   }
+  # разметка хлебных крошек из <nav class="crumbs">
+  if ($content =~ m{<nav class="crumbs"[^>]*>(.*?)</nav>}s) {
+    my $nav = $1; my (@it, $pos);
+    while ($nav =~ m{<a href="([^"]+)">(.*?)</a>|<span>([^<]{2,})</span>}gs) {
+      my ($href, $name) = defined $1 ? ($1, $2) : ($path, $3);
+      next if $name eq '/';
+      $name =~ s/"/\\"/g; $pos++;
+      push @it, qq({"\@type":"ListItem","position":$pos,"name":"$name","item":"$opt{site}) . ($href eq '/' ? '/' : $href) . '"}';
+    }
+    $head .= '<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[' . join(',', @it) . "]}</script>\n" if @it > 1;
+  }
+  # статьи: даты публикации и изменения, видимая подпись редакции под H1
+  if ($head =~ /"\@type":"Article"/ || $src =~ /"\@type":"Article"/) {
+    s{"\@type":"Article",}{"\@type":"Article","datePublished":"$published","dateModified":"$modified","mainEntityOfPage":"$opt{site}$path",} for $head, $content;
+    my $by = qq{<p class="byline">Редакция автошколы «Авто-Вираж». Обновлено <time datetime="$modified">} . ru_date($modified) . '</time></p>';
+    $content =~ s{(<h1\b.*?</h1>)}{$1\n$by}s;
+  }
+  # неразрывные пробелы в числах: «66 000 ₽» не рвётся на две строки (только в тексте, не в атрибутах и скриптах)
+  $content = join '', map {
+    /^<(?:script|style)\b/i ? $_ : do { (my $x = $_) =~ s{>([^<]+)<}{ my $s = $1; $s =~ s/(\d) (?=\d{3}(?!\d))/$1&nbsp;/g; $s =~ s/(\d) (?=\x{20BD})/$1&nbsp;/g; ">$s<" }ge; $x }
+  } split /(<script\b.*?<\/script>|<style\b.*?<\/style>)/is, $content;
   # активный пункт во внутренних меню (раздел «Сведения» и т.п.)
   $content =~ s{<a class="sv" href="\Q$path\E"}{<a class="sv" href="$path" aria-current="page"}g;
   # ссылка «Все …» под каруселью на её же странице не нужна: помечаем, CSS её прячет
@@ -108,16 +170,16 @@ for my $file (@pages) {
     my $noindex = $opt{preview} || $m{noindex};
     my $robots = $noindex ? qq{<meta name="robots" content="noindex, nofollow">\n} : '';
     # активный пункт меню
-    my $hdr = $header;
-    $hdr =~ s{<a (class="[^"]*" )?href="(/[^"]*)"}{
+    my ($hdr, $ovl) = ($header, $overlays);
+    s{<a (class="[^"]*" )?href="(/[^"]*)"}{
       my ($cls, $h) = ($1 // '', $2);
       my $on = ($h ne '/' && ($path eq $h || index($path, "$h/") == 0));
-      $on ? qq{<a ${cls}href="$h" aria-current="page"} : qq{<a ${cls}href="$h"} }ge;
+      $on ? qq{<a ${cls}href="$h" aria-current="page"} : qq{<a ${cls}href="$h"} }ge for $hdr, $ovl;
     my %v = (
       title => esc($m{title} // 'Автошкола «Авто-Вираж»'),
       description => esc($m{description} // ''),
       canonical => $canonical, robots => $robots, head => $head,
-      body_class => $m{body} // '', header => $hdr, footer => $footer, overlays => $overlays,
+      body_class => $m{body} // '', header => $hdr, footer => $footer, overlays => $ovl,
       content => $content, version => $version,
     );
     # своя страница города: в шапке и плавающих кнопках — его телефон (meta phone: +7 (383) 205-24-34 | +73832052434)
@@ -129,7 +191,7 @@ for my $file (@pages) {
     # служебные комментарии (TODO, разметка блоков) остаются только в исходниках
     $html =~ s{[ \t]*<!--(?!\[).*?-->\n?}{}gs;
     $built++;
-    push @sitemap, [$path, $m{priority}] unless $noindex || $path eq '/404';
+    push @sitemap, [$path, $m{priority}, $modified] unless $noindex || $path eq '/404';
   }
 
   # префикс для предпросмотра в подпапке (GitHub Pages): /obuchenie -> /virazh-tomsk-site/obuchenie
@@ -207,18 +269,17 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
 }
 
 # --- sitemap.xml и robots.txt
-my $today = strftime('%Y-%m-%d', localtime);
 my $sm = qq{<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n};
 for (sort { ($a->[0] eq '/' ? 0 : 1) <=> ($b->[0] eq '/' ? 0 : 1) || $a->[0] cmp $b->[0] } @sitemap) {
-  my ($p, $prio) = @$_;
+  my ($p, $prio, $mod) = @$_;
   $prio //= $p eq '/' ? '1.0' : ($p =~ tr{/}{} == 1 ? '0.8' : '0.6');
-  $sm .= "  <url><loc>$opt{site}$p</loc><lastmod>$today</lastmod><priority>$prio</priority></url>\n";
+  $sm .= "  <url><loc>$opt{site}$p</loc><lastmod>$mod</lastmod><priority>$prio</priority></url>\n";
 }
 $sm .= "</urlset>\n";
 spew("$opt{out}/sitemap.xml", $sm);
 spew("$opt{out}/robots.txt", $opt{preview}
   ? "User-agent: *\nDisallow: /\n"
-  : "User-agent: *\nAllow: /\n\nSitemap: $opt{site}/sitemap.xml\nHost: $opt{site}\n");
+  : "User-agent: *\nAllow: /\n\nSitemap: $opt{site}/sitemap.xml\n");
 
 # --- .htaccess для боевого сервера (Apache): адреса без слэша на конце, 301-редиректы
 unless ($opt{preview}) {

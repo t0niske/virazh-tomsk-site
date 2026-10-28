@@ -1,3 +1,33 @@
+<!-- мобильное меню: после основного контента, чтобы код страницы начинался с её содержания -->
+<div class="menu" id="menu" hidden>
+  <div class="top">
+    <img src="/img/logo.webp" alt="Авто-Вираж" style="height:32px;width:auto">
+    <button class="x" type="button" id="menuClose" aria-label="Закрыть меню"><svg width="20" height="20"><use href="#i-x"/></svg></button>
+  </div>
+  <nav class="city" aria-label="Выбор города"><a href="/" data-city="tomsk">Томск</a><a href="/novosibirsk">Новосибирск</a></nav>
+  <a class="m" href="/obuchenie">Обучение</a>
+  <a class="m sub" href="/obuchenie/kategoriya-b-akpp">Категория B на автомате</a>
+  <a class="m sub" href="/obuchenie/kategoriya-b-mkpp">Категория B на механике</a>
+  <a class="m sub" href="/obuchenie/kategoriya-a-motocikl">Категория A, мотоцикл</a>
+  <a class="m sub" href="/obuchenie/uchis-online">Учись онлайн</a>
+  <a class="m" href="/tseny/tseny-tomsk">Цены</a>
+  <a class="m" href="/oplata">Оплата и скидки</a>
+  <a class="m" href="/ekzameny">Экзамены</a>
+  <a class="m" href="/instruktory">Инструкторы</a>
+  <a class="m" href="/avtopark">Автопарк</a>
+  <a class="m" href="/otzyvy">Отзывы</a>
+  <a class="m" href="/blog">Блог</a>
+  <a class="m" href="/voprosy">Вопросы</a>
+  <a class="m" href="/o-shkole">Об автошколе</a>
+  <a class="m" href="/kontakty">Контакты</a>
+  <a class="m" href="/osnovnye-svedeniya">Сведения об образовательной организации</a>
+  <a class="m" href="#a11y" data-a11y-open>Версия для слабовидящих</a>
+  <div class="contacts">
+    <button class="btn btn-red btn-block" type="button" data-signup>Записаться на обучение</button>
+    <a class="btn btn-block num" href="tel:+73822345252">+7 (3822) 34-52-52</a>
+  </div>
+</div>
+
 <div class="bar" id="bar" aria-label="Быстрые действия">
   <a class="btn" href="tel:+73822345252" aria-label="Позвонить"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
   <button class="btn" type="button" data-bot aria-label="Задать вопрос помощнику"><svg width="22" height="22"><use href="#i-chat"/></svg></button>
@@ -12,7 +42,7 @@
   </div>
   <form class="form" id="sheetForm" data-lead="sheetOk" novalidate>
     <div class="field"><label for="s-phone">Телефон</label><input id="s-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><span class="err">Проверьте номер: нужно 10 цифр после +7</span></div>
-    <div class="field"><label for="s-cat">Что интересует</label><select id="s-cat"><option value="bA">B автомат — 66 000 ₽</option><option value="bM">B механика — 68 000 ₽</option><option value="a">A мотоцикл — 23 000 ₽</option><option value="ai">AI квадроцикл, снегоход</option><option value="pro">Курсы для транспортных компаний</option><option value="x">Пока не решил(а)</option></select></div>
+    <div class="field"><label for="s-cat">Что интересует</label><select id="s-cat"><option value="bA">B автомат — 66 000 ₽</option><option value="bM">B механика — 68 000 ₽</option><option value="a">A мотоцикл — 25 000 ₽</option><option value="ai">AI квадроцикл, снегоход</option><option value="pro">Курсы для транспортных компаний</option><option value="x">Пока не решил(а)</option></select></div>
     <div class="field"><label for="s-name">Имя (необязательно)</label><input id="s-name" autocomplete="given-name" placeholder="Как к вам обращаться"></div>
     <label class="consent"><input type="checkbox" id="s-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a> и знаком(а) с <a href="/politika-konfidentsialnosti" target="_blank">политикой конфиденциальности</a></span></label>
     <button class="btn btn-red btn-block" type="submit">Отправить заявку</button>

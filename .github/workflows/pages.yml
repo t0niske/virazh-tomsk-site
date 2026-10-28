@@ -20,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # вся история: даты изменения страниц для sitemap и разметки берутся из git
       - name: Сборка
         run: perl tools/build.pl --preview --base=/virazh-tomsk-site --out=_preview
       - name: Проверка продакшен-сборки
