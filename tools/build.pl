@@ -175,8 +175,11 @@ for my $file (@pages) {
     my ($hdr, $ovl) = ($header, $overlays);
     s{<a (class="[^"]*" )?href="(/[^"]*)"}{
       my ($cls, $h) = ($1 // '', $2);
-      my $on = ($h ne '/' && ($path eq $h || index($path, "$h/") == 0));
+      # раздел подсвечен и на вложенных страницах; пункты второго уровня — только на своей странице
+      my $on = ($h ne '/' && ($path eq $h || (index($path, "$h/") == 0 && $cls !~ /\b(?:sub|dd-\w+)\b/)));
       $on ? qq{<a ${cls}href="$h" aria-current="page"} : qq{<a ${cls}href="$h"} }ge for $hdr, $ovl;
+    # в мобильном меню группа с текущей страницей раскрыта
+    $ovl =~ s{<details class="mg">(?=<summary[^>]*>[^<]*</summary>(?:(?!</details>).)*?aria-current)}{<details class="mg" open>}gs;
     my %v = (
       title => esc($m{title} // 'Автошкола «Авто-Вираж»'),
       description => esc($m{description} // ''),

@@ -14,6 +14,9 @@
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.5 4.5h12l-2.5 4 2.5 4h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></g></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="3" width="7.6" height="7.6" rx="2"/><rect x="13.4" y="3" width="7.6" height="7.6" rx="2"/><rect x="3" y="13.4" width="7.6" height="7.6" rx="2"/><rect x="13.4" y="13.4" width="7.6" height="7.6" rx="2"/></g></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M6.5 9.5l5.5 5.5 5.5-5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
 
@@ -44,7 +47,41 @@
   <div class="wrap hdr-row">
     <a class="logo" href="/" aria-label="Автошкола Авто-Вираж, на главную"><img src="/img/logo.webp" alt="Автошкола Авто-Вираж" width="520" height="169"></a>
     <nav class="nav" aria-label="Основное меню">
-      <a href="/obuchenie">Обучение</a><a href="/tseny/tseny-tomsk">Цены</a><a href="/oplata">Оплата</a><a href="/ekzameny">Экзамены</a><a href="/instruktory">Инструкторы</a><a href="/avtopark">Автопарк</a><a href="/otzyvy">Отзывы</a><a href="/blog">Блог</a><a href="/kontakty">Контакты</a>
+      <div class="nav-i">
+        <a class="nav-t" href="/obuchenie">Обучение<svg class="chev" width="14" height="14" aria-hidden="true"><use href="#i-down"/></svg></a>
+        <div class="dd dd-wide">
+          <a class="dd-card" href="/obuchenie/kategoriya-b-akpp"><span class="dd-ico" aria-hidden="true">АКПП</span><span><b>Категория B на автомате</b><small>56 ч вождения, 2,5–3 месяца</small></span><em class="num">66 000 ₽</em></a>
+          <a class="dd-card" href="/obuchenie/kategoriya-b-mkpp"><span class="dd-ico" aria-hidden="true">МКПП</span><span><b>Категория B на механике</b><small>58 ч вождения, 2,5–3 месяца</small></span><em class="num">68 000 ₽</em></a>
+          <a class="dd-card" href="/obuchenie/kategoriya-a-motocikl"><span class="dd-ico dd-ico-big" aria-hidden="true">A</span><span><b>Мотоцикл, категории A и A1</b><small>18 ч вождения, тёплый сезон</small></span><em class="num">25 000 ₽</em></a>
+          <a class="dd-card" href="/obuchenie/vosstanovlenie-navykov-vozhdeniya"><span class="dd-ico" aria-hidden="true"><svg width="32" height="32"><use href="#i-refresh"/></svg></span><span><b>Восстановление навыков</b><small>для тех, у кого уже есть права</small></span><em class="num">2 100 ₽</em></a>
+          <a class="dd-all" href="/obuchenie"><span class="dd-ico" aria-hidden="true"><svg width="26" height="26"><use href="#i-grid"/></svg></span><span><b>Все программы</b><small>квадроцикл и снегоход (AI), права с 16 лет, курсы для транспортных компаний</small></span></a>
+        </div>
+      </div>
+      <div class="nav-i">
+        <a class="nav-t" href="/tseny/tseny-tomsk">Цены и оплата<svg class="chev" width="14" height="14" aria-hidden="true"><use href="#i-down"/></svg></a>
+        <div class="dd">
+          <a class="dd-link" href="/tseny/tseny-tomsk"><b>Цены на обучение</b><small>что входит в курс и что оплачивается отдельно</small></a>
+          <a class="dd-link" href="/oplata"><b>Оплата и скидки</b><small>поэтапная оплата, скидки, маткапитал, вычет 13%</small></a>
+        </div>
+      </div>
+      <div class="nav-i">
+        <button class="nav-t" type="button" aria-expanded="false">Курсантам<svg class="chev" width="14" height="14" aria-hidden="true"><use href="#i-down"/></svg></button>
+        <div class="dd">
+          <a class="dd-link" href="/obuchenie/uchis-online"><b>Теория онлайн</b><small>видеоуроки и билеты в личном кабинете</small></a>
+          <a class="dd-link" href="/ekzameny"><b>Экзамены и расписание</b><small>внутренний экзамен, ГИБДД, пересдача</small></a>
+          <a class="dd-link" href="/voprosy"><b>Вопросы и ответы</b><small>сроки, оплата, документы</small></a>
+        </div>
+      </div>
+      <div class="nav-i">
+        <a class="nav-t" href="/o-shkole">Об автошколе<svg class="chev" width="14" height="14" aria-hidden="true"><use href="#i-down"/></svg></a>
+        <div class="dd">
+          <a class="dd-link" href="/o-shkole"><b>О школе</b><small>с 2007 года, лицензия, офисы</small></a>
+          <a class="dd-link" href="/instruktory"><b>Инструкторы</b><small>опыт и машины инструкторов</small></a>
+          <a class="dd-link" href="/avtopark"><b>Автопарк</b><small>9 машин и мотоцикл</small></a>
+          <a class="dd-link" href="/otzyvy"><b>Отзывы</b><small>5.0 и 369 оценок в 2ГИС</small></a>
+        </div>
+      </div>
+      <a class="nav-t" href="/kontakty">Контакты</a>
     </nav>
     <span class="hdr-sp"></span>
     <div class="hdr-msg">

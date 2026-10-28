@@ -442,3 +442,42 @@ html.a11y-noimg .exit-pic{display:none!important}
 
 address{font-style:normal}
 .rev small a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+
+/* ===== меню второго уровня ===== */
+.nav-t .chev{opacity:.7;transition:transform .2s}
+@media (min-width:1080px){
+  .nav{align-items:center}
+  .nav-i{position:relative}
+  .dd{position:absolute;left:-8px;top:calc(100% + 10px);z-index:60;display:grid;gap:2px;min-width:340px;padding:10px;border-radius:16px;background:#fff;color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28);visibility:hidden;opacity:0;transform:translateY(6px);transition:opacity .16s,transform .16s,visibility 0s .16s}
+  .dd::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}  /* мостик: курсор не теряет пункт по пути к панели */
+  .nav-i:hover>.dd,.nav-i:focus-within>.dd,.nav-i.open>.dd{visibility:visible;opacity:1;transform:none;transition-delay:0s}
+  .nav-i:hover .chev,.nav-i.open .chev{transform:rotate(180deg)}
+  .dd-link{display:grid;gap:3px;padding:11px 14px;border-radius:10px;text-decoration:none;color:var(--ink)}
+  .dd-link b{font:700 15px/1.2 var(--font)}
+  .dd-link small,.dd-card small{font-size:13px;line-height:1.3;color:var(--muted)}
+  .dd-wide{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;width:min(860px,calc(100vw - 48px))}
+  .dd-card{display:grid;grid-template-columns:60px minmax(0,1fr) auto;align-items:center;gap:14px;padding:10px 14px 10px 10px;border-radius:12px;text-decoration:none;color:var(--ink)}
+  .dd-ico{display:grid;place-items:center;width:60px;height:60px;border-radius:14px;background:var(--red);color:#fff;font:900 italic 15px/1 var(--font);letter-spacing:.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 14px rgba(158,18,32,.25)}
+  .dd-ico-big{font-size:30px}
+  .dd-card b{display:block;font:800 15px/1.2 var(--font);margin-bottom:3px}
+  .dd-card em{font:900 italic 16px/1 var(--font);color:var(--head);white-space:nowrap}
+  .dd-all{grid-column:1/-1;display:grid;grid-template-columns:60px minmax(0,1fr);align-items:center;gap:14px;margin-top:6px;padding:10px 14px 10px 10px;border-radius:12px;background:var(--grey);text-decoration:none;color:var(--ink)}
+  .dd-all b{display:block;font:800 15px/1.2 var(--font);margin-bottom:3px}
+  .dd-all small{display:block;font-size:13px;line-height:1.35;color:var(--muted)}
+  .dd [aria-current] b{color:var(--red)}
+  @media (hover:hover){.dd-link:hover,.dd-card:hover{background:var(--grey)}.dd-link:hover b,.dd-card:hover b,.dd-all:hover b{color:var(--red)}}
+}
+/* мобильное меню: группы раскрываются по нажатию; группа с текущей страницей открыта (build.pl) */
+.menu .mg{border-bottom:1px solid #2A2A2A}
+.menu summary.m{display:flex;justify-content:space-between;align-items:center;list-style:none;cursor:pointer;font:900 italic 22px/1.2 var(--font);text-transform:uppercase;color:#fff;padding:14px 0}
+.menu summary.m::-webkit-details-marker{display:none}
+.menu summary.m::after{content:"";flex:none;width:10px;height:10px;margin-right:8px;border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+.menu .mg[open]>summary.m::after{transform:translateY(2px) rotate(-135deg)}
+.menu .mg[open]{padding-bottom:8px}
+.menu .mg a.m.sub{display:block;border-bottom:0;color:#fff}
+.menu .mg a.m.sub[aria-current]{color:var(--red)}
+.menu .mg:has([aria-current])>summary.m{color:var(--red)}
+.menu .m-util{display:grid;padding-top:12px}
+.menu .m-util a{color:#fff;font:600 15px/1.3 var(--font);padding:9px 0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#555}
+/* шапка на узком телефоне (320 px): кнопка «Меню» не вылезает за край */
+@media (max-width:359px){.hdr-row{gap:6px}.logo img{height:28px}.ic{width:40px;height:40px}.menu-btn{padding:0 11px}}

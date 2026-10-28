@@ -214,6 +214,19 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
   }
 
+  // меню второго уровня на компьютере: открывается наведением и фокусом (CSS), пункт-кнопка «Курсантам» — ещё и кликом
+  const closeDd = () => document.querySelectorAll('.nav-i.open').forEach(i => { i.classList.remove('open'); const b = i.querySelector('button.nav-t'); if (b) b.setAttribute('aria-expanded', 'false'); });
+  document.querySelectorAll('.nav-i > button.nav-t').forEach(b => b.addEventListener('click', () => {
+    const on = !b.parentElement.classList.contains('open');
+    closeDd();
+    if (on) { b.parentElement.classList.add('open'); b.setAttribute('aria-expanded', 'true'); }
+  }));
+  document.addEventListener('click', e => { if (!e.target.closest('.nav-i')) closeDd(); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape' || !document.activeElement.closest('.nav')) return;
+    closeDd(); document.activeElement.blur();
+  });
+
   // нижняя панель на телефоне: появляется после первого экрана, прячется у финальной формы
   const bar = $('bar');
   if (bar) {
