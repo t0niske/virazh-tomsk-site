@@ -198,6 +198,8 @@ for my $file (@pages) {
   if (length $opt{base}) {
     $html =~ s{\b(href|src|action|content)="/(?!/)}{$1="$opt{base}/}g;
     $html =~ s{url=/(?!/)}{url=$opt{base}/}g;
+    # srcset: несколько адресов через запятую, иначе на телефоне <source> отдаёт 404
+    $html =~ s{\bsrcset="([^"]*)"}{my $v = $1; $v =~ s{(^|,\s*)/(?!/)}{$1$opt{base}/}g; qq{srcset="$v"}}ge;
   }
 
   my $out = $path eq '/' ? "$opt{out}/index.html"

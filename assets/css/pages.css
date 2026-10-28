@@ -185,7 +185,22 @@ html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;p
 
 /* ===== фото-иконки (img/icons, 320×320, без фона) ===== */
 .perk-ico{width:64px;height:64px;object-fit:contain;margin:-6px 0 2px -6px}
-.st .pic img{width:auto;height:96px;max-height:96px;object-fit:contain}
+/* блок «С 2007 года / 5.0 / 9 машин / автодром»: белые карточки на сером; на телефоне иконка слева, текст справа */
+.sec.grey .st{background:#fff}
+.stats{grid-template-columns:minmax(0,1fr);gap:8px}
+.st{grid-template-columns:72px minmax(0,1fr);column-gap:14px;row-gap:2px;align-items:center;padding:10px 16px 10px 10px}
+.st .pic{grid-row:span 2;height:72px}
+.st .pic img{width:auto;height:72px;max-height:72px;object-fit:contain}
+.st b{align-self:end;font-size:18px}
+.st span{align-self:start;font-size:13.5px}
+@media (min-width:560px) and (max-width:719px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:720px){
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .st{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;align-items:start;padding:22px 14px 24px;row-gap:4px}
+  .st .pic{grid-row:auto;height:104px;margin-bottom:8px}
+  .st .pic img{height:104px;max-height:104px}
+  .st b{font-size:19px}
+}
 .official-pic{margin:0;display:grid;place-items:center}
 .official-pic img{width:100%;max-width:340px;height:auto}
 .also-ico{width:72px;height:72px;object-fit:contain;flex:none;margin:-10px 0}
@@ -402,6 +417,18 @@ html.a11y-noimg .exit-pic{display:none!important}
 .note-sm{margin-top:12px;font-size:13.5px;color:var(--muted);line-height:1.45}
 .acts-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 @media (min-width:720px){.sv-table.prog{font-size:15px}.sv-table.prog th,.sv-table.prog td{padding:14px 16px}}
+/* на телефоне столбец «Вождение» по ширине содержимого, чтобы цена помещалась целиком */
+@media (max-width:719px){
+  .sv-table.prog{font-size:13.5px}
+  .sv-table.prog th,.sv-table.prog td{padding:10px 6px}
+  .sv-table.prog th:first-child,.sv-table.prog td:first-child{padding-left:10px}
+  .sv-table.prog th:last-child,.sv-table.prog td:last-child{padding-right:10px}
+  .sv-table.prog th[scope=row]{font-size:13px}
+  .sv-table.prog thead th{font-size:11.5px;letter-spacing:0;text-transform:none}
+  .sv-table.prog td:nth-child(2):not([colspan]){white-space:nowrap}
+  .sv-table.prog .t-full{display:none}
+}
+@media (min-width:720px){.sv-table.prog .t-cut{display:none}}
 
 .prose .sv-table.pc{display:table;width:100%}
 

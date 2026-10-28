@@ -40,6 +40,12 @@ for my $f (@pages) {
     my $u = $1; next if $u =~ m{^//};
     $bad{"$u  ← $rel"}++ unless exists_path($u);
   }
+  while ($s =~ m{\bsrcset="([^"]*)"}g) {
+    for my $u (map { (split ' ')[0] } split /,\s*/, $1) {
+      next unless $u =~ m{^/(?!/)};
+      $bad{"$u  ← $rel"}++ unless exists_path($u);
+    }
+  }
 }
 # 4. ссылки в ответах чат-помощника
 if (open my $h, '<:utf8', "$site/assets/js/bot-kb.json") {
