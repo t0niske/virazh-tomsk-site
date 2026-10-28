@@ -404,3 +404,12 @@ html.a11y-noimg .exit-pic{display:none!important}
 @media (min-width:720px){.sv-table.prog{font-size:15px}.sv-table.prog th,.sv-table.prog td{padding:14px 16px}}
 
 .prose .sv-table.pc{display:table;width:100%}
+
+/* прайс на странице цен */
+.sv-table.price-list{min-width:640px}
+.sv-table.price-list th[scope=row] a{color:var(--ink);font-weight:800;text-decoration:none}
+.sv-table.price-list td:last-child{font-weight:900;white-space:nowrap}
+.sv-table.price-list thead th{font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+
+address{font-style:normal}
+.rev small a{color:inherit;text-decoration:underline;text-underline-offset:2px}
