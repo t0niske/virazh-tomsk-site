@@ -154,6 +154,11 @@ for my $file (@pages) {
   $content = join '', map {
     /^<(?:script|style)\b/i ? $_ : do { (my $x = $_) =~ s{>([^<]+)<}{ my $s = $1; $s =~ s/(\d) (?=\d{3}(?!\d))/$1&nbsp;/g; $s =~ s/(\d) (?=\x{20BD})/$1&nbsp;/g; ">$s<" }ge; $x }
   } split /(<script\b.*?<\/script>|<style\b.*?<\/style>)/is, $content;
+  # висячие предлоги и союзы в заголовках («НАЧНИТЕ С / ОДНОГО ЗВОНКА»): слово из 1–2 букв держится за следующее
+  $content =~ s{(<(h[1-3])\b[^>]*>)(.*?)(</\2>)}{
+    my ($o, $in, $c) = ($1, $3, $4);
+    $in = join '', map { /^</ ? $_ : do { (my $t = $_) =~ s/(?<![\p{L}\d-])(\p{Cyrillic}{1,2}) +(?=\S|$)/$1&nbsp;/g; $t } } split /(<[^>]+>)/, $in;
+    "$o$in$c" }gse;
   # активный пункт во внутренних меню (раздел «Сведения» и т.п.)
   $content =~ s{<a class="sv" href="\Q$path\E"}{<a class="sv" href="$path" aria-current="page"}g;
   # ссылка «Все …» под каруселью на её же странице не нужна: помечаем, CSS её прячет

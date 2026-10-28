@@ -190,28 +190,34 @@ html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;p
 
 /* ===== фото-иконки (img/icons, 320×320, без фона) ===== */
 .perk-ico{width:64px;height:64px;object-fit:contain;margin:-6px 0 2px -6px}
-/* блок «С 2007 года / 5.0 / 9 машин / автодром»: белые карточки на сером; на телефоне иконка слева, текст справа */
+/* блок «Коротко об автошколе» (С 2007 года / 5.0 / 9 машин / автодром): белые плитки на сером, фото по центру;
+   на телефоне 2×2, с планшета в один ряд */
 .sec.grey .st{background:#fff}
-.stats{grid-template-columns:minmax(0,1fr);gap:8px}
-.st{grid-template-columns:72px minmax(0,1fr);column-gap:14px;row-gap:2px;align-items:center;padding:10px 16px 10px 10px}
-.st .pic{grid-row:span 2;height:72px}
-.st .pic img{width:auto;height:72px;max-height:72px;object-fit:contain}
-.st b{align-self:end;font-size:18px}
-.st span{align-self:start;font-size:13.5px}
-@media (min-width:560px) and (max-width:719px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.st{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;align-content:start;padding:16px 10px 18px;row-gap:4px}
+.st .pic{height:86px;margin-bottom:6px}
+.st .pic img{width:auto;height:86px;max-height:86px;object-fit:contain}
+.st b{font-size:16.5px}
+.st span{font-size:13px}
 @media (min-width:720px){
   .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .st{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;align-items:start;padding:22px 14px 24px;row-gap:4px}
-  .st .pic{grid-row:auto;height:104px;margin-bottom:8px}
+  .st{padding:22px 14px 24px}
+  .st .pic{height:104px;margin-bottom:8px}
   .st .pic img{height:104px;max-height:104px}
   .st b{font-size:19px}
 }
 .official-pic{margin:0;display:grid;place-items:center}
 .official-pic img{width:100%;max-width:340px;height:auto}
+@media (max-width:1079px){
+  .official-grid{display:grid;grid-template-columns:minmax(0,1fr)}
+  .official{display:contents}
+  .official .ghost{order:1}.official .it{order:2}.official-pic{order:3;margin-top:14px}.official ul{order:4}.official .acts{order:5}
+  .official-pic img{max-width:240px}
+}
 .also-ico{width:72px;height:72px;object-fit:contain;flex:none;margin:-10px 0}
 .ask{position:relative}
 .ask-ico{position:absolute;right:10px;top:8px;width:92px;height:92px;object-fit:contain;pointer-events:none}
-.ask .it{padding-right:88px}
+.ask .it,.ask p{padding-right:88px}
 .cardlink .card-ico{width:96px;height:96px;object-fit:contain;justify-self:start;margin:-8px 0 -4px -6px;max-height:none}
 .ct-tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .ct{background:var(--grey);border-radius:var(--r);padding:16px 18px;display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center}
@@ -276,6 +282,10 @@ html.a11y-noimg .ptag img,html.a11y-noimg .biz-cta img{display:none!important}
 .exd-note{margin-top:14px;font-size:14.5px;color:var(--muted)}
 .exd-note a{color:var(--red);font-weight:700;white-space:nowrap;text-decoration:none}
 .sec.grey .exd-card{background:#fff}
+/* блоки чередуются белый / серый: в сером блоке карточки белые, а то, что внутри белой карточки, — серое */
+.sec.grey .ins,.sec.grey .office,.sec.grey .faq details,.sec.grey .acts-row .btn-sm:not(.btn-black){background:#fff}
+.sec.grey .ins dl div,.sec.grey .office .acts .btn{background:var(--grey)}
+.sec.grey + .final{background:#fff}   /* финальный блок записи белый, если перед ним серый */
 .sec.grey .exd-row.past .exd-st{background:var(--grey)}
 @media (min-width:720px){.exd{grid-template-columns:1fr 1fr}}
 html.a11y-noimg .exd-top img{display:none!important}
@@ -311,7 +321,11 @@ html.a11y .ph-art{max-width:150px}
 /* ===== 3D-знак «У» в блоке записи: поворачивается за курсором и при прокрутке ===== */
 .sign3d{width:240px;aspect-ratio:1;margin-top:18px;background-repeat:no-repeat;background-size:500% 500%;background-position:50% 50%;filter:drop-shadow(0 22px 26px rgba(0,0,0,.16))}
 .sign3d.ready{background-image:url(/img/art/sign-u-sprite.webp)}
-@media (max-width:899px){.sign3d{float:right;width:104px;margin:-8px -6px 4px 10px}}
+@media (max-width:899px){.sign3d{float:right;width:104px;margin:-8px -6px 4px 10px}
+  .final .head{grid-template-columns:minmax(0,1fr) 96px;column-gap:10px}
+  .final .head > *{grid-column:1 / -1}
+  .final .head .sign3d{grid-column:2;grid-row:1 / span 2;width:96px;margin:0;align-self:start;float:none}
+  .final .head .it,.final .head .lead{grid-column:1}}
 html.a11y-noimg .sign3d{display:none!important}
 @media (min-width:900px){.final .head{display:flex;flex-direction:column;gap:0}.final .head .sign3d{order:9;align-self:flex-start}}
 @media (min-width:900px){
@@ -363,9 +377,9 @@ html.a11y-noimg .exit-pic{display:none!important}
 @media (max-width:959px){
   .hx-text{display:contents}
   .hx h1{order:1;position:relative;z-index:2}
-  .hx-scene{order:2;margin-top:2px;margin-bottom:-4px}
+  .hx-scene{order:2;margin-top:22px;margin-bottom:0}
   .hx-scene img{aspect-ratio:912/630;object-fit:cover;object-position:50% 55%}
-  .hx-facts{order:3;margin-top:8px}
+  .hx-facts{order:3;margin-top:18px}
   .hx-form{order:4}
   .hx .ok-msg{order:5}
   .hx-vis{order:6}

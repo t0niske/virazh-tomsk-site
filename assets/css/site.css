@@ -24,7 +24,7 @@ h1,h2,h3{margin:0}
 button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:10px}
 .wrap{max-width:1200px;margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
-.sec{padding-block:64px}
+.sec{padding-block:44px}
 .sec.grey{background:var(--grey)}
 .num{font-variant-numeric:tabular-nums}
 
@@ -362,7 +362,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 
 /* ===== tablet ===== */
 @media (min-width:720px){
-  .sec{padding-block:96px}
+  .sec{padding-block:80px}
   .trust-strip{grid-template-columns:repeat(4,1fr)}
   .promo{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) 230px;align-items:center;gap:32px;padding:36px 40px}
   .promo .it,.promo p{padding-right:0}
