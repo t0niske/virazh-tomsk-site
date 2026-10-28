@@ -1,20 +1,20 @@
 <div class="pay-grid">
       <div>
         <div class="nums">
-          <div class="nc" style="background:#fff"><span class="n">01</span><span class="amt num">5 000 ₽</span><h3>Теория</h3><p>Платите в начале обучения.</p></div>
-          <div class="nc" style="background:#fff"><span class="n">02</span><span class="amt num">2 000 ₽</span><h3>Вождение</h3><p>За каждое занятие (2 часа) по мере езды.</p></div>
+          <div class="nc" style="background:#fff"><span class="n">01</span><span class="amt num">5 000 ₽</span><h3>Теория</h3><p>Вносится в начале обучения.</p></div>
+          <div class="nc" style="background:#fff"><span class="n">02</span><span class="amt num">2 000 ₽</span><h3>Вождение</h3><p>За каждое занятие по вождению (2 часа).</p></div>
           <div class="nc" style="background:#fff"><span class="n">03</span><span class="amt num">5 000 ₽</span><h3>Внутренний экзамен</h3><p>В конце курса, входит в стоимость.</p></div>
           <div class="nc" style="background:#fff"><span class="n">04</span><span class="amt num">5 000 ₽</span><h3>Экзамен в ГИБДД</h3><p>Для категории B — отдельно от стоимости курса.</p></div>
         </div>
         <div class="perks">
           <div class="perk"><img class="perk-ico" src="/img/icons/perk-student.webp" alt="" width="320" height="320" loading="lazy"><b class="num">−3 000 ₽</b><span>скидка студентам</span></div>
-          <div class="perk"><img class="perk-ico" src="/img/icons/perk-tax.webp" alt="" width="320" height="320" loading="lazy"><b>−13%</b><span>налоговый вычет, документы дадим</span></div>
-          <div class="perk"><img class="perk-ico" src="/img/icons/perk-matcap.webp" alt="" width="320" height="320" loading="lazy"><b>Маткапитал</b><span>можно оплатить им обучение</span></div>
+          <div class="perk"><img class="perk-ico" src="/img/icons/perk-tax.webp" alt="" width="320" height="320" loading="lazy"><b>−13%</b><span>налоговый вычет, справку выдадим</span></div>
+          <div class="perk"><img class="perk-ico" src="/img/icons/perk-matcap.webp" alt="" width="320" height="320" loading="lazy"><b>Маткапитал</b><span>на обучение ребёнка до 25 лет</span></div>
           <div class="perk"><img class="perk-ico" src="/img/icons/perk-holiday.webp" alt="" width="320" height="320" loading="lazy"><b>Акции</b><span>скидки к праздникам</span></div>
         </div>
       </div>
       <div class="calc" id="calc">
-        <h3 class="it">Сколько выйдет у вас</h3>
+        <h3 class="it">Расчёт стоимости обучения</h3>
         <div class="seg" role="group" aria-label="Категория для расчёта">
           <button type="button" data-c="bA" aria-pressed="true">B АКПП<small>56 ч</small></button>
           <button type="button" data-c="bM" aria-pressed="false">B МКПП<small>58 ч</small></button>
@@ -27,9 +27,10 @@
         <div class="calc-out">
           <div class="row"><span>Стоимость курса</span><b class="num" id="cBase">66 000 ₽</b></div>
           <div class="row" id="cStudRow" hidden><span>Скидка студенту</span><b class="num">−3 000 ₽</b></div>
-          <div class="row" id="cTaxRow"><span>Вернёт налоговая</span><b class="num" id="cTaxVal">−8 580 ₽</b></div>
-          <div class="row" id="cStartRow"><span>Платите на старте</span><b class="num">5 000 ₽</b></div>
-          <div class="total"><span>Итого для вас</span><b class="num" id="cTotal">57 420 ₽</b></div>
+          <div class="total"><span>Общая стоимость обучения составит</span><b class="num" id="cTotal">66 000 ₽</b></div>
+          <div class="row" id="cStartRow"><span>Первый взнос (теория)</span><b class="num">5 000 ₽</b></div>
+          <div class="row" id="cExamRow"><span>Экзамен в ГИБДД, оплачивается отдельно</span><b class="num">5 000 ₽</b></div>
+          <div class="row" id="cTaxRow"><span>После обучения можно вернуть налоговым вычетом</span><b class="num" id="cTaxVal">до 8 580 ₽</b></div>
         </div>
         <button class="btn btn-red btn-block" type="button" data-signup="bA" id="calcCta">Записаться по этой цене</button>
         <small>Расчёт предварительный. Акции не суммируются, точные условия назовёт администратор.</small>

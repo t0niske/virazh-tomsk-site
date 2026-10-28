@@ -7,13 +7,13 @@
   // цены, часы и порядок оплаты — единое место для переключателей и калькулятора
   // (B: теория 5 000 + вождение 2 000 за занятие + внутренний экзамен 5 000, ГИБДД 5 000 отдельно;
   //  A: 25 000, внутренний экзамен и ГИБДД включены; состав цены сверить — seo/BRANDCORE.md)
-  const PAY_B = 'На старте <b>5 000 ₽</b>, дальше <b>2 000 ₽</b> за занятие по мере езды';
+  const PAY_B = 'Первый взнос — <b>5 000 ₽</b> (теория), далее <b>2 000 ₽</b> за каждое занятие по вождению';
   const C = {
     bA: { label: 'B АКПП', price: 66000, hours: 56, start: 5000, pay: PAY_B },
     bM: { label: 'B МКПП', price: 68000, hours: 58, start: 5000, pay: PAY_B },
     a:  { label: 'A', price: 25000, hours: 18, start: 0, pay: 'Внутренний экзамен и экзамен в ГИБДД <b>уже в цене</b>' }
   };
-  const rub = n => n.toLocaleString('ru-RU') + ' ₽';
+  const rub = n => n.toLocaleString('ru-RU') + ' ₽';   // неразрывный пробел: сумма не рвётся на две строки
   const $ = id => document.getElementById(id);
   const pressOnly = (group, btn) => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
   const segClick = (el, fn) => {
@@ -65,13 +65,15 @@
     const stud = $('cStudent'), tax = $('cTax');
     const render = () => {
       const base = C[cat].price;
-      const disc = stud.checked ? 3000 : 0, paid = base - disc, back = tax.checked ? Math.round(paid * 0.13) : 0;
+      // итог — стоимость обучения по договору; вычет возвращают позже и только плательщикам НДФЛ, поэтому он отдельной строкой
+      const disc = stud.checked ? 3000 : 0, paid = base - disc, back = Math.round(paid * 0.13);
       $('cBase').textContent = rub(base);
       $('cStudRow').hidden = !disc;
       $('cTaxRow').hidden = !tax.checked;
-      $('cTaxVal').textContent = '−' + rub(back);
-      $('cTotal').textContent = rub(paid - back);
+      $('cTaxVal').textContent = 'до ' + rub(back);
+      $('cTotal').textContent = rub(paid);
       $('cStartRow').hidden = !C[cat].start;
+      $('cExamRow').hidden = cat === 'a';
       $('calcCta').dataset.signup = cat;
     };
     segClick(calc.querySelector('.seg'), k => { cat = k; render(); });
