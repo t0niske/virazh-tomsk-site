@@ -40,7 +40,7 @@ button{font:inherit;color:inherit}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 26px;border:0;border-radius:14px;font:700 16px/1.1 var(--font);text-decoration:none;cursor:pointer;background:var(--grey-2);color:var(--ink);transition:transform .1s, filter .15s;text-align:center}
 .btn:active{transform:scale(.98)}
 @media (hover:hover){.btn:hover{filter:brightness(.95)}}
-.btn-red{background:var(--red);color:#fff;box-shadow:0 8px 18px rgba(158,18,32,.28)}
+.btn-red{background:var(--red);color:#fff}
 .btn-black{background:#111;color:#fff}
 .btn-white{background:#fff;color:var(--ink)}
 .btn-block{width:100%}
@@ -67,26 +67,30 @@ button{font:inherit;color:inherit}
 
 
 /* header: тёмная — логотип нарисован под тёмный фон (белые надписи и дорога в чёрной обводке) */
-.topbar{display:none;background:#0B0B0B;color:#C9C9C9;font:600 13px/1 var(--font)}
+.topbar{display:none;background:#141414;color:#C9C9C9;font:600 13px/1 var(--font)}   /* одним цветом со шапкой */
 .topbar-in{display:flex;align-items:center;gap:22px;height:40px}
 .topbar a{text-decoration:none;display:inline-flex;align-items:center;gap:7px}
 @media (hover:hover){.topbar a:hover{color:#fff}}
 .city{display:flex;gap:2px;background:#1E1E1E;border-radius:999px;padding:3px}
 .city a{padding:6px 12px;border-radius:999px}
 .city a[aria-current],.city:not(:has([aria-current])) a[data-city="tomsk"]{background:#fff;color:#111}
-.ut-sved{color:#fff}
+.ut-sved,.ut-tel b{color:#fff}
+.ut{white-space:nowrap}
+@media (max-width:1279px){.topbar .ut-tel{display:none}}   /* телефон в верхней строке — когда помещается в одну строку со ссылками */
 .ut svg{color:#8F8F8F}
 .ut-sved svg{color:var(--red)}
-.hdr{position:sticky;top:0;z-index:40;background:#141414;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+.hdr{position:sticky;top:0;z-index:40;background:#141414;color:#fff}
 .hdr-row{display:flex;align-items:center;gap:8px;height:64px}
 .logo{flex:none}
 .logo img{height:34px;width:auto}
 .hdr-sp{flex:1}
-.nav,.hdr-tel,.hdr .btn{display:none}
+.nav,.hdr .btn{display:none}
 .hdr-msg{display:none}
 .hm{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;transition:transform .15s}
-.hm img{width:21px;height:21px}
-.hm-vk{background:var(--vk)}.hm-max{background:var(--max)}
+/* знаки ВК и MAX — векторные из спрайта (белые), фон кружка — цвета бренда; у MAX фирменный градиент */
+.hm svg{width:22px;height:22px;color:#fff}
+.hm-vk{background:var(--vk)}.hm-max{background:radial-gradient(circle at 15% 95%,#46C6FD 0,rgba(70,198,253,0) 55%),linear-gradient(135deg,#3E63FC 0%,#3F48EA 45%,#8E4BE2 100%)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 @media (hover:hover){.hm:hover{transform:translateY(-2px)}}
 @media (min-width:1200px){.hdr-msg{display:flex;gap:6px;flex:none}}
 .ic{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#262626;color:#fff;text-decoration:none}
@@ -395,16 +399,16 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
   .pay-grid .perks{grid-template-columns:1fr 1fr}
 }
 @media (min-width:1280px){.pay-grid .perks{grid-template-columns:repeat(4,1fr)}}
-@media (min-width:1320px){
-  .hdr .wrap,.topbar .wrap{max-width:1320px}
-  .hdr-tel{display:grid;gap:4px;flex:none;white-space:nowrap;text-decoration:none;text-align:right;color:#fff}
-  .hdr-tel b{font:800 16px/1 var(--font)}
-  .hdr-tel small{font-size:12px;color:#B5B5B5}
-}
+
 /* ===== desktop ===== */
 @media (min-width:1080px){
   .topbar{display:block}
-  .hdr-row{height:76px;gap:20px}
+  /* общий контейнер сайта на компьютере: 1440 px с полями 40 px — шапка, первый экран и все блоки стоят по одним краям;
+     меню в шапке точно по центру между логотипом и правой группой */
+  .wrap{max-width:1440px;padding-left:40px;padding-right:40px}
+  .hdr-row{height:76px;display:grid;grid-template-columns:1fr auto 1fr;column-gap:24px}
+  .hdr-row .logo{justify-self:start}
+  .hdr-right{justify-self:end;gap:14px;margin-left:0}
   .logo img{height:42px}
   .nav{display:flex;gap:2px}
   .nav .nav-t{display:inline-flex;align-items:center;gap:4px;color:#E6E6E6;text-decoration:none;font:600 14.5px/1 var(--font);padding:10px 11px;border-radius:10px;white-space:nowrap;background:none;border:0;cursor:pointer}
@@ -550,4 +554,4 @@ img.brand{width:22px;height:22px;flex:none;border-radius:6px;display:inline-bloc
 .rt-card b img.brand{width:20px;height:20px;vertical-align:-4px}
 /* 9 пунктов меню: на узком десктопе чуть плотнее, чтобы шапка не вылезала */
 /* меню, кнопки мессенджеров, телефон и «Записаться» помещаются в одну строку шапки (до 1320px) */
-@media (min-width:1080px){.nav .nav-t{padding:10px 9px;font-size:14px}.hdr-row{gap:14px}}
+@media (min-width:1080px){.nav .nav-t{padding:10px 9px;font-size:14px}.hdr-row{column-gap:20px}}
