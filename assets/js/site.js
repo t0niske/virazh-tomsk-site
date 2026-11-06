@@ -4,13 +4,14 @@
 (function () {
   'use strict';
 
-  // цены и часы — единое место для калькулятора и формы записи
+  // цены, часы и порядок оплаты — единое место для переключателей и калькулятора
   // (B: теория 5 000 + вождение 2 000 за занятие + внутренний экзамен 5 000, ГИБДД 5 000 отдельно;
   //  A: 25 000, внутренний экзамен и ГИБДД включены; состав цены сверить — seo/BRANDCORE.md)
+  const PAY_B = 'Первый взнос — <b>5 000 ₽</b> (теория), далее <b>2 000 ₽</b> за каждое занятие по вождению';
   const C = {
-    bA: { label: 'B АКПП', price: 66000, hours: 56, start: 5000 },
-    bM: { label: 'B МКПП', price: 68000, hours: 58, start: 5000 },
-    a:  { label: 'A', price: 25000, hours: 18, start: 0 }
+    bA: { label: 'B АКПП', price: 66000, hours: 56, start: 5000, pay: PAY_B },
+    bM: { label: 'B МКПП', price: 68000, hours: 58, start: 5000, pay: PAY_B },
+    a:  { label: 'A', price: 25000, hours: 18, start: 0, pay: 'Внутренний экзамен и экзамен в ГИБДД <b>уже в цене</b>' }
   };
   const rub = n => n.toLocaleString('ru-RU') + ' ₽';   // неразрывный пробел: сумма не рвётся на две строки
   const $ = id => document.getElementById(id);
@@ -22,6 +23,15 @@
       pressOnly(el, b); fn(b.dataset.c || b.dataset.f);
     });
   };
+
+  // переключатель категории в первом экране
+  segClick(document.querySelector('#picker .seg'), k => {
+    const c = C[k];
+    $('hpPrice').textContent = rub(c.price);
+    $('hpHours').textContent = c.hours + ' ч вождения';
+    if ($('hpPay')) $('hpPay').innerHTML = c.pay;
+    const cta = $('heroCta'); cta.textContent = 'Записаться на ' + c.label; cta.dataset.signup = k;
+  });
 
   // вкладки тарифов: показываем нужную панель, остальные прячем
   segClick($('tariffTabs'), k => {

@@ -150,7 +150,7 @@ html.a11y .a11y-bar .sw-bw{background-color:#fff!important;color:#000!important;
 html.a11y .a11y-bar .sw-blue{background-color:#9dd1ff!important;color:#063462!important;border-color:#9dd1ff!important}
 html.a11y .btn,html.a11y .chip,html.a11y .doc,html.a11y input,html.a11y select{border:2px solid currentColor!important}
 html.a11y a{text-decoration:underline!important}
-html.a11y-noimg img,html.a11y-noimg .hero-vis,html.a11y-noimg .hs-car,html.a11y-noimg .ph,html.a11y-noimg .pic,html.a11y-noimg .post-img,html.a11y-noimg .stat-car img{display:none!important}
+html.a11y-noimg img,html.a11y-noimg .hero-vis,html.a11y-noimg .hx-scene,html.a11y-noimg .ph,html.a11y-noimg .pic,html.a11y-noimg .post-img,html.a11y-noimg .stat-car img{display:none!important}
 html.a11y :focus-visible{outline:4px solid #ffd400!important;outline-offset:2px}
 
 /* таблицы «название — значение»: на телефоне в столбик */
@@ -351,70 +351,87 @@ html.a11y-noimg .sign3d{display:none!important}
 .exit-note{font-size:12.5px;color:var(--muted);margin-top:12px}
 html.a11y-noimg .exit-pic{display:none!important}
 
-/* первый экран главной: белая плашка в мелкую точку поверх тёмного фона шапки. Заголовок Oswald в две строки,
-   сразу форма записи, справа Omoda на глянцевом полу (img/hero-car.webp, tools/car-floor.py) с плашкой 2ГИС,
-   внизу четыре карточки с цифрами. Края содержимого совпадают с краями шапки (контейнер 1440 px, поля 40 px). */
-.hs{background:#141414;padding:0 6px}
-.hs-in{position:relative;overflow:hidden;overflow:clip;border-radius:18px 18px 0 0;background:#fff;
-  background-image:radial-gradient(rgba(0,0,0,.075) 1.1px,transparent 1.4px);background-size:13px 13px}
-.hs-in::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 62% 62%,rgba(255,255,255,0),#fff 78%);pointer-events:none}
-.hs-wrap{position:relative;display:flex;flex-direction:column;padding:24px calc(var(--gut-r) - 6px) 22px calc(var(--gut-l) - 6px)}
-.hs-h{position:relative;z-index:2;display:grid;font:700 min(96px,calc((100vw - 44px) * .1172))/.98 "Oswald","Arial Narrow",sans-serif;color:#141414;letter-spacing:-.005em}
-.hs-h span{white-space:nowrap}
-.hs-red{color:var(--red)}
-.hs-car{position:relative;z-index:1;display:block;width:min(128%,760px);max-width:none;margin:10px 0 -11% calc((100% - min(128%,760px)) / 2 - min(128%,760px) * .05);pointer-events:none}
-.hs-car img{display:block;width:100%;height:auto}
-.hs-2gis{position:relative;z-index:3;align-self:flex-start;margin-top:-8px;display:flex;align-items:center;gap:12px;padding:10px 16px 10px 10px;border-radius:16px;background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.10);color:var(--ink);text-decoration:none}
-.hs-2gis img{width:40px;height:40px;border-radius:10px}
-.hs-2gis b{font:800 32px/1 var(--font);letter-spacing:-.02em}
-.hs-2gis span{font:500 13px/1.3 var(--font);color:var(--muted)}
-.hs-2gis i{display:block;font-style:normal;color:var(--red);font-size:15px;letter-spacing:2px;line-height:1.2}
-.hs-2gis svg{display:none;color:var(--red)}
-.hs-form{position:relative;z-index:2;margin-top:16px}
-.hs-row{display:flex;flex-wrap:wrap;gap:8px}
-.hs-row .field{flex:1 1 100%;min-width:0}
-.hs-row .field label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.hs-row .btn{flex:1 1 100%;border-radius:12px;padding:0 12px}
-.hs-row .btn-red{min-height:58px;font-size:17px}
-.hs-max{min-height:46px;background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px #141414;font-size:14.5px}
-.hs-form .consent{margin-top:12px;max-width:440px}
-.hs .ok-msg{position:relative;z-index:2;margin-top:16px;max-width:520px}
-.hs-stats{position:relative;z-index:2;margin:16px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
-.hs-stats li{display:flex;flex-direction:column;justify-content:space-between;gap:14px;background:#fff;border:1px solid #ECECEC;border-radius:16px;padding:18px 18px 16px;box-shadow:0 12px 30px rgba(0,0,0,.06)}
-.hs-stats b{font:800 30px/1 var(--font);color:var(--head);white-space:nowrap;letter-spacing:-.02em}
-.hs-stats span{font-size:13.5px;line-height:1.35;color:#3E3E3E}
-@media (min-width:560px){.hs-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (min-width:1080px){
-  .hs{padding:0 8px}
-  .hs-in{border-radius:22px 22px 0 0}
-  .hs-wrap{display:block;max-width:1424px;margin:0 auto;padding:44px 32px 36px}
-  .hs-h{font-size:96px}
-  .hs-car{position:absolute;top:72px;right:-120px;width:900px;margin:0}
-  .hs-2gis{position:absolute;top:318px;right:32px;margin:0;padding-right:14px}
-  .hs-2gis svg{display:block}
-  .hs-form{width:640px;margin-top:44px}
-  .hs-row{flex-wrap:nowrap;gap:10px}
-  .hs-row .field{flex:1 1 auto}
-  .hs-row .btn{flex:none;min-height:56px;padding:0 20px}
-  .hs-row .btn-red{min-width:200px;font-size:16px}
-  .hs-max{padding:0 16px;font-size:14px}
-  .hs-stats{margin-top:44px;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-  .hs-stats li{min-height:178px;gap:28px;border-radius:20px;padding:24px 24px 22px}
-  .hs-stats b{font-size:42px}
-  .hs-stats span{font-size:15px;line-height:1.4}
+/* первый экран главной: сцена «вираж трека» с Omoda (design/hero-scene), номер сразу в форме, под машиной панель цены.
+   На компьютере сцена лежит под колонками и привязана к низу блока: колёса всегда чуть выше панели цены */
+.hx{position:relative;isolation:isolate;overflow:hidden;overflow:clip;padding-top:18px}
+.hx-top{position:relative;display:grid}
+.hx-text{position:relative;z-index:2}
+.hx h1{display:grid;gap:4px}
+.hx h1 .l1{font-size:clamp(24px,6.6vw,46px)}
+.hx h1 .l2{font-size:clamp(33px,9.2vw,68px);color:var(--red);line-height:1.02}
+.hx h1 .l2{text-transform:none;letter-spacing:-.015em;font-size:clamp(38px,10.6vw,74px)}  /* «Авто-Вираж»: заглавные только А и В, строчные мельче — кегль крупнее */
+.hx-facts{display:flex;margin:16px 0 0;padding:0;list-style:none}
+.hx-facts li{display:grid;gap:4px;align-content:start;padding:2px clamp(12px,3.4vw,22px);border-left:2px solid var(--line)}
+.hx-facts li:first-child{padding-left:0;border-left:0}
+.hx-facts b{font:900 italic clamp(21px,5.6vw,28px)/1 var(--font);color:var(--head);white-space:nowrap}
+.hx-facts span{font-size:clamp(12.5px,3.4vw,14px);line-height:1.3;color:var(--muted)}
+.hx-form{display:grid;gap:10px;margin-top:18px;max-width:520px}
+.hx-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}
+.hx-row .field label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hx-row .field input{min-height:58px;border-radius:16px}
+.hx-row .btn{min-height:58px;padding:0 24px;font-size:16px}
+.hx .ok-msg{margin-top:18px;max-width:520px}
+.hx-scene{display:block;position:relative;z-index:0;margin:6px calc(-1 * var(--gut-r)) 0 calc(-1 * var(--gut-l));pointer-events:none}
+@media (min-width:720px){.hx-scene{max-width:640px;margin:6px auto 0}}
+/* телефон и планшет: машина сразу под «Авто-Вираж», над фактами и формой; пустая студия сверху и отражение снизу обрезаны */
+@media (max-width:959px){
+  .hx-text{display:contents}
+  .hx h1{order:1;position:relative;z-index:2}
+  .hx-scene{order:2;margin-top:22px;margin-bottom:0}
+  .hx-scene img{aspect-ratio:912/630;object-fit:cover;object-position:50% 55%}
+  .hx-facts{order:3;margin-top:18px}
+  .hx-form{order:4}
+  .hx .ok-msg{order:5}
+  .hx-vis{order:6}
+  .hx .hx-bar{margin-top:28px}
 }
-/* узкий компьютер: машина меньше и ниже — не заходит на заголовок и кнопки */
-@media (min-width:1080px) and (max-width:1279px){
-  .hs-car{width:700px;top:128px;right:-100px}
-  .hs-2gis{top:340px}
-  .hs-form{width:min(640px,52vw)}
+.hx-scene img{display:block;width:100%;height:auto}
+.hx-bar{position:relative;z-index:3;margin:-56px 0 40px;background:#fff;border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.10);display:grid}
+.hx-c{padding:18px 16px;display:grid;gap:10px;align-content:center}
+.hx-c + .hx-c{border-top:1px solid var(--line)}
+.hx-k{font:900 italic 14px/1 var(--font);text-transform:uppercase;color:var(--head);letter-spacing:.02em}
+.hx-p{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:4px}
+.hx-p .num{font:900 italic clamp(36px,10.5vw,44px)/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.hx-p small{font-size:13.5px;color:var(--muted);line-height:1.3;text-align:right}
+.hx-p small b{display:block;color:var(--ink);font-weight:800}
+.hx-pay p:last-child{font-size:14.5px;line-height:1.45}.hx-pay b{color:var(--red);font-weight:800;white-space:nowrap}
+.hx-score{display:flex;align-items:center;gap:12px}
+.hx-score .num{font:900 italic 44px/1 var(--font);color:var(--head)}
+.hx-score span:last-child{font-size:13px;color:var(--muted);line-height:1.35}
+.hx-score i{display:block;font-style:normal;color:var(--red);font-size:18px;letter-spacing:2px}
+.hx-links{display:flex;gap:16px;flex-wrap:wrap}
+.hx-links a{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--ink);text-decoration:none}
+@media (hover:hover){.hx-links a:hover{color:var(--red)}}
+.hx-go{gap:8px}.hx-go .btn{min-height:52px}.hx-all{background:var(--grey)}
+@media (min-width:720px){
+  .hx-bar{grid-template-columns:1fr 1fr}
+  .hx-c + .hx-c{border-top:0}
+  .hx-c:nth-child(n+3){border-top:1px solid var(--line)}
+  .hx-c:nth-child(2n){border-left:1px solid var(--line)}
 }
-@media (hover:hover){.hs-2gis:hover{box-shadow:0 14px 34px rgba(0,0,0,.16)}.hs-max:hover{background:#141414;color:#fff}}
-/* версия для слабовидящих: всё в одну колонку, машина в потоке */
-html.a11y .hs-wrap{display:flex;flex-direction:column}
-html.a11y .hs-h{font-size:clamp(32px,7vw,64px)}
-html.a11y .hs-h span{white-space:normal}
-html.a11y .hs-car,html.a11y .hs-2gis{position:relative;top:auto;right:auto;width:min(100%,640px);margin:12px 0}
+@media (min-width:960px){
+  .hx{padding-top:44px}
+  .hx-top{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:20px;align-items:center}
+  .hx-facts{margin-top:20px}
+  .hx-form{margin-top:22px}
+  .hx-row .field input,.hx-row .btn{min-height:60px}
+  .hx-row .btn{padding:0 30px;font-size:17px}
+  .hx-vis{height:min(520px,36vw)}
+  /* картинка 1672×941: колёса на 81% высоты; ширина до 1380px, правый край — на 740px правее центра */
+  .hx-scene{position:absolute;max-width:none;margin:0;width:min(1380px,96vw);right:calc(50% - min(740px,51.4vw));bottom:calc(70px - min(145px,10.1vw))}
+  .hx-bar{margin:8px 0 56px;border-radius:28px}
+  .hx-c{padding:22px 26px}
+}
+/* панель цены в одну строку — когда колонкам хватает ширины */
+@media (min-width:1200px){
+  .hx-bar{grid-template-columns:1.35fr 1fr 1.05fr 1.2fr}
+  .hx-go .btn{padding:0 14px;font-size:15px;white-space:nowrap}
+  .hx-c{padding:24px 26px}
+  .hx-c:nth-child(n){border-top:0}
+  .hx-c + .hx-c{border-left:1px solid var(--line)}
+  .hx-p{display:grid;justify-content:start;gap:4px;margin-top:6px}
+  .hx-p small{text-align:left}.hx-p small b{display:inline}
+}
 
 /* подпись редакции и дата обновления под заголовком статьи */
 .byline{margin-top:12px;font-size:13.5px;color:var(--muted)}
@@ -473,10 +490,6 @@ address{font-style:normal}
   .dd-link b{font:700 15px/1.2 var(--font)}
   .dd-link small,.dd-card small{font-size:13px;line-height:1.3;color:var(--muted)}
   .dd-wide{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px;width:min(860px,calc(100vw - 48px))}
-  /* меню по центру шапки: широкий список «Обучения» — по центру всего меню, иначе на узком компьютере уходит за правый край */
-  .nav{position:relative}
-  .nav-i:has(> .dd-wide){position:static}
-  .dd-wide{left:50%;translate:-50% 0}
   .dd-card{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 14px 13px 12px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 var(--red);text-decoration:none;color:var(--ink);transition:box-shadow .16s,background-color .16s}
   /* строки без рамок, значок всегда красный без подложки; при наведении название красное, снизу красная черта на всю строку */
   .dd-ico{display:grid;place-items:center;width:44px;height:32px;color:var(--red);font:900 italic 12.5px/1 var(--font);letter-spacing:.01em}

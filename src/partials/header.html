@@ -17,8 +17,6 @@
     <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></g></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="3" width="7.6" height="7.6" rx="2"/><rect x="13.4" y="3" width="7.6" height="7.6" rx="2"/><rect x="3" y="13.4" width="7.6" height="7.6" rx="2"/><rect x="13.4" y="13.4" width="7.6" height="7.6" rx="2"/></g></symbol>
     <symbol id="i-down" viewBox="0 0 24 24"><path d="M6.5 9.5l5.5 5.5 5.5-5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-vk" viewBox="150 150 700 700"><path fill="currentColor" d="M532.6,720.8c-227.9,0-357.9-156.2-363.3-416.2h114.2c3.8,190.8,87.9,271.7,154.6,288.3V304.6h107.5v164.6 c65.8-7.1,135-82.1,158.3-164.6h107.5c-17.8,86.5-70.8,161.7-146.3,207.5C749.4,554,811.7,630,836.3,720.8H718 c-22.3-79.8-90.3-138.4-172.5-148.8v148.8C545.5,720.8,532.6,720.8,532.6,720.8z"/></symbol>
-    <symbol id="i-max" viewBox="80 80 840 840"><path fill="currentColor" fill-rule="evenodd" d="M512.1 308.2c-99.4-5.2-177 63.8-194.1 171.8-14.2 89.4 11 198.4 32.4 203.9 9.1 2.3 31-14.4 47-29.5 3-2.8 7.5-3.3 11.1-1.2 24.9 15.2 53 26.6 84.1 28.3 102.1 5.4 192.5-74.5 197.9-176.6 5.3-102.1-76.3-191.3-178.4-196.7zM345.6 826.6c-3.8-2.7-9.2-2-12.4 1.5-43.1 46-153.5 78.3-158.5 15.4 0-49.2-11-90.6-23.2-136.3-14.9-55.9-31.5-118-31.5-208.4 0-215.4 176.7-377.5 386.2-377.5S880 291.3 880 501 710.5 876.3 508.2 876.3c-71.8 0-106.6-10.1-162.6-49.7z"/></symbol>
   </defs>
 </svg>
 
@@ -40,7 +38,6 @@
   <div class="wrap topbar-in">
     <nav class="city" aria-label="Выбор города"><a href="/" data-city="tomsk">Томск</a><a href="/novosibirsk">Новосибирск</a></nav>
     <span class="hdr-sp"></span>
-    <a class="ut ut-tel" href="tel:+73822345252"><svg width="16" height="16" aria-hidden="true"><use href="#i-phone"/></svg><b class="num">+7 (3822) 34-52-52</b></a>
     <a class="ut" href="https://lk.virazh-tomsk.ru" target="_blank" rel="noopener"><svg width="16" height="16" aria-hidden="true"><use href="#i-user"/></svg>Личный кабинет</a>
     <a class="ut" href="#a11y" id="a11yBtn" itemprop="copy"><svg width="16" height="16" aria-hidden="true"><use href="#i-eye"/></svg>Версия для слабовидящих</a>
     <a class="ut ut-sved" href="/osnovnye-svedeniya"><svg width="16" height="16" aria-hidden="true"><use href="#i-shield"/></svg>Сведения об образовательной организации</a>
@@ -86,15 +83,15 @@
       </div>
       <a class="nav-t" href="/kontakty">Контакты</a>
     </nav>
-    <div class="hdr-right">
+    <span class="hdr-sp"></span>
     <div class="hdr-msg">
-      <a class="hm hm-vk" href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener" aria-label="Написать во ВКонтакте"><svg width="22" height="22" aria-hidden="true"><use href="#i-vk"/></svg></a>
-      <a class="hm hm-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener" aria-label="Написать в MAX"><svg width="22" height="22" aria-hidden="true"><use href="#i-max"/></svg></a>
+      <a class="hm hm-vk" href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener" aria-label="Написать во ВКонтакте"><img src="/img/brand/vk.svg" alt="" width="22" height="22"></a>
+      <a class="hm hm-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener" aria-label="Написать в MAX"><img src="/img/brand/max.svg" alt="" width="22" height="22"></a>
     </div>
+    <a class="hdr-tel" href="tel:+73822345252"><b class="num">+7 (3822) 34-52-52</b><small>Пн–Пт 9:00–18:00</small></a>
     <button class="btn btn-red" type="button" data-signup>Записаться</button>
     <a class="ic eye-m" href="#a11y" data-a11y-open aria-label="Версия для слабовидящих"><svg width="22" height="22" aria-hidden="true"><use href="#i-eye"/></svg></a>
     <a class="ic call" href="tel:+73822345252" aria-label="Позвонить: +7 (3822) 34-52-52"><svg width="22" height="22"><use href="#i-phone"/></svg></a>
     <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu"><span class="burger" aria-hidden="true"><i></i><i></i></span>Меню</button>
-    </div>
   </div>
 </header>
