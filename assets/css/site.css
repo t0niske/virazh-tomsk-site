@@ -85,8 +85,9 @@ button{font:inherit;color:inherit}
 .nav,.hdr-tel,.hdr .btn{display:none}
 .hdr-msg{display:none}
 .hm{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;transition:transform .15s}
-.hm img{width:21px;height:21px}
-.hm-vk{background:var(--vk)}.hm-max{background:var(--max)}
+/* знаки ВК и MAX — векторные из спрайта (белые), фон кружка — цвета бренда; у MAX фирменный градиент */
+.hm svg{width:22px;height:22px;color:#fff}
+.hm-vk{background:var(--vk)}.hm-max{background:radial-gradient(circle at 15% 95%,#46C6FD 0,rgba(70,198,253,0) 55%),linear-gradient(135deg,#3E63FC 0%,#3F48EA 45%,#8E4BE2 100%)}
 @media (hover:hover){.hm:hover{transform:translateY(-2px)}}
 @media (min-width:1200px){.hdr-msg{display:flex;gap:6px;flex:none}}
 .ic{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#262626;color:#fff;text-decoration:none}
