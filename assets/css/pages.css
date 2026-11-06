@@ -358,10 +358,11 @@ html.a11y-noimg .exit-pic{display:none!important}
 .hx-top{position:relative;display:grid}
 .hx-text{position:relative;z-index:2}
 .hx h1{display:grid;gap:4px}
-.hx h1 .l1{font-size:clamp(24px,6.6vw,46px)}
+/* заголовок по ширине экрана: «Автошкола в Томске» в одну строку, «Авто-Вираж» во всю ширину (отношения ширины текста к кеглю 13,45 и 6,95) */
+.hx h1 .l1{font-size:min(46px, calc((100vw - 32px) / 13.45))}
 .hx h1 .l2{font-size:clamp(33px,9.2vw,68px);color:var(--red);line-height:1.02}
-.hx h1 .l2{text-transform:none;letter-spacing:-.015em;font-size:clamp(38px,10.6vw,74px);white-space:nowrap}  /* «Авто-Вираж»: заглавные только А и В, строчные мельче — кегль крупнее; не рвётся по дефису */
-@media (min-width:960px){.hx h1 .l2{font-size:min(74px,5.8vw)}}
+.hx h1 .l2{text-transform:none;letter-spacing:-.015em;font-size:min(74px, calc((100vw - 32px) / 6.95));white-space:nowrap}  /* «Авто-Вираж»: заглавные только А и В, строчные мельче — кегль крупнее; не рвётся по дефису */
+@media (min-width:960px){.hx h1 .l1{font-size:clamp(46px,4.5vw,56px)}.hx h1 .l2{font-size:clamp(60px,6.3vw,80px)}}
 .hx-facts{display:flex;margin:16px 0 0;padding:0;list-style:none}
 .hx-facts li{display:grid;gap:4px;align-content:start;padding:2px clamp(12px,3.4vw,22px);border-left:2px solid var(--line)}
 .hx-facts li:first-child{padding-left:0;border-left:0}
@@ -407,7 +408,8 @@ html.a11y-noimg .exit-pic{display:none!important}
    Контейнер: min(100vw,1520px) − поля 2×32 px; позиция считается от левого края контейнера */
 @media (min-width:1280px){
   .hx-text{max-width:505px}
-  .hx h1 .l2{font-size:68px}
+  .hx h1 .l1{font-size:56px}
+  .hx h1 .l2{font-size:88px}   /* шире колонки текста: заголовок над машиной, крыша ниже него */
   .hx-form{max-width:470px}
   .hx-scene{--w:min(1780px, calc(((min(100vw, 1520px) - 64px) / 2 + 50vw - 483px) * 1.779));
     width:var(--w);left:calc(513px - var(--w) * .413);right:auto;bottom:calc(70px - var(--w) * .105)}
@@ -419,12 +421,12 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pr-pill{display:inline-block;padding:7px 16px;border:1.5px solid #3A3A3A;border-radius:999px;font:600 13px/1 var(--font);color:#D6D6D6}
 .pr-h{margin:16px 0 0;color:#fff}   /* наклонный заголовок сайта (.it .h2), на тёмном — белый */
 .pr-cards{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
-.pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr) 84px;grid-auto-rows:auto;column-gap:10px;align-content:start}
+.pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr) 104px;grid-auto-rows:auto;column-gap:10px;align-content:start}
 .pc > *{grid-column:1 / -1}
-/* значок-фото программы (селектор АКПП, рычаг МКПП, шлем) справа от названия */
+/* значок-фото программы (селектор АКПП, рычаг МКПП, шлем) справа от названия, без подложки */
 .pc .pc-cat,.pc .pc-name{grid-column:1}
-.pc-pic{grid-column:2;grid-row:1 / span 2;display:grid;place-items:center;width:84px;height:84px;border-radius:var(--r-sm);background:var(--grey)}
-.pc-pic img{width:72px;height:72px;object-fit:contain}
+.pc-pic{grid-column:2;grid-row:1 / span 2;display:grid;place-items:center;width:104px;height:104px;margin:-10px -6px 0 0}
+.pc-pic img{width:104px;height:104px;object-fit:contain}
 .pc-acts{align-self:end}
 .pc-cat{margin:0;font:600 17px/1.2 var(--font);color:var(--head)}
 .pc-name{margin:6px 0 0;font:900 italic 24px/1.1 var(--font);text-transform:uppercase;color:var(--red);letter-spacing:-.01em}
@@ -448,7 +450,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pr-note{margin:20px auto 0;max-width:72ch;text-align:center;font-size:13.5px;line-height:1.5;color:#A8A8A8}
 #prices{padding-top:32px}
 @media (min-width:720px){.pr{padding:56px 32px 40px}.pr-head{margin-bottom:40px}#prices{padding-top:48px}}
-@media (min-width:960px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-columns:minmax(0,1fr) 92px;grid-template-rows:auto auto auto auto auto auto auto 1fr}.pc-pic{width:92px;height:92px}.pc-pic img{width:80px;height:80px}}
+@media (min-width:960px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-columns:minmax(0,1fr) 120px;grid-template-rows:auto auto auto auto auto auto auto 1fr}.pc-pic{width:120px;height:120px;margin:-14px -10px 0 0}.pc-pic img{width:120px;height:120px}}
 
 /* подпись редакции и дата обновления под заголовком статьи */
 .byline{margin-top:12px;font-size:13.5px;color:var(--muted)}
