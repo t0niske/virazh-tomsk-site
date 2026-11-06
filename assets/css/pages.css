@@ -380,7 +380,8 @@ html.a11y-noimg .exit-pic{display:none!important}
   .hx-text{display:contents}
   .hx h1{order:1;position:relative;z-index:2}
   .hx-scene{order:2;margin-top:22px;margin-bottom:0}
-  .hx-scene img{aspect-ratio:912/630;object-fit:cover;object-position:50% 55%}
+  .hx-scene{overflow:hidden}
+  .hx-scene img{aspect-ratio:912/630;object-fit:cover;object-position:50% 55%;width:124%;max-width:none;margin:0 -25% -5% 1%}   /* машина крупнее: кадр шире экрана, машина (в кадре левее центра) — по центру экрана */
   .hx-facts{order:3;margin-top:18px}
   .hx-form{order:4}
   .hx .ok-msg{order:5}
@@ -400,6 +401,16 @@ html.a11y-noimg .exit-pic{display:none!important}
   /* картинка 1672×941: колёса на 81% высоты; ширина до 1380px, правый край — на 740px правее центра */
   .hx-scene{position:absolute;max-width:none;margin:0;width:min(1380px,96vw);right:calc(50% - min(740px,51.4vw));bottom:calc(70px - min(145px,10.1vw))}
   .hx .promo{margin-top:8px}
+}
+/* от 1280 px машина крупнее: текст первого экрана — колонкой до 505 px, машина начинается сразу за ней и тянется
+   до края экрана (до 1000 px шириной). --w — ширина сцены 1672×941: машина в ней от 41,3% до 97,5% ширины, колёса на 81% высоты.
+   Контейнер: min(100vw,1520px) − поля 2×32 px; позиция считается от левого края контейнера */
+@media (min-width:1280px){
+  .hx-text{max-width:505px}
+  .hx h1 .l2{font-size:68px}
+  .hx-form{max-width:470px}
+  .hx-scene{--w:min(1780px, calc(((min(100vw, 1520px) - 64px) / 2 + 50vw - 483px) * 1.779));
+    width:var(--w);left:calc(513px - var(--w) * .413);right:auto;bottom:calc(70px - var(--w) * .105)}
 }
 /* главная, «Программы и цены»: тёмная плашка со скруглёнными углами, три белые карточки программ.
    Шаги оплаты — как на сайте: первый взнос 5 000 ₽ за теорию, 28 (29) занятий по 2 000 ₽, внутренний экзамен 5 000 ₽ (в цене курса) */
