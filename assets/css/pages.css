@@ -351,15 +351,17 @@ html.a11y-noimg .sign3d{display:none!important}
 .exit-note{font-size:12.5px;color:var(--muted);margin-top:12px}
 html.a11y-noimg .exit-pic{display:none!important}
 
-/* первый экран главной: сцена «вираж трека» с Omoda (design/hero-scene), номер сразу в форме, под машиной панель цены.
-   На компьютере сцена лежит под колонками и привязана к низу блока: колёса всегда чуть выше панели цены */
-.hx{position:relative;isolation:isolate;overflow:hidden;overflow:clip;padding-top:18px}
+/* первый экран главной: сцена «вираж трека» с Omoda (design/hero-scene), номер сразу в форме, под машиной — белая
+   плашка «Запись открыта круглый год». Фон серый, как у серых блоков сайта: белая студия сцены ложится на него через multiply.
+   На компьютере сцена лежит под колонками и привязана к низу блока: колёса всегда чуть выше плашки записи */
+.hx{position:relative;isolation:isolate;overflow:hidden;overflow:clip;padding:18px 0 32px;background:var(--grey)}
 .hx-top{position:relative;display:grid}
 .hx-text{position:relative;z-index:2}
 .hx h1{display:grid;gap:4px}
 .hx h1 .l1{font-size:clamp(24px,6.6vw,46px)}
 .hx h1 .l2{font-size:clamp(33px,9.2vw,68px);color:var(--red);line-height:1.02}
-.hx h1 .l2{text-transform:none;letter-spacing:-.015em;font-size:clamp(38px,10.6vw,74px)}  /* «Авто-Вираж»: заглавные только А и В, строчные мельче — кегль крупнее */
+.hx h1 .l2{text-transform:none;letter-spacing:-.015em;font-size:clamp(38px,10.6vw,74px);white-space:nowrap}  /* «Авто-Вираж»: заглавные только А и В, строчные мельче — кегль крупнее; не рвётся по дефису */
+@media (min-width:960px){.hx h1 .l2{font-size:min(74px,5.8vw)}}
 .hx-facts{display:flex;margin:16px 0 0;padding:0;list-style:none}
 .hx-facts li{display:grid;gap:4px;align-content:start;padding:2px clamp(12px,3.4vw,22px);border-left:2px solid var(--line)}
 .hx-facts li:first-child{padding-left:0;border-left:0}
@@ -383,34 +385,12 @@ html.a11y-noimg .exit-pic{display:none!important}
   .hx-form{order:4}
   .hx .ok-msg{order:5}
   .hx-vis{order:6}
-  .hx .hx-bar{margin-top:28px}
 }
+.hx-scene{mix-blend-mode:multiply}
 .hx-scene img{display:block;width:100%;height:auto}
-.hx-bar{position:relative;z-index:3;margin:-56px 0 40px;background:#fff;border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.10);display:grid}
-.hx-c{padding:18px 16px;display:grid;gap:10px;align-content:center}
-.hx-c + .hx-c{border-top:1px solid var(--line)}
-.hx-k{font:900 italic 14px/1 var(--font);text-transform:uppercase;color:var(--head);letter-spacing:.02em}
-.hx-p{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:4px}
-.hx-p .num{font:900 italic clamp(36px,10.5vw,44px)/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
-.hx-p small{font-size:13.5px;color:var(--muted);line-height:1.3;text-align:right}
-.hx-p small b{display:block;color:var(--ink);font-weight:800}
-.hx-pay p:last-child{font-size:14.5px;line-height:1.45}.hx-pay b{color:var(--red);font-weight:800;white-space:nowrap}
-.hx-score{display:flex;align-items:center;gap:12px}
-.hx-score .num{font:900 italic 44px/1 var(--font);color:var(--head)}
-.hx-score span:last-child{font-size:13px;color:var(--muted);line-height:1.35}
-.hx-score i{display:block;font-style:normal;color:var(--red);font-size:18px;letter-spacing:2px}
-.hx-links{display:flex;gap:16px;flex-wrap:wrap}
-.hx-links a{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--ink);text-decoration:none}
-@media (hover:hover){.hx-links a:hover{color:var(--red)}}
-.hx-go{gap:8px}.hx-go .btn{min-height:52px}.hx-all{background:var(--grey)}
-@media (min-width:720px){
-  .hx-bar{grid-template-columns:1fr 1fr}
-  .hx-c + .hx-c{border-top:0}
-  .hx-c:nth-child(n+3){border-top:1px solid var(--line)}
-  .hx-c:nth-child(2n){border-left:1px solid var(--line)}
-}
+.hx .promo{position:relative;z-index:3;margin:28px 0 0;background:#fff;box-shadow:0 18px 50px rgba(0,0,0,.08)}
 @media (min-width:960px){
-  .hx{padding-top:44px}
+  .hx{padding:44px 0 56px}
   .hx-top{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:20px;align-items:center}
   .hx-facts{margin-top:20px}
   .hx-form{margin-top:22px}
@@ -419,19 +399,43 @@ html.a11y-noimg .exit-pic{display:none!important}
   .hx-vis{height:min(520px,36vw)}
   /* картинка 1672×941: колёса на 81% высоты; ширина до 1380px, правый край — на 740px правее центра */
   .hx-scene{position:absolute;max-width:none;margin:0;width:min(1380px,96vw);right:calc(50% - min(740px,51.4vw));bottom:calc(70px - min(145px,10.1vw))}
-  .hx-bar{margin:8px 0 56px;border-radius:28px}
-  .hx-c{padding:22px 26px}
+  .hx .promo{margin-top:8px}
 }
-/* панель цены в одну строку — когда колонкам хватает ширины */
-@media (min-width:1200px){
-  .hx-bar{grid-template-columns:1.35fr 1fr 1.05fr 1.2fr}
-  .hx-go .btn{padding:0 14px;font-size:15px;white-space:nowrap}
-  .hx-c{padding:24px 26px}
-  .hx-c:nth-child(n){border-top:0}
-  .hx-c + .hx-c{border-left:1px solid var(--line)}
-  .hx-p{display:grid;justify-content:start;gap:4px;margin-top:6px}
-  .hx-p small{text-align:left}.hx-p small b{display:inline}
-}
+/* главная, «Программы и цены»: тёмная плашка со скруглёнными углами, три белые карточки программ.
+   Шаги оплаты — как на сайте: первый взнос 5 000 ₽ за теорию, 2 000 ₽ за занятие, внутренний экзамен 5 000 ₽ (в цене курса) */
+.pr{background:#141414;color:#fff;border-radius:var(--r);padding:36px 16px 28px}
+.pr-head{text-align:center;max-width:760px;margin:0 auto 28px}
+.pr-pill{display:inline-block;padding:7px 16px;border:1.5px solid #3A3A3A;border-radius:999px;font:600 13px/1 var(--font);color:#D6D6D6}
+.pr-h{margin:16px 0 0;font:800 clamp(26px,6.6vw,44px)/1.12 var(--font);letter-spacing:-.02em;color:#fff;text-wrap:balance}
+.pr-head p{margin:14px auto 0;max-width:62ch;font-size:15.5px;line-height:1.55;color:#BDBDBD}
+.pr-cards{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.pc{background:#fff;color:var(--ink);border-radius:20px;padding:24px 20px;display:flex;flex-direction:column}
+.pc-cat{margin:0;font:600 17px/1.2 var(--font);color:var(--head)}
+.pc-name{margin:4px 0 0;font:800 26px/1.15 var(--font);color:var(--red);letter-spacing:-.01em}
+.pc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pc-chips span{padding:6px 12px;border:1.5px solid #1E1E1E;border-radius:999px;font:600 13px/1 var(--font)}
+.pc-chips .r{border-color:var(--red);color:var(--red)}
+.pc-price{margin:22px 0 0;font:800 40px/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.pc-pl{margin:16px 0 0;font:700 14px/1.2 var(--font)}
+.pc-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 0;padding:0;list-style:none}
+.pc-steps li{display:grid;gap:3px;padding-bottom:8px;border-bottom:3px solid #D0D0D0}
+.pc-steps li.on{border-color:var(--red)}
+.pc-steps small{font-size:12.5px;color:var(--muted)}
+.pc-steps b{font:700 14px/1.2 var(--font);white-space:nowrap}
+.pc-list{list-style:none;margin:20px 0 0;padding:18px 0 0;border-top:1px solid var(--line);display:grid;gap:10px}
+.pc-list li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+.pc-list li::before{content:"";flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.3l2.7 2.7L13 6.6' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat}
+.pc-acts{display:grid;gap:8px;margin-top:auto;padding-top:24px}
+.pc-acts .btn{width:100%;min-height:54px}
+.pc-more{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
+@media (hover:hover){.pc-more:hover{background:var(--ink);color:#fff}}
+.pr-note{margin:20px auto 0;max-width:72ch;text-align:center;font-size:13.5px;line-height:1.5;color:#A8A8A8}
+.pr-links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;margin-top:12px}
+.pr-links a{font:600 14px/1.3 var(--font);color:#fff;text-decoration:underline;text-decoration-color:#5A5A5A;text-underline-offset:4px}
+@media (hover:hover){.pr-links a:hover{text-decoration-color:var(--red)}}
+#prices{padding-top:32px}
+@media (min-width:720px){.pr{padding:56px 32px 40px}.pr-head{margin-bottom:40px}#prices{padding-top:48px}}
+@media (min-width:960px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px 28px 28px}}
 
 /* подпись редакции и дата обновления под заголовком статьи */
 .byline{margin-top:12px;font-size:13.5px;color:var(--muted)}
