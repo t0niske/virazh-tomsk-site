@@ -48,8 +48,9 @@ button{font:inherit;color:inherit}
 .btn-tg{background:var(--tg);color:#fff}
 .btn-vk{background:var(--vk);color:#fff}
 .btn-max{background:var(--max);color:#fff}
-.btn-msg{min-height:50px;font:900 italic 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;padding:0 10px}
-.msgs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.btn-msg{min-height:50px;font:900 italic 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;padding:0 8px;gap:8px}
+.msgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}   /* колонки строго равные — кнопки одной ширины */
+@media (max-width:399px){.final-card .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон: в форме «ВКонтакте» не влезает в полширины — кнопки друг под другом */
 .link{font-weight:700;font-size:15px;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
 .chip{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border:0;border-radius:14px;background:var(--grey);font:700 14px/1 var(--font);cursor:pointer;white-space:nowrap;color:var(--ink)}
 .chip[aria-pressed="true"]{background:var(--red);color:#fff}
@@ -482,6 +483,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 .ftr-brand p{color:#C4C4C4;font-size:14px;line-height:1.55}
 .ftr-soc{display:flex;gap:8px}
 .ftr-soc .btn{min-height:44px;padding:0 16px;font-size:13px}
+.ftr-soc .btn-msg{flex:1 1 0;min-width:0}   /* ВКонтакте и MAX одной ширины */
 .ftr-contacts dl{margin:0;display:grid;gap:14px}
 .ftr-contacts dt{font:700 11.5px/1 var(--font);text-transform:uppercase;letter-spacing:.08em;color:#9A9A9A;margin-bottom:6px}
 .ftr-contacts dd{margin:0;color:#fff;line-height:1.5}
@@ -545,7 +547,7 @@ span.rd-ico{display:none}
 
 /* логотипы VK, MAX, 2ГИС в кнопках и ссылках */
 img.brand{width:22px;height:22px;flex:none;border-radius:6px;display:inline-block;vertical-align:-5px}
-.btn-msg img.brand{box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.btn-msg svg{width:22px;height:22px;flex:none;color:#fff}   /* значки как в шапке: белый знак, без обводки */
 .link img.brand,.rt-card img.brand{margin-right:6px}
 .rt-card b img.brand{width:20px;height:20px;vertical-align:-4px}
 /* 9 пунктов меню: на узком десктопе чуть плотнее, чтобы шапка не вылезала */

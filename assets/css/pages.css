@@ -519,9 +519,9 @@ html.a11y-noimg .exit-pic{display:none!important}
 .fq-cols > div{display:grid;gap:8px;align-content:start}
 .fq-strip{margin-top:16px;background:#141414;color:#fff;border-radius:var(--r);padding:22px 20px;display:grid;gap:16px;align-items:center}
 .fq-st{display:grid;gap:6px}.fq-st b{font-size:22px;line-height:1.15;color:#fff}.fq-st span{color:#BDBDBD;font-size:15px}
-.fq-acts{display:grid;gap:10px}.fq-acts .msgs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.fq-all{margin-top:14px}
-@media (min-width:960px){.fq-cols{grid-template-columns:1fr 1fr;gap:12px}.fq-strip{grid-template-columns:minmax(0,1fr) auto;padding:26px 32px}.fq-acts{grid-auto-flow:column;align-items:center}.fq-acts .msgs{display:flex}}
+.fq-acts{display:grid;gap:10px}
+@media (max-width:399px){.fq-acts .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон — кнопки друг под другом, одной ширины */
+@media (min-width:960px){.fq-cols{grid-template-columns:1fr 1fr;gap:12px}.fq-strip{grid-template-columns:minmax(0,1fr) auto;padding:26px 32px}.fq-acts{grid-auto-flow:column;align-items:center}.fq-acts .msgs{grid-template-columns:repeat(2,150px)}}
 /* финальная форма (все страницы): тёмная плашка — слева заголовок, телефон и фото инструктора, справа белая форма */
 .fs-dark{background:#141414;border-radius:var(--r);padding:28px 18px 18px;display:grid;gap:24px}
 .fs-dark .head .it{color:#fff}
