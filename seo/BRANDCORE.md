@@ -30,6 +30,7 @@
 | Вождение A | 18 часов | сайт |
 | Теория | в классе или онлайн в личном кабинете 24/7 | сайт |
 | Учебный парк | 9 машин и мотоцикл | подтверждено 28.10.2026 |
+| Стаж вождения инструкторов | от 10 до 34 лет | сайт: карточки инструкторов (`src/partials/team-cards.html`), `/o-shkole`; при смене состава пересчитать |
 | АКПП | Omoda C5, Chery Tiggo 4 Pro, Jetour Dashing, Belgee S50, VW Polo | `/avtopark` |
 | МКПП | Kia Rio, Hyundai Solaris, Lada Granta, Nissan Note | `/avtopark` |
 | Мотоцикл | Bajaj Boxer | `/avtopark` |

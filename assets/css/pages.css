@@ -337,6 +337,16 @@ html.a11y-noimg .sign3d{display:none!important}
 
 /* карточки «Почему нас»: предметная съёмка на светлом фоне в цвет карточки — номер красный */
 .wc .ph .n{color:var(--red);text-shadow:none}
+/* главная: карточки «Почему нас» белые на сером блоке, предметы без фона (img/cards/wc-*-cut.webp);
+   заголовки — на одной высоте и в две строки, чтобы тексты под ними тоже начинались ровно */
+.why-cut .wc{background:#fff;grid-row:span 3;grid-template-rows:subgrid;row-gap:0}
+.why-cut .wc .tx{display:contents}
+.why-cut .wc .ph{aspect-ratio:16/9;padding:18px 22px 6px}
+.why-cut .wc .ph img{object-fit:contain;filter:drop-shadow(0 14px 14px rgba(0,0,0,.13))}
+.why-cut .wc .ph .n{bottom:-14px}
+.why-cut .wc h3{padding:30px 18px 6px;align-self:start}
+.why-cut .wc p{padding:0 18px 20px}
+@media (min-width:1080px){.why-cut .wc .ph{aspect-ratio:4/3;padding:22px 18px 10px}}
 
 
 @media (max-width:899px){.promo{margin-top:22px}.promo-art{top:-26px}}
