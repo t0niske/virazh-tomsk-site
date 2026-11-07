@@ -476,7 +476,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 @media (min-width:720px){.sc-list{grid-auto-columns:calc((100% - 24px) / 2.25)}.sh-arr{display:flex}}
 @media (min-width:1080px){.sc-list{grid-auto-columns:calc((100% - 36px) / 3.25)}}
 /* главная, «Инструкторы»: карусель всех инструкторов (team-cards view=carousel, build.pl ins_carousel), стрелки как у шагов.
-   Под фото две одинаковые серые метки — коробка и машина; кнопка у нижнего края — в ряду кнопки на одной высоте */
+   Под фото две метки одного размера — коробка (красная) и машина (серая); кнопка у нижнего края — в ряду кнопки на одной высоте */
 .ins-list{grid-auto-columns:78%}
 @media (min-width:720px){.ins-list{grid-auto-columns:calc((100% - 24px) / 2.4)}}
 @media (min-width:1080px){.ins-list{grid-auto-columns:calc((100% - 36px) / 4.3)}}
@@ -485,6 +485,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .ins-c .ins-in{padding:18px;gap:12px}
 .ins-pills{display:flex;flex-wrap:wrap;gap:6px}
 .ins-pills span{padding:7px 12px;border-radius:999px;background:var(--grey);font:700 12.5px/1.2 var(--font);color:var(--ink);white-space:nowrap}
+.ins-pills span:first-child{background:var(--red);color:#fff}   /* коробка (автомат / механика) — красная */
 .ins-c .nm{font-size:21px;line-height:1.1}
 .ins-c .nm b{display:block;font-weight:900}
 .ins-c .nm span{display:block;margin-top:4px;font:600 14px/1.3 var(--font);text-transform:none;color:var(--muted)}
