@@ -57,6 +57,8 @@ sub include_with {
     $s =~ s{<article class="ins"([^>]*)>(.*?)</article>}{ ins_carousel($1, $2) }gse;
     $s =~ s{<div class="scroller"}{<div class="scroller ins-list"};
   }
+  # nolink=1 — без ссылки «Все …» под лентой (точки прокрутки остаются)
+  $s =~ s{\s*<a class="link"[^>]*>.*?</a>}{}s if $a{nolink};
   # arrows=1 — стрелки листания в одной строке с табами фильтра (по нижнему краю); лента с «подглядывающей» следующей карточкой
   if ($a{arrows} && $s =~ /<div class="scroller[^"]*" id="([\w-]+)"/) {
     my $id = $1;
