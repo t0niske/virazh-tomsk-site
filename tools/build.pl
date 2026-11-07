@@ -201,9 +201,9 @@ for my $file (@pages) {
       or warn "art: нет page-hero в $file\n";
   }
   # разметка FAQPage из блоков вопросов <div class="faq"><details><summary>…</summary><p>…</p></details>
-  if ($content =~ /<div class="faq">/) {
+  if ($content =~ /<div class="faq\b[^"]*">/) {
     my @qa;
-    while ($content =~ m{<details>\s*<summary>(.*?)</summary>\s*(.*?)</details>}gs) {
+    while ($content =~ m{<details\b[^>]*>\s*<summary>(.*?)</summary>\s*(.*?)</details>}gs) {
       my ($q, $a) = ($1, $2);
       push @bot_faq, [$q, $a, $path];
       for ($q, $a) { s/<[^>]+>//g; s/\s+/ /g; s/^\s+|\s+$//g; s/\\/\\\\/g; s/"/\\"/g; }
