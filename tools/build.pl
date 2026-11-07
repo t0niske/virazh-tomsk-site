@@ -82,11 +82,29 @@ sub git_dates {
 my @MON = qw(января февраля марта апреля мая июня июля августа сентября октября ноября декабря);
 sub ru_date { my ($y, $m, $d) = split /-/, shift; return ($d + 0) . " $MON[$m - 1] $y" }
 
+# Висячие предлоги и союзы — нигде на сайте: слово из 1–2 букв, а также предлог или союз из списка держится за следующее
+# слово («без&nbsp;переплат», «вместе с&nbsp;группой»); частицы же/ли/бы — за предыдущее; тире не начинает строку.
+# Только текст: теги, атрибуты, <script>, <style>, <textarea>, <pre> не трогаются. $nb — '&nbsp;' для HTML, "\x{A0}" для JSON помощника.
+my $SHORT = qr/(?:(?!(?:же|ли|бы)(?!\p{L}))\p{Cyrillic}{1,2}|без|для|под|над|при|про|обо|изо|ото|через|перед|между|около|после|возле|среди|вдоль|вместо|кроме|сквозь|ради|или|либо|что|чтобы|как|где|если|чем)/i;
+sub typo_text {
+  my ($t, $nb) = @_;
+  $t =~ s/(?<![\p{L}\d-])($SHORT) +(?=\S|$)/$1$nb/g;
+  $t =~ s/(?<=\p{L}) +((?:же|ли|бы)(?!\p{L}))/$nb$1/gi;
+  $t =~ s/ +(?=[—–] )/$nb/g;
+  $t;
+}
+sub typo {
+  my ($html, $nb) = (shift, shift // '&nbsp;');
+  join '', map {
+    /^<(?:script|style|textarea|pre)\b/i ? $_ : join '', map { /^</ ? $_ : typo_text($_, $nb) } split /(<[^>]*>)/
+  } split /(<script\b.*?<\/script>|<style\b.*?<\/style>|<textarea\b.*?<\/textarea>|<pre\b.*?<\/pre>)/is, $html;
+}
+
 my $version = strftime('%Y%m%d%H%M', localtime);
 my $layout = slurp('src/layout.html');
-my $header = expand_includes(slurp('src/partials/header.html'));
-my $footer = expand_includes(slurp('src/partials/footer.html'));
-my $overlays = expand_includes(slurp('src/partials/overlays.html'));
+my $header = typo(expand_includes(slurp('src/partials/header.html')));
+my $footer = typo(expand_includes(slurp('src/partials/footer.html')));
+my $overlays = typo(expand_includes(slurp('src/partials/overlays.html')));
 
 remove_tree($opt{out}); make_path($opt{out});
 
@@ -154,11 +172,8 @@ for my $file (@pages) {
   $content = join '', map {
     /^<(?:script|style)\b/i ? $_ : do { (my $x = $_) =~ s{>([^<]+)<}{ my $s = $1; $s =~ s/(\d) (?=\d{3}(?!\d))/$1&nbsp;/g; $s =~ s/(\d) (?=\x{20BD})/$1&nbsp;/g; ">$s<" }ge; $x }
   } split /(<script\b.*?<\/script>|<style\b.*?<\/style>)/is, $content;
-  # висячие предлоги и союзы в заголовках («НАЧНИТЕ С / ОДНОГО ЗВОНКА»): слово из 1–2 букв держится за следующее
-  $content =~ s{(<(h[1-3])\b[^>]*>)(.*?)(</\2>)}{
-    my ($o, $in, $c) = ($1, $3, $4);
-    $in = join '', map { /^</ ? $_ : do { (my $t = $_) =~ s/(?<![\p{L}\d-])(\p{Cyrillic}{1,2}) +(?=\S|$)/$1&nbsp;/g; $t } } split /(<[^>]+>)/, $in;
-    "$o$in$c" }gse;
+  # висячие предлоги и союзы — во всём тексте страницы (см. typo)
+  $content = typo($content);
   # активный пункт во внутренних меню (раздел «Сведения» и т.п.)
   $content =~ s{<a class="sv" href="\Q$path\E"}{<a class="sv" href="$path" aria-current="page"}g;
   # ссылка «Все …» под каруселью на её же странице не нужна: помечаем, CSS её прячет
@@ -260,7 +275,7 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
     }
     push @paras, [@cur] if @cur;
     if ($title eq '!подсказки') { @chips = map { @$_ } @paras; next }
-    my $html = join '', map { '<p>' . join('<br>', @$_) . '</p>' } @paras;
+    my $html = typo(join('', map { '<p>' . join('<br>', @$_) . '</p>' } @paras), "\x{A0}");
     if ($title =~ /^!(.+)$/) { $special{$1} = $html; next }
     push @items, { q => $title, k => $words, a => $html, w => 1 };
     $have{ $key->($title) } = 1;
@@ -272,6 +287,7 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
     $a =~ s{</?(?!a\b|b\b|strong\b|br\b|p\b)\w+[^>]*>}{}g;
     $a =~ s/\s+/ /g; $a =~ s/^\s+|\s+$//g;
     $a .= qq{<p><a href="$from">Подробнее на странице</a></p>} unless $a =~ /<a\b/;
+    $a =~ s/&nbsp;/\x{A0}/g; $a = typo($a, "\x{A0}");
     push @items, { q => $q, k => '', a => $a, w => 0.95 };
   }
   my $kb = JSON::PP->new->canonical->encode({ special => \%special, chips => \@chips, items => \@items });

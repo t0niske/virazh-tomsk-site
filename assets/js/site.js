@@ -60,7 +60,7 @@
       $('cBase').textContent = rub(base);
       $('cStudRow').hidden = !disc;
       $('cTaxRow').hidden = !tax.checked;
-      $('cTaxVal').textContent = 'до ' + rub(back);
+      $('cTaxVal').textContent = 'до ' + rub(back);
       $('cTotal').textContent = rub(paid);
       $('cStartRow').hidden = !C[cat].start;
       $('cExamRow').hidden = cat === 'a';
@@ -153,7 +153,7 @@
     if (s && sheet) {
       const cat = s.dataset.signup;
       if (cat && C[cat]) $('s-cat').value = cat;
-      $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + '. Перезвоним в рабочее время' : 'Перезвоним в рабочее время и подберём группу';
+      $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + '. Перезвоним в рабочее время' : 'Перезвоним в рабочее время и подберём группу';
       const f = $('sheetForm'); f.hidden = false; $('sheetOk').style.display = 'none';
       closeMenu();
       openSheet(sheet); return;
@@ -241,7 +241,7 @@
       if (i < 0 || i >= items.length) return;
       cur = i; const a = items[i];
       img.src = a.getAttribute('href'); img.alt = a.querySelector('img').alt;
-      cap.textContent = (i + 1) + ' из ' + items.length;
+      cap.textContent = (i + 1) + ' из ' + items.length;
       if (!box.open) box.showModal();
       if (push !== false) history.replaceState(null, '', '?i=' + encodeURIComponent(a.dataset.id));
     };

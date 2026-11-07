@@ -190,6 +190,12 @@ html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;p
 
 /* ===== фото-иконки (img/icons, 320×320, без фона) ===== */
 .perk-ico{width:64px;height:64px;object-fit:contain;margin:-6px 0 2px -6px}
+/* до 360 px «Маткапитал» не помещается в полширины: плитки в одну колонку, значок слева */
+@media (max-width:359px){
+  .perks{grid-template-columns:minmax(0,1fr)}
+  .perk{grid-template-columns:56px minmax(0,1fr);column-gap:12px;align-items:center}
+  .perk .perk-ico{grid-row:1 / span 2;width:56px;height:56px;margin:0}
+}
 /* блок «Коротко об автошколе» (С 2007 года / 5.0 / 9 машин / автодром): белые плитки на сером, фото по центру;
    на телефоне 2×2, с планшета в один ряд */
 .sec.grey .st{background:#fff}
@@ -339,14 +345,13 @@ html.a11y-noimg .sign3d{display:none!important}
 .wc .ph .n{color:var(--red);text-shadow:none}
 /* главная: карточки «Почему нас» белые на сером блоке, предметы без фона (img/cards/wc-*-cut.webp);
    заголовки — на одной высоте и в две строки, чтобы тексты под ними тоже начинались ровно */
-.why-cut .wc{background:#fff;grid-row:span 3;grid-template-rows:subgrid;row-gap:0}
-.why-cut .wc .tx{display:contents}
-.why-cut .wc .ph{aspect-ratio:16/9;padding:18px 22px 6px}
-.why-cut .wc .ph img{object-fit:contain;filter:drop-shadow(0 14px 14px rgba(0,0,0,.13))}
-.why-cut .wc .ph .n{bottom:-14px}
-.why-cut .wc h3{padding:30px 18px 6px;align-self:start}
-.why-cut .wc p{padding:0 18px 20px}
-@media (min-width:1080px){.why-cut .wc .ph{aspect-ratio:4/3;padding:22px 18px 10px}}
+.why-cut .wc{background:#fff;grid-template-rows:auto 1fr}
+.why-cut .wc .ph{aspect-ratio:auto;display:grid;padding:18px 18px 0}
+.why-cut .wc .ph img{aspect-ratio:16/9;height:auto;padding:0 4px;object-fit:contain;filter:drop-shadow(0 14px 14px rgba(0,0,0,.13))}
+/* цифра — под картинкой, не на ней */
+.why-cut .wc .ph .n{position:static;margin-top:14px}
+.why-cut .wc .tx{align-content:start;gap:10px;padding:12px 18px 22px}
+@media (min-width:1080px){.why-cut .wc .ph img{aspect-ratio:4/3}}
 
 
 @media (max-width:899px){.promo{margin-top:22px}.promo-art{top:-26px}}

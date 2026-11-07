@@ -177,7 +177,7 @@ button{font:inherit;color:inherit}
 .nc .amt{position:absolute;right:16px;top:20px;font:900 italic 22px/1 var(--font);color:var(--red)}
 .nc h3{font:900 italic 17px/1.15 var(--font);text-transform:uppercase;color:var(--head);margin-top:6px}
 .nc p{font-size:14.5px;color:var(--muted)}
-.perks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.perks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
 .perk{background:#fff;border:2px solid var(--grey);border-radius:var(--r-sm);padding:14px;display:grid;gap:4px;align-content:start}
 .perk b{font:900 italic 20px/1.1 var(--font);color:var(--red)}
 .perk span{font-size:13px;color:var(--muted);line-height:1.4}
@@ -475,6 +475,8 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 .sec.about .prose p{color:var(--ink)}
 
 /* ===== подвал ===== */
+/* планшет: четыре колонки не помещаются (предлоги держатся за слово — «об образовательной» не переносится), поэтому 2×2 */
+@media (min-width:720px) and (max-width:1079px){.ftr-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 40px}}
 .ftr-brand{display:grid;gap:16px;align-content:start;max-width:380px}
 .ftr-brand .logo img{height:46px;width:auto}
 .ftr-brand p{color:#C4C4C4;font-size:14px;line-height:1.55}
