@@ -187,11 +187,17 @@ priority: 1.0
 <!-- ================= TEAM ================= -->
 <section class="sec grey" id="team">
   <div class="wrap">
-    <div class="head">
-      <h2 class="it h2">Инструкторы, <span class="acc">с которыми спокойно</span></h2>
-      <span class="sub-it">Выберите заранее — по коробке, машине и опыту</span>
+    <div class="sh">
+      <div class="head">
+        <h2 class="it h2">Инструкторы, <span class="acc">с которыми спокойно</span></h2>
+        <span class="sub-it">Выберите заранее — по коробке, машине и опыту</span>
+      </div>
+      <div class="sh-arr">
+        <button class="sa" type="button" data-for="teamList" data-prev aria-label="Предыдущий инструктор"><svg width="22" height="22" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <button class="sa" type="button" data-for="teamList" data-next aria-label="Следующий инструктор"><svg width="22" height="22" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
     </div>
-    <!--#include team-cards limit=4-->
+    <!--#include team-cards view=carousel-->
   </div>
 </section>
 

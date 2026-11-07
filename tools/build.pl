@@ -52,7 +52,29 @@ sub include_with {
   }
   # в выжимке и в одной группе фильтровать нечего — кнопки фильтра убираем
   $s =~ s{[ \t]*<div[^>]*\bdata-filter-for=.*?</div>\s*}{}s if $a{only} || $a{limit};
+  # view=carousel — карточки инструкторов для карусели на главной (из тех же данных, что на /instruktory)
+  if (($a{view} // '') eq 'carousel') {
+    $s =~ s{<article class="ins"([^>]*)>(.*?)</article>}{ ins_carousel($1, $2) }gse;
+    $s =~ s{<div class="scroller"}{<div class="scroller ins-list"};
+  }
   return limit_cards($s, $a{limit});
+}
+# карточка-карусель: под фото две одинаковые метки (коробка и машина), фамилия крупно, имя и отчество ниже,
+# стаж двумя цифрами, кнопка «Записаться»; цитата не выводится — она на странице инструкторов
+sub ins_carousel {
+  my ($attr, $b) = @_;
+  my ($ph) = $b =~ m{(<div class="ph[^"]*">.*?</div>)}s;
+  my ($gb) = $ph =~ m{<span class="pill[^"]*">([^<]+)</span>};
+  $ph =~ s{<span class="pill[^"]*">[^<]*</span>}{};
+  my ($nm) = $b =~ m{<span class="nm">([^<]+)</span>};
+  my ($sur, $rest) = split / /, $nm, 2;
+  my %d = $b =~ m{<dt>([^<]+)</dt><dd>([^<]+)</dd>}g;
+  my ($btn) = $b =~ m{(<button\b[^>]*>)};
+  $btn =~ s/ ?\bbtn-sm\b//; $btn =~ s/ ?\bbtn-block\b//;
+  return qq{<article class="ins ins-c"$attr>$ph<div class="ins-in"><div class="ins-pills"><span>$gb</span><span>$d{'Машина'}</span></div>}
+       . qq{<span class="nm"><b>$sur</b><span>$rest</span></span>}
+       . qq{<div class="ins-st"><div><b>$d{'За рулём'}</b><span>за рулём</span></div><div><b>$d{'Обучает'}</b><span>обучает</span></div></div>}
+       . qq{${btn}Записаться</button></div></article>};
 }
 # limit: полный список живёт на своей странице, в выжимках — только первые карточки
 sub limit_cards {
