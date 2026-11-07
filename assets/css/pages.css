@@ -417,8 +417,25 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pm-steps a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25);text-underline-offset:3px;white-space:nowrap}
 .pm-acts{display:grid;gap:10px}
 .pm-acts .btn{white-space:nowrap}
-.pm-max{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
-@media (hover:hover){.pm-max:hover{background:var(--ink);color:#fff}}
+.pm-max,.ab-more{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
+@media (hover:hover){.pm-max:hover,.ab-more:hover{background:var(--ink);color:#fff}}
+/* главная, «Об автошколе»: заголовок и текст, фото команды на всю ширину, цифры на белой плашке поверх нижнего края фото */
+.ab{display:grid;gap:22px}
+.ab-top{display:grid;gap:14px}
+.ab-lead{margin:0;font-size:16px;line-height:1.6;color:var(--muted)}
+.ab-photo{display:block;margin:0;border-radius:var(--r);overflow:hidden;background:#ddd;aspect-ratio:16/10}
+.ab-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.ab-nums{list-style:none;margin:-64px 12px 0;padding:18px 8px;position:relative;z-index:2;background:#fff;border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.10);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}
+.ab-nums li{display:grid;gap:4px;align-content:start;padding:0 12px;border-left:1.5px solid #E6E6E6}
+.ab-nums li:nth-child(odd){border-left:0}
+.ab-nums b{font:800 26px/1.05 var(--font);letter-spacing:-.02em;color:var(--red);white-space:nowrap}
+.ab-nums span{font-size:13px;line-height:1.35;color:var(--muted)}
+.ab-act{display:grid;justify-items:center}   /* кнопка «Подробнее о школе» — по центру на всех ширинах */
+@media (min-width:720px){.ab-photo{aspect-ratio:auto;height:clamp(340px,40vw,500px)}
+  .ab-nums{grid-template-columns:repeat(4,minmax(0,1fr));margin:-84px 32px 0;padding:24px 8px}
+  .ab-nums li{padding:0 18px}.ab-nums li:nth-child(odd){border-left:1.5px solid #E6E6E6}.ab-nums li:first-child{border-left:0}
+  .ab-nums b{font-size:clamp(26px,3vw,36px)}.ab-nums span{font-size:14px}}
+@media (min-width:960px){.ab-top{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:end}.ab-nums{margin:-84px 40px 0;padding:26px 10px}.ab-nums li{padding:0 24px}}
 @media (min-width:720px){.pm-acts{grid-template-columns:repeat(2,minmax(0,max-content))}.pm-acts .btn{padding:0 28px}}
 /* 720–1099: заголовок и картинка в ряд, шаги ниже (с 900 px — в три колонки, первая шире: в ней способы связи) */
 @media (min-width:720px) and (max-width:1099px){
@@ -456,8 +473,7 @@ html.a11y-noimg .exit-pic{display:none!important}
    Шаги оплаты — как на сайте: первый взнос 5 000 ₽ за теорию, 28 (29) занятий по 2 000 ₽, внутренний экзамен 5 000 ₽ (в цене курса) */
 .pr{background:#141414;color:#fff;border-radius:var(--r);padding:36px 16px 28px}
 .pr-head{text-align:center;max-width:760px;margin:0 auto 28px}
-.pr-pill{display:inline-block;padding:7px 16px;border:1.5px solid #3A3A3A;border-radius:999px;font:600 13px/1 var(--font);color:#D6D6D6}
-.pr-h{margin:16px 0 0;color:#fff}   /* наклонный заголовок сайта (.it .h2), на тёмном — белый */
+.pr-h{margin:0;color:#fff}   /* наклонный заголовок сайта (.it .h2), на тёмном — белый */
 .pr-cards{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
 .pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr) 104px;grid-auto-rows:auto;column-gap:10px;align-content:start}
 .pc > *{grid-column:1 / -1}
