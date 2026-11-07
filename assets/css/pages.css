@@ -213,13 +213,14 @@ html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;p
   .st b{font-size:19px}
 }
 .official-pic{margin:0;display:grid;place-items:center}
-.official-pic img{width:100%;max-width:340px;height:auto}
+.official-pic img{width:100%;max-width:640px;height:auto}   /* папка с документами, печать, ключ — на белом, без подложки (img/icons/trust-license-wide.webp) */
 @media (max-width:1079px){
   .official-grid{display:grid;grid-template-columns:minmax(0,1fr)}
   .official{display:contents}
   .official .ghost{order:1}.official .it{order:2}.official-pic{order:3;margin-top:14px}.official ul{order:4}.official .acts{order:5}
-  .official-pic img{max-width:240px}
+  .official-pic img{max-width:520px}
 }
+@media (min-width:1080px){.official-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}.official-pic{margin-right:-12px}}
 .also-ico{width:72px;height:72px;object-fit:contain;flex:none;margin:-10px 0}
 .ask{position:relative}
 .ask-ico{position:absolute;right:10px;top:8px;width:92px;height:92px;object-fit:contain;pointer-events:none}
