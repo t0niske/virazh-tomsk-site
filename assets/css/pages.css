@@ -475,6 +475,14 @@ html.a11y-noimg .exit-pic{display:none!important}
 #route .road-note{color:var(--muted)}
 @media (min-width:720px){.sc-list{grid-auto-columns:calc((100% - 24px) / 2.25)}.sh-arr{display:flex}}
 @media (min-width:1080px){.sc-list{grid-auto-columns:calc((100% - 36px) / 3.25)}}
+/* ленты со стрелками в строке табов (include … arrows=1): стрелки по нижнему краю табов; следующая карточка
+   выглядывает справа — видно, что ленту можно листать (у карусели инструкторов свои ширины ниже, .ins-list) */
+.chips-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.chips-row .chips{margin-bottom:0;flex:1 1 auto;min-width:0}
+.chips-row .sh-arr{margin-bottom:2px}   /* у .chips внутренний отступ 2px — низ стрелок ровно по низу табов */
+.sec.grey .chip:not([aria-pressed="true"]){background:#fff}   /* на сером блоке неактивные табы белые, иначе сливаются с фоном */
+@media (min-width:720px){.has-arr{grid-auto-columns:calc((100% - 24px) / 2.35)}}
+@media (min-width:1080px){.has-arr{grid-auto-columns:calc((100% - 36px) / 3.35)}}
 /* главная, «Инструкторы»: карусель всех инструкторов (team-cards view=carousel, build.pl ins_carousel), стрелки как у шагов.
    Под фото две метки одного размера — коробка (красная) и машина (серая); кнопка у нижнего края — в ряду кнопки на одной высоте */
 .ins-list{grid-auto-columns:78%}

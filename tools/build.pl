@@ -57,6 +57,15 @@ sub include_with {
     $s =~ s{<article class="ins"([^>]*)>(.*?)</article>}{ ins_carousel($1, $2) }gse;
     $s =~ s{<div class="scroller"}{<div class="scroller ins-list"};
   }
+  # arrows=1 — стрелки листания в одной строке с табами фильтра (по нижнему краю); лента с «подглядывающей» следующей карточкой
+  if ($a{arrows} && $s =~ /<div class="scroller[^"]*" id="([\w-]+)"/) {
+    my $id = $1;
+    my $arr = qq{<div class="sh-arr"><button class="sa" type="button" data-for="$id" data-prev aria-label="Листать назад"><svg width="22" height="22" aria-hidden="true"><use href="#i-left"/></svg></button>}
+            . qq{<button class="sa" type="button" data-for="$id" data-next aria-label="Листать вперёд"><svg width="22" height="22" aria-hidden="true"><use href="#i-right"/></svg></button></div>};
+    $s =~ s{(<div class="chips"[^>]*>.*?</div>)}{<div class="chips-row">$1$arr</div>}s
+      or $s =~ s{(<div class="scroller)}{<div class="chips-row">$arr</div>\n$1};
+    $s =~ s{<div class="scroller(?=[" ])}{<div class="scroller has-arr};
+  }
   return limit_cards($s, $a{limit});
 }
 # карточка-карусель: под фото две одинаковые метки (коробка и машина), фамилия крупно, имя и отчество ниже,
