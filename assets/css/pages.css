@@ -213,7 +213,7 @@ html.a11y-fs-2 .topbar-in,html.a11y-fs-3 .topbar-in{flex-wrap:wrap;height:auto;p
   .st b{font-size:19px}
 }
 .official-pic{margin:0;display:grid;place-items:center}
-.official-pic img{width:100%;max-width:640px;height:auto}   /* папка с документами, печать, ключ — на белом, без подложки (img/icons/trust-license-wide.webp) */
+.official-pic img{width:100%;max-width:640px;height:auto}   /* папка с документами, печать, ключ — на белом, без подложки (img/icons/trust-license-wide-2.webp) */
 @media (max-width:1079px){
   .official-grid{display:grid;grid-template-columns:minmax(0,1fr)}
   .official{display:contents}
