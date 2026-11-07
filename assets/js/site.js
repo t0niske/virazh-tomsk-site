@@ -241,6 +241,18 @@
     tr.addEventListener('scroll', () => { cnt.textContent = (cur() + 1) + ' / ' + n; }, { passive: true });
   });
 
+  // стрелки у ленты карточек ([data-for] = id ленты): листают на одну карточку; у края стрелка гаснет
+  document.querySelectorAll('[data-for][data-next]').forEach(nx => {
+    const list = $(nx.dataset.for), pv = document.querySelector(`[data-for="${nx.dataset.for}"][data-prev]`);
+    if (!list || !pv) return;
+    const step = () => list.firstElementChild.getBoundingClientRect().width + (parseFloat(getComputedStyle(list).columnGap) || 0);
+    const beh = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    const upd = () => { pv.disabled = list.scrollLeft < 4; nx.disabled = list.scrollLeft + list.clientWidth > list.scrollWidth - 4; };
+    pv.addEventListener('click', () => list.scrollBy({ left: -step(), behavior: beh() }));
+    nx.addEventListener('click', () => list.scrollBy({ left: step(), behavior: beh() }));
+    list.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+  });
+
   // фотогалерея: сетка + просмотрщик; адрес ?i=<id> открывает нужное фото (как на старом сайте)
   const gal = document.querySelector('[data-gallery]');
   if (gal) {

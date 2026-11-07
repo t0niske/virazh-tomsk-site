@@ -452,6 +452,29 @@ html.a11y-noimg .exit-pic{display:none!important}
   .abx-lead{font-size:17px}
   .abx-nums b{font-size:36px}.abx-nums li{padding:24px 22px}
 }
+/* главная, «Как проходит обучение»: шаги каруселью (src/partials/steps-cards.html) — серые карточки на белом,
+   метка «Шаг N» и срок, заголовок, текст, предмет без подложки, цена этапа, кнопка; стрелки справа от заголовка (site.js [data-for]) */
+.sh{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.sh-arr{display:none;gap:10px;flex:none;margin-bottom:28px}
+.sa{width:52px;height:52px;border-radius:14px;border:1.5px solid #1E1E1E;background:#fff;color:var(--red);display:grid;place-items:center;cursor:pointer;transition:opacity .15s}
+.sa:disabled{opacity:.35;cursor:default}
+@media (hover:hover){.sa:not(:disabled):hover{background:var(--ink);border-color:var(--ink);color:#fff}}
+.sc-list{grid-auto-columns:86%}
+.sc{background:var(--grey);border-radius:var(--r);padding:22px 20px 20px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto auto;gap:12px;min-width:0}
+.sc-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sc-pill{display:inline-block;padding:7px 14px;border-radius:999px;border:1.5px solid var(--red);color:var(--red);font:800 12px/1 var(--font);text-transform:uppercase;letter-spacing:.04em}
+.sc-when{font-size:13px;color:var(--muted)}
+.sc h3{margin:4px 0 0;font:900 italic 22px/1.1 var(--font);text-transform:uppercase;color:var(--head)}
+.sc p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.sc-pic{margin-top:6px;aspect-ratio:16/10;padding:0 4%;min-width:0;align-self:center}
+.sc-pic img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 14px rgba(0,0,0,.12))}   /* картинка вписана в рамку 16:10, не раздвигает карточку */
+.sc-pay{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
+.sc-pay b{font:900 italic 26px/1 var(--font);color:var(--head);white-space:nowrap}
+.sc-pay span{font-size:14px;color:var(--muted)}
+.sc .btn{width:100%;min-height:54px}
+#route .road-note{color:var(--muted)}
+@media (min-width:720px){.sc-list{grid-auto-columns:calc((100% - 24px) / 2.25)}.sh-arr{display:flex}}
+@media (min-width:1080px){.sc-list{grid-auto-columns:calc((100% - 36px) / 3.25)}}
 @media (min-width:720px){.pm-acts{grid-template-columns:repeat(2,minmax(0,max-content))}.pm-acts .btn{padding:0 28px}}
 /* 720–1099: заголовок и картинка в ряд, шаги ниже (с 900 px — в три колонки, первая шире: в ней способы связи) */
 @media (min-width:720px) and (max-width:1099px){
