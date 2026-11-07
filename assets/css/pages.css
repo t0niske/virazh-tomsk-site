@@ -424,7 +424,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .ab-top{display:grid;gap:14px}
 .ab-lead{margin:0;font-size:16px;line-height:1.6;color:var(--muted)}
 .ab-photo{display:block;margin:0;border-radius:var(--r);overflow:hidden;background:#ddd;aspect-ratio:16/10}
-.ab-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.ab-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 32%}
 .ab-nums{list-style:none;margin:-64px 12px 0;padding:18px 8px;position:relative;z-index:2;background:#fff;border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.10);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}
 .ab-nums li{display:grid;gap:4px;align-content:start;padding:0 12px;border-left:1.5px solid #E6E6E6}
 .ab-nums li:nth-child(odd){border-left:0}
