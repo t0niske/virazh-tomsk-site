@@ -417,25 +417,39 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pm-steps a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25);text-underline-offset:3px;white-space:nowrap}
 .pm-acts{display:grid;gap:10px}
 .pm-acts .btn{white-space:nowrap}
-.pm-max,.ab-more{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
-@media (hover:hover){.pm-max:hover,.ab-more:hover{background:var(--ink);color:#fff}}
-/* главная, «Об автошколе»: заголовок и текст, фото команды на всю ширину, цифры на белой плашке поверх нижнего края фото */
-.ab{display:grid;gap:22px}
-.ab-top{display:grid;gap:14px}
-.ab-lead{margin:0;font-size:16px;line-height:1.6;color:var(--muted)}
-.ab-photo{display:block;margin:0;border-radius:var(--r);overflow:hidden;background:#ddd;aspect-ratio:16/10}
-.ab-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 32%}
-.ab-nums{list-style:none;margin:-64px 12px 0;padding:18px 8px;position:relative;z-index:2;background:#fff;border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.10);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}
-.ab-nums li{display:grid;gap:4px;align-content:start;padding:0 12px;border-left:1.5px solid #E6E6E6}
-.ab-nums li:nth-child(odd){border-left:0}
-.ab-nums b{font:800 26px/1.05 var(--font);letter-spacing:-.02em;color:var(--red);white-space:nowrap}
-.ab-nums span{font-size:13px;line-height:1.35;color:var(--muted)}
-.ab-act{display:grid;justify-items:center}   /* кнопка «Подробнее о школе» — по центру на всех ширинах */
-@media (min-width:720px){.ab-photo{aspect-ratio:auto;height:clamp(340px,40vw,500px)}
-  .ab-nums{grid-template-columns:repeat(4,minmax(0,1fr));margin:-84px 32px 0;padding:24px 8px}
-  .ab-nums li{padding:0 18px}.ab-nums li:nth-child(odd){border-left:1.5px solid #E6E6E6}.ab-nums li:first-child{border-left:0}
-  .ab-nums b{font-size:clamp(26px,3vw,36px)}.ab-nums span{font-size:14px}}
-@media (min-width:960px){.ab-top{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:end}.ab-nums{margin:-84px 40px 0;padding:26px 10px}.ab-nums li{padding:0 24px}}
+.pm-max{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
+@media (hover:hover){.pm-max:hover{background:var(--ink);color:#fff}}
+/* главная, «Об автошколе»: слева слайдер фото из галереи (стрелки и счётчик, site.js [data-slider]),
+   справа серая карточка — текст, цифры 2×2 на белых плитках (наклонный жирный, как в первом экране), кнопки.
+   На компьютере высоту ряда задаёт карточка, фото подстраивается под неё */
+.abx{display:grid;gap:12px}
+.sx{position:relative;border-radius:var(--r);overflow:hidden;background:#E9E9E9}
+.sx-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.sx-track::-webkit-scrollbar{display:none}
+.sx-track figure{flex:0 0 100%;margin:0;scroll-snap-align:start;aspect-ratio:4/5}
+.sx-track img{display:block;width:100%;height:100%;object-fit:cover}
+.sx-nav{position:absolute;left:16px;right:16px;bottom:16px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.sx-b{pointer-events:auto;width:48px;height:48px;border:0;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+@media (hover:hover){.sx-b:hover{color:var(--red)}}
+.sx-c{background:rgba(20,20,20,.72);color:#fff;font:800 14px/1 var(--font);padding:9px 14px;border-radius:999px}
+.abx-card{background:var(--grey);border-radius:var(--r);padding:24px 18px;display:grid;gap:20px;align-content:center}
+.abx-lead{margin:0;font-size:16px;line-height:1.6;color:var(--ink)}
+.abx-nums{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.abx-nums li{background:#fff;border-radius:16px;padding:16px 14px;display:grid;gap:6px;align-content:start}
+.abx-nums b{font:900 italic 26px/1 var(--font);color:var(--head);white-space:nowrap}
+.abx-nums span{font-size:13.5px;line-height:1.35;color:var(--muted)}
+.abx-acts{display:grid;gap:10px}
+@media (min-width:720px){.abx-acts{grid-template-columns:repeat(2,max-content)}}
+@media (min-width:720px) and (max-width:959px){.abx .sx-track figure{aspect-ratio:4/3}}   /* планшет: фото во всю ширину, иначе слишком высокое */
+@media (min-width:960px){
+  .abx{grid-template-columns:minmax(0,.82fr) minmax(0,1fr);gap:16px}
+  .abx .sx{min-height:470px}
+  .abx .sx-track{position:absolute;inset:0}
+  .abx .sx-track figure{aspect-ratio:auto;height:100%}
+  .abx-card{padding:40px 44px;gap:26px}
+  .abx-lead{font-size:17px}
+  .abx-nums b{font-size:36px}.abx-nums li{padding:24px 22px}
+}
 @media (min-width:720px){.pm-acts{grid-template-columns:repeat(2,minmax(0,max-content))}.pm-acts .btn{padding:0 28px}}
 /* 720–1099: заголовок и картинка в ряд, шаги ниже (с 900 px — в три колонки, первая шире: в ней способы связи) */
 @media (min-width:720px) and (max-width:1099px){

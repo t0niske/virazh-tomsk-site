@@ -231,6 +231,16 @@
     } else { bar.classList.add('on'); }
   }
 
+  // слайдер фото (главная, «Об автошколе»): стрелки листают по кадру, по кругу; счётчик «N / всего» следует за прокруткой
+  document.querySelectorAll('[data-slider]').forEach(sl => {
+    const tr = sl.querySelector('.sx-track'), n = tr.children.length, cnt = sl.querySelector('.sx-c');
+    const cur = () => Math.round(tr.scrollLeft / tr.clientWidth);
+    const go = i => tr.scrollTo({ left: ((i + n) % n) * tr.clientWidth, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    sl.querySelector('[data-prev]').addEventListener('click', () => go(cur() - 1));
+    sl.querySelector('[data-next]').addEventListener('click', () => go(cur() + 1));
+    tr.addEventListener('scroll', () => { cnt.textContent = (cur() + 1) + ' / ' + n; }, { passive: true });
+  });
+
   // фотогалерея: сетка + просмотрщик; адрес ?i=<id> открывает нужное фото (как на старом сайте)
   const gal = document.querySelector('[data-gallery]');
   if (gal) {
