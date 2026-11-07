@@ -57,6 +57,12 @@ sub include_with {
     $s =~ s{<article class="ins"([^>]*)>(.*?)</article>}{ ins_carousel($1, $2) }gse;
     $s =~ s{<div class="scroller"}{<div class="scroller ins-list"};
   }
+  # view=map — офисы для главной: список с номерами слева, живая карта справа (site.js, Leaflet + OpenStreetMap)
+  if (($a{view} // '') eq 'map' && $s =~ /class="offices"/) {
+    my $i = 0;
+    my $items = join '', map { office_item($_, $i++) } $s =~ m{<article class="office"[^>]*>.*?</article>}gs;
+    $s = qq{<div class="om1"><div class="om-list">$items</div><div class="om-map" id="omMap" role="region" aria-label="Карта: офисы и автодром"></div></div>\n};
+  }
   # nolink=1 — без ссылки «Все …» под лентой (точки прокрутки остаются)
   $s =~ s{\s*<a class="link"[^>]*>.*?</a>}{}s if $a{nolink};
   # arrows=1 — стрелки листания в одной строке с табами фильтра (по нижнему краю); лента с «подглядывающей» следующей карточкой
@@ -69,6 +75,20 @@ sub include_with {
     $s =~ s{<div class="scroller(?=[" ])}{<div class="scroller has-arr};
   }
   return limit_cards($s, $a{limit});
+}
+# пункт списка офисов для карты: номер (как у метки на карте), адрес, назначение, телефон, часы, кнопки
+sub office_item {
+  my ($art, $i) = @_;
+  my ($ll) = $art =~ /data-ll="([^"]+)"/;
+  my ($t) = $art =~ m{<b>(.*?)</b>}s;
+  my ($d) = $art =~ m{</b>(?:</address>)?<p>([^<]+)</p>};
+  my ($num) = $art =~ m{<p class="num"[^>]*>([^<]+)</p>};
+  my ($h) = $art =~ m{<p class="hours">([^<]+)</p>};
+  my ($acts) = $art =~ m{(<div class="acts">.*?</div>)}s;
+  my $n = $i + 1;
+  my $c = $num ? qq{<b class="num">$num</b>} : '';
+  return qq{<article class="om-it} . ($i ? '' : ' on') . qq{" data-ll="$ll" tabindex="0"><span class="om-n" aria-hidden="true">$n</span>}
+       . qq{<div class="om-tx"><b class="om-t">$t</b><span class="om-d">$d</span><div class="om-c">$c<span>$h</span></div>$acts</div></article>};
 }
 # карточка-карусель: под фото две одинаковые метки (коробка и машина), фамилия крупно, имя и отчество ниже,
 # стаж двумя цифрами, кнопка «Записаться»; цитата не выводится — она на странице инструкторов
