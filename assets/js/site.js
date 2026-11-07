@@ -241,19 +241,23 @@
     tr.addEventListener('scroll', () => { cnt.textContent = (cur() + 1) + ' / ' + n; }, { passive: true });
   });
 
-  // карта офисов (главная): Leaflet и тайлы OpenStreetMap подгружаются, только когда блок близко к экрану.
+  // карта офисов (главная): Leaflet и кусочки карты — с нашего сайта (assets/vendor/leaflet, img/map — tools/map-tiles.py),
+  // без запросов посетителей к внешним серверам; грузятся, только когда блок близко к экрану.
   // Нажатие на офис в списке — его метка красная, карта подлетает; нажатие на метку — выделяется офис в списке
   const omMap = $('omMap');
   if (omMap) {
     const items = [...document.querySelectorAll('.om-it[data-ll]')];
+    // корень сайта (на GitHub Pages сайт лежит в подпапке) — по адресу этого скрипта
+    const root = ((document.querySelector('script[src*="assets/js/site.js"]') || {}).src || location.origin + '/assets/js/site.js').replace(/assets\/js\/site\.js.*$/, '');
+    const B = [[56.445, 84.90], [56.535, 85.08]];   // район, для которого скачаны кусочки карты (tools/map-tiles.py)
     const add = (tag, attrs) => new Promise((ok, no) => { const e = Object.assign(document.createElement(tag), attrs); e.onload = ok; e.onerror = no; document.head.appendChild(e); });
     const load = () => window.L ? Promise.resolve() : Promise.all([
-      add('link', { rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', integrity: 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=', crossOrigin: '' }),
-      add('script', { src: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', integrity: 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=', crossOrigin: '' })]);
+      add('link', { rel: 'stylesheet', href: root + 'assets/vendor/leaflet/leaflet.css' }),
+      add('script', { src: root + 'assets/vendor/leaflet/leaflet.js' })]);
     const init = () => {
-      const m = L.map(omMap, { scrollWheelZoom: false, tap: false });
+      const m = L.map(omMap, { scrollWheelZoom: false, tap: false, minZoom: 12, maxZoom: 15, maxBounds: B, maxBoundsViscosity: 1 });
       m.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© <a href="https://www.openstreetmap.org/copyright">участники OpenStreetMap</a>' }).addTo(m);
+      L.tileLayer(root + 'img/map/{z}/{x}/{y}.webp', { minZoom: 12, maxZoom: 15, bounds: B, attribution: '© <a href="https://www.openstreetmap.org/copyright">участники OpenStreetMap</a>' }).addTo(m);
       const mk = items.map((it, i) => L.marker(it.dataset.ll.split(',').map(Number), {
         icon: L.divIcon({ className: '', html: '<div class="om-pin"><b>' + (i + 1) + '</b></div>', iconSize: [38, 38], iconAnchor: [19, 38] }),
         title: it.querySelector('.om-t').textContent, keyboard: false }).addTo(m));
