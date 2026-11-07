@@ -391,6 +391,29 @@ html.a11y-noimg .exit-pic{display:none!important}
 .hx-scene{mix-blend-mode:multiply}
 .hx-scene img{display:block;width:100%;height:auto}
 .hx .promo{position:relative;z-index:3;margin:28px 0 0;background:#fff;box-shadow:0 18px 50px rgba(0,0,0,.08)}
+/* плашка «Запись открыта круглый год»: вместо формы — три шага и две кнопки */
+.pm-txt{display:grid;gap:10px}
+.pm-mid{display:grid;gap:20px}
+.pm-steps{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.pm-steps li{display:flex;gap:14px;align-items:flex-start}
+.pm-steps b{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;font:800 15px/1 var(--font)}
+.pm-steps span{display:block;min-width:0;font-size:14.5px;line-height:1.45;color:var(--muted);padding-top:1px}
+.pm-steps span strong{display:block;margin-bottom:3px;color:var(--ink);font-size:16px;line-height:1.3}
+.pm-steps a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25);text-underline-offset:3px;white-space:nowrap}
+.pm-acts{display:grid;gap:10px}
+.pm-acts .btn{white-space:nowrap}
+.pm-max{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
+@media (hover:hover){.pm-max:hover{background:var(--ink);color:#fff}}
+@media (min-width:720px){.pm-acts{grid-template-columns:repeat(2,minmax(0,max-content))}.pm-acts .btn{padding:0 28px}}
+/* 720–1099: заголовок и картинка в ряд, шаги ниже (с 900 px — в три колонки, первая шире: в ней способы связи) */
+@media (min-width:720px) and (max-width:1099px){
+  .hx .promo{grid-template-columns:minmax(0,1fr) 200px;gap:20px 24px}
+  .hx .promo .pm-txt{grid-column:1;grid-row:1}
+  .hx .promo-art{grid-column:2;grid-row:1;width:220px;margin:-70px -20px -30px 0}
+  .hx .pm-mid{grid-column:1 / -1;grid-row:2;gap:24px}
+}
+@media (min-width:900px) and (max-width:1099px){.hx .pm-steps{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:20px}}
+@media (min-width:1100px){.hx .promo{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) 210px;gap:28px}}
 @media (min-width:960px){
   .hx{padding:44px 0 56px}
   .hx-top{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:20px;align-items:center}

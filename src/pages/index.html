@@ -31,18 +31,21 @@ priority: 1.0
       </picture>
     </div>
     <div class="promo">
-      <div style="display:grid;gap:10px">
+      <div class="pm-txt">
         <h2 class="it">Запись открыта <span class="acc">круглый год</span></h2>
-        <p>Группы набираются постоянно, мест хватит всем. Теорию можно начать онлайн хоть сегодня. Оставьте номер — перезвоним в рабочее время и подберём офис и инструктора.</p>
+        <p>Группы набираются постоянно, мест хватит всем. Теорию можно начать онлайн хоть сегодня.</p>
       </div>
-      <form class="promo-form" id="promoForm" data-lead="promoOk" novalidate>
-        <div class="promo-row">
-          <div class="field"><input id="p-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" aria-label="Телефон"><span class="err">Нужно 10 цифр после +7</span></div>
-          <button class="btn btn-red" type="submit">Записаться</button>
+      <div class="pm-mid">
+        <ol class="pm-steps">
+          <li><b>1</b><span><strong>Свяжитесь с нами любым удобным способом</strong>По телефону <a href="tel:+73822345252">+7&nbsp;(3822)&nbsp;34-52-52</a>, в&nbsp;<a href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener">MAX</a> или <a href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener">ВКонтакте</a>. Пн–Пт с&nbsp;9:00 до&nbsp;18:00</span></li>
+          <li><b>2</b><span><strong>Выберите офис</strong>Киевская, Ивана Черных или Ленина</span></li>
+          <li><b>3</b><span><strong>Начните теорию</strong>В классе или онлайн в личном кабинете 24/7</span></li>
+        </ol>
+        <div class="pm-acts">
+          <button class="btn btn-red" type="button" data-signup>Записаться</button>
+          <a class="btn pm-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener"><svg width="20" height="20" aria-hidden="true"><use href="#i-max"/></svg>Написать в MAX</a>
         </div>
-        <label class="consent"><input type="checkbox" id="p-ok" required><span>Даю <a href="/soglasie-na-obrabotku-personalnyh-dannyh" target="_blank">согласие на обработку персональных данных</a></span></label>
-      </form>
-      <div class="ok-msg" id="promoOk" role="status"><b>Заявка принята</b>Перезвоним в рабочее время.</div>
+      </div>
       <img class="promo-art" src="/img/art/art-promo.webp" alt="" width="720" height="720" loading="lazy">
     </div>
   </div>
