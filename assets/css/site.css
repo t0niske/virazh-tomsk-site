@@ -45,11 +45,11 @@ button{font:inherit;color:inherit}
 .btn-black{background:#111;color:#fff}
 .btn-white{background:#fff;color:var(--ink)}
 .btn-block{width:100%}
-.btn-sm{min-height:46px;font-size:14.5px;padding:0 18px;border-radius:14px}
+.btn-sm{min-height:56px;font-size:15px;padding:0 18px;border-radius:14px}   /* все кнопки с текстом — одной высоты, 56 px */
 .btn-tg{background:var(--tg);color:#fff}
 .btn-vk{background:var(--vk);color:#fff}
 .btn-max{background:var(--max-grad);color:#fff}   /* фирменный градиент MAX, как значок в шапке */
-.btn-msg{min-height:50px;font:900 italic 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;padding:0 8px;gap:8px}
+.btn-msg{min-height:56px;font:900 italic 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;padding:0 8px;gap:8px}
 .msgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}   /* колонки строго равные — кнопки одной ширины */
 @media (max-width:399px){.final-card .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон: в форме «ВКонтакте» не влезает в полширины — кнопки друг под другом */
 .link{font-weight:700;font-size:15px;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
@@ -229,6 +229,7 @@ button{font:inherit;color:inherit}
 .official li{display:flex;gap:10px}
 .official li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--red);margin-top:8px}
 .official .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+@media (max-width:719px){.official .acts .btn{width:100%}}   /* телефон: обе кнопки во всю ширину */
 
 /* ===== отзывы ===== */
 .ratings{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px}
@@ -293,7 +294,7 @@ button{font:inherit;color:inherit}
 .office .pin{flex:none;width:40px;height:40px;border-radius:14px;background:var(--red);color:#fff;display:grid;place-items:center}
 .office b{display:block;font:900 italic 22px/1.15 var(--font);text-transform:uppercase;color:var(--head)}
 .office p{font-size:14px;color:var(--muted);margin-top:2px}
-.office .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.office .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}   /* кнопки не растягиваются вслед за карточкой — 56 px, как везде */
 .office .acts .btn{background:#fff}
 
 /* ===== с 16 лет ===== */
@@ -484,7 +485,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 .ftr-brand .logo img{height:46px;width:auto}
 .ftr-brand p{color:#C4C4C4;font-size:14px;line-height:1.55}
 .ftr-soc{display:flex;gap:8px}
-.ftr-soc .btn{min-height:44px;padding:0 16px;font-size:13px}
+.ftr-soc .btn{padding:0 16px;font-size:13px}
 .ftr-soc .btn-msg{flex:1 1 0;min-width:0}   /* ВКонтакте и MAX одной ширины */
 .ftr-contacts dl{margin:0;display:grid;gap:14px}
 .ftr-contacts dt{font:700 11.5px/1 var(--font);text-transform:uppercase;letter-spacing:.08em;color:#9A9A9A;margin-bottom:6px}

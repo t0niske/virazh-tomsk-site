@@ -388,8 +388,8 @@ html.a11y-noimg .exit-pic{display:none!important}
 .hx-form{display:grid;gap:10px;margin-top:18px;max-width:520px}
 .hx-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}
 .hx-row .field label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.hx-row .field input{min-height:58px;border-radius:14px}   /* как у кнопки рядом и у остальных полей */
-.hx-row .btn{min-height:58px;padding:0 24px;font-size:16px}
+.hx-row .field input{min-height:56px;border-radius:14px}   /* как у кнопки рядом и у остальных полей */
+.hx-row .btn{padding:0 24px;font-size:16px}
 .hx .ok-msg{margin-top:18px;max-width:520px}
 .hx-scene{display:block;position:relative;z-index:0;margin:6px calc(-1 * var(--gut-r)) 0 calc(-1 * var(--gut-l));pointer-events:none}
 @media (min-width:720px){.hx-scene{max-width:640px;margin:6px auto 0}}
@@ -417,8 +417,8 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pm-steps span{display:block;min-width:0;font-size:14.5px;line-height:1.45;color:var(--muted);padding-top:1px}
 .pm-steps span strong{display:block;margin-bottom:3px;color:var(--ink);font-size:16px;line-height:1.3}
 .pm-steps a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25);text-underline-offset:3px;white-space:nowrap}
-.pm-acts{display:grid;gap:10px;grid-template-columns:minmax(0,1fr) max-content;align-items:center}
-.pm-acts .btn-max{padding:0 18px}
+.pm-acts{display:grid;gap:10px;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.pm-acts .btn{padding:0 12px}
 .pm-acts .btn{white-space:nowrap}
 /* главная, «Об автошколе»: слева слайдер фото из галереи (стрелки и счётчик, site.js [data-slider]),
    справа тёмная карточка — текст, цифры 2×2 на тёмно-серых плитках (наклонный жирный, как в первом экране), кнопки.
@@ -441,7 +441,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .abx-nums span{font-size:13.5px;line-height:1.35;color:#A8A8A8}
 .abx-acts{display:grid;gap:10px}
 .abx-acts .btn-black{background:#fff;color:var(--ink)}   /* на тёмной плашке «Подробнее о школе» — белая */
-@media (min-width:720px){.abx-acts{grid-template-columns:repeat(2,max-content)}}
+@media (min-width:720px){.abx-acts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}.abx-acts .btn{padding:0 16px}}
 @media (min-width:720px) and (max-width:959px){.abx .sx-track figure{aspect-ratio:4/3}}   /* планшет: фото во всю ширину, иначе слишком высокое */
 @media (min-width:960px){
   .abx{grid-template-columns:minmax(0,.82fr) minmax(0,1fr);gap:16px}
@@ -471,7 +471,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .sc-pay{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
 .sc-pay b{font:900 italic 26px/1 var(--font);color:var(--head);white-space:nowrap}
 .sc-pay span{font-size:14px;color:var(--muted)}
-.sc .btn{width:100%;min-height:54px}
+.sc .btn{width:100%}
 #route .road-note{color:var(--muted)}
 @media (min-width:720px){.sc-list{grid-auto-columns:calc((100% - 24px) / 2.25)}.sh-arr{display:flex}}
 @media (min-width:1080px){.sc-list{grid-auto-columns:calc((100% - 36px) / 3.25)}}
@@ -560,8 +560,8 @@ html.a11y-noimg .exit-pic{display:none!important}
 .ins-st div{display:grid;gap:2px}
 .ins-st b{font:900 italic 20px/1.1 var(--font);color:var(--head)}
 .ins-st span{font-size:13.5px;color:var(--muted)}
-.ins-c .btn{margin-top:auto;min-height:50px;width:100%}
-@media (min-width:720px){.pm-acts .btn-red{min-height:60px;font-size:17px}}   /* «Записаться» занимает остаток ряда и выше — крупнее MAX */
+.ins-c .btn{margin-top:auto;width:100%}
+
 /* 720–1099: заголовок и картинка в ряд, шаги ниже (с 900 px — в три колонки, первая шире: в ней способы связи) */
 @media (min-width:720px) and (max-width:1099px){
   .hx .promo{grid-template-columns:minmax(0,1fr) 200px;gap:20px 24px}
@@ -576,7 +576,7 @@ html.a11y-noimg .exit-pic{display:none!important}
   .hx-top{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:20px;align-items:center}
   .hx-facts{margin-top:20px}
   .hx-form{margin-top:22px}
-  .hx-row .field input,.hx-row .btn{min-height:60px}
+  .hx-row .field input,.hx-row .btn{min-height:56px}
   .hx-row .btn{padding:0 30px;font-size:17px}
   .hx-vis{height:min(520px,36vw)}
   /* картинка 1672×941: колёса на 81% высоты; ширина до 1380px, правый край — на 740px правее центра */
@@ -624,7 +624,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pc-list li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
 .pc-list li::before{content:"";flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.3l2.7 2.7L13 6.6' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat}
 .pc-acts{display:grid;gap:8px;padding-top:24px}
-.pc-acts .btn{width:100%;min-height:54px}
+.pc-acts .btn{width:100%}
 .pc-more{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
 @media (hover:hover){.pc-more:hover{background:var(--ink);color:#fff}}
 .pr-note{margin:20px auto 0;max-width:72ch;text-align:center;font-size:13.5px;line-height:1.5;color:#A8A8A8}
