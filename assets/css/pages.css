@@ -602,20 +602,23 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pr-head{text-align:center;max-width:760px;margin:0 auto 28px}
 .pr-h{margin:0;color:#fff}   /* наклонный заголовок сайта (.it .h2), на тёмном — белый */
 .pr-cards{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
-.pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr) 104px;grid-auto-rows:auto;column-gap:10px;align-content:start}
+/* шапка карточки: в первой строке категория (по нижнему краю) и значок справа, во второй — название на всю ширину в одну строку;
+   значок больше не растягивает строки — между категорией, названием и метками часов обычные отступы */
+.pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-auto-rows:auto;column-gap:12px;align-content:start}
 .pc > *{grid-column:1 / -1}
 /* значок-фото программы (селектор АКПП, рычаг МКПП, шлем) справа от названия, без подложки */
-.pc .pc-cat,.pc .pc-name{grid-column:1}
-.pc-pic{grid-column:2;grid-row:1 / span 2;display:grid;place-items:center;width:104px;height:104px;margin:-10px -6px 0 0}
-.pc-pic img{width:104px;height:104px;object-fit:contain}
+.pc .pc-cat{grid-column:1;grid-row:1;align-self:end}
+.pc-pic{grid-column:2;grid-row:1;display:grid;place-items:center;width:88px;height:88px;margin:-14px -8px 0 0}
+.pc-pic img{width:88px;height:88px;object-fit:contain}
 .pc-acts{align-self:end}
 .pc-cat{margin:0;font:600 17px/1.2 var(--font);color:var(--head)}
-.pc-name{margin:6px 0 0;font:900 italic 22px/1.1 var(--font);text-transform:uppercase;color:var(--red);letter-spacing:-.01em}
-.pc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pc-name{margin:6px 0 0;font:900 italic 22px/1.1 var(--font);text-transform:uppercase;color:var(--red);letter-spacing:-.01em;white-space:nowrap}
+@media (max-width:359px){.pc-name{font-size:20px}}   /* «МЕХАНИКА (МКПП)» в одну строку и на 320 px */
+.pc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .pc-chips span{padding:6px 12px;border:1.5px solid #1E1E1E;border-radius:999px;font:600 13px/1 var(--font)}
 .pc-chips .r{border-color:var(--red);color:var(--red)}
-.pc-price{margin:22px 0 0;font:800 40px/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
-.pc-pl{margin:16px 0 0;font:700 14px/1.2 var(--font)}
+.pc-price{margin:20px 0 0;font:800 40px/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.pc-pl{margin:14px 0 0;font:700 14px/1.2 var(--font)}
 .pc-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 0;padding:0;list-style:none}
 .pc-steps li{display:grid;gap:3px;padding-bottom:8px;border-bottom:3px solid #D0D0D0}
 .pc-steps li.on{border-color:var(--red)}
@@ -631,7 +634,8 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pr-note{margin:20px auto 0;max-width:72ch;text-align:center;font-size:13.5px;line-height:1.5;color:#A8A8A8}
 #prices{padding-top:32px}
 @media (min-width:720px){.pr{padding:56px 32px 40px}.pr-head{margin-bottom:40px}#prices{padding-top:48px}}
-@media (min-width:960px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-columns:minmax(0,1fr) 120px;grid-template-rows:auto auto auto auto auto auto auto 1fr}.pc-pic{width:120px;height:120px;margin:-14px -10px 0 0}.pc-pic img{width:120px;height:120px}}
+/* три карточки в ряд — с 1100 px: уже названию не хватает ширины («МЕХАНИКА (МКПП)» ~235 px) */
+@media (min-width:1100px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-rows:auto auto auto auto auto auto auto 1fr}.pc-pic{width:96px;height:96px;margin:-18px -12px 0 0}.pc-pic img{width:96px;height:96px}}
 
 /* подпись редакции и дата обновления под заголовком статьи */
 .byline{margin-top:12px;font-size:13.5px;color:var(--muted)}
