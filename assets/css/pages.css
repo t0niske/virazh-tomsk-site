@@ -847,3 +847,32 @@ address{font-style:normal}
 #other .pr-cards{grid-template-columns:minmax(0,1fr)}
 #other:not(.grey) .pc{background:var(--grey)}
 @media (min-width:960px){#other .pr-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+
+/* ===== Компьютер: каждый блок главной целиком помещается в экран (видимая высота под шапкой).
+   Отступы блоков и высота картинок зависят от высоты окна (vh), заголовки блоков шире (в 1–2 строки),
+   кнопки в карточках цен в ряд, у офисов кнопки справа от текста ===== */
+@media (min-width:1080px){
+  .sec{padding-block:clamp(56px,8.5vh,80px)}
+  .hx{padding-bottom:clamp(56px,8.5vh,80px)}
+  .head{max-width:1240px}
+  .pr{padding:clamp(28px,3.5vh,56px) 32px clamp(28px,3.5vh,40px)}
+  .pr-head{max-width:none;margin-bottom:clamp(20px,2.5vh,40px)}
+  .pc-acts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);padding-top:16px}
+  .pc-list{margin-top:14px;padding-top:14px;gap:6px}.pc-list li{font-size:14px}
+  .pc-price{margin-top:14px}.pc-chips{margin-top:10px}
+  .sc-pic{aspect-ratio:auto;height:clamp(150px,22vh,248px)}
+  .ins-c .ph{aspect-ratio:auto;height:clamp(240px,36vh,420px)}
+  .om-tx{grid-template-columns:minmax(0,1fr) auto;column-gap:16px}
+  .om-t{grid-column:1 / -1}
+  .om-d,.om-c{grid-column:1}
+  .om-tx .acts{grid-column:2;grid-row:2 / span 2;align-self:end;margin-top:0;flex-wrap:nowrap}
+  .om1{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+  .om-c{display:flex;flex-wrap:wrap;column-gap:14px;align-items:baseline}
+}
+@media (min-width:1080px) and (max-height:800px){
+  .sc-pic{height:18vh}
+  .ins-c .ph{height:32vh}
+  .om-it{padding:14px 18px}
+}
+@media (min-width:1100px){.pc{padding:24px}.pc-pic{height:clamp(104px,13vh,170px)}.pc-pic img{width:clamp(104px,13vh,170px);height:clamp(104px,13vh,170px)}}
+@media (min-width:1080px) and (max-height:800px){.pc-list{display:none}}   /* на низком экране (1366×768) цены иначе не помещаются; состав курса есть на странице категории */
