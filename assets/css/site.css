@@ -397,7 +397,8 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 }
 @media (min-width:1280px){.pay-grid .perks{grid-template-columns:repeat(4,1fr)}}
 /* широкий экран: поля по бокам 32 px, содержимое до 1456 px — шапка и все блоки по одним краям */
-@media (min-width:1280px){.wrap{max-width:1520px;padding-left:32px;padding-right:32px}}
+@media (min-width:1024px) and (max-width:1279px){.wrap{padding-left:40px;padding-right:40px}}
+@media (min-width:1280px){.wrap{max-width:1520px;padding-left:clamp(48px,5.5vw,96px);padding-right:clamp(48px,5.5vw,96px)}}   /* поля по бокам: 70 px на 1280, 84 на 1536, 96 на 1920 */
 @media (min-width:1320px){
   .hdr-tel{display:grid;gap:4px;flex:none;white-space:nowrap;text-decoration:none;text-align:right;color:#fff}
   .hdr-tel b{font:800 16px/1 var(--font)}
