@@ -602,14 +602,12 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pr-head{text-align:center;max-width:760px;margin:0 auto 28px}
 .pr-h{margin:0;color:#fff}   /* наклонный заголовок сайта (.it .h2), на тёмном — белый */
 .pr-cards{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
-/* шапка карточки: в первой строке категория (по нижнему краю) и значок справа, во второй — название на всю ширину в одну строку;
-   значок больше не растягивает строки — между категорией, названием и метками часов обычные отступы */
-.pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-auto-rows:auto;column-gap:12px;align-content:start}
+/* шапка карточки: крупная картинка по центру (без подложки), под ней категория, название в одну строку и метки часов — плотно */
+.pc{background:#fff;color:var(--ink);border-radius:var(--r);padding:24px 20px;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;align-content:start}
 .pc > *{grid-column:1 / -1}
-/* значок-фото программы (селектор АКПП, рычаг МКПП, шлем) справа от названия, без подложки */
-.pc .pc-cat{grid-column:1;grid-row:1;align-self:end}
-.pc-pic{grid-column:2;grid-row:1;display:grid;place-items:center;width:88px;height:88px;margin:-14px -8px 0 0}
-.pc-pic img{width:88px;height:88px;object-fit:contain}
+/* фото программы (селектор АКПП, рычаг МКПП, шлем) — крупно по центру карточки, без подложки */
+.pc-pic{display:grid;place-items:center;height:150px;margin:-6px 0 6px}
+.pc-pic img{width:150px;height:150px;object-fit:contain}
 .pc-acts{align-self:end}
 .pc-cat{margin:0;font:600 17px/1.2 var(--font);color:var(--head)}
 .pc-name{margin:6px 0 0;font:900 italic 22px/1.1 var(--font);text-transform:uppercase;color:var(--red);letter-spacing:-.01em;white-space:nowrap}
@@ -635,7 +633,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 #prices{padding-top:32px}
 @media (min-width:720px){.pr{padding:56px 32px 40px}.pr-head{margin-bottom:40px}#prices{padding-top:48px}}
 /* три карточки в ряд — с 1100 px: уже названию не хватает ширины («МЕХАНИКА (МКПП)» ~235 px) */
-@media (min-width:1100px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-rows:auto auto auto auto auto auto auto 1fr}.pc-pic{width:96px;height:96px;margin:-18px -12px 0 0}.pc-pic img{width:96px;height:96px}}
+@media (min-width:1100px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-rows:auto auto auto auto auto auto auto auto 1fr}.pc-pic{height:170px}.pc-pic img{width:170px;height:170px}}
 
 /* подпись редакции и дата обновления под заголовком статьи */
 .byline{margin-top:12px;font-size:13.5px;color:var(--muted)}
