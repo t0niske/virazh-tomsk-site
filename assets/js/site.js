@@ -284,7 +284,7 @@
   document.querySelectorAll('[data-for][data-next]').forEach(nx => {
     const list = $(nx.dataset.for), pv = document.querySelector(`[data-for="${nx.dataset.for}"][data-prev]`);
     if (!list || !pv) return;
-    const step = () => list.firstElementChild.offsetWidth + (parseFloat(getComputedStyle(list).columnGap) || 0);   // offsetWidth — в координатах ленты (верно и в уменьшенном блоке, см. fitBlocks)
+    const step = () => list.firstElementChild.getBoundingClientRect().width + (parseFloat(getComputedStyle(list).columnGap) || 0);
     const beh = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     const upd = () => { pv.disabled = list.scrollLeft < 4; nx.disabled = list.scrollLeft + list.clientWidth > list.scrollWidth - 4; };
     pv.addEventListener('click', () => list.scrollBy({ left: -step(), behavior: beh() }));
@@ -415,34 +415,11 @@
       if (!shrink(h, .6)) h.style.overflowWrap = 'normal';
     });
   };
-  // компьютер: блок выше видимой части окна (под шапкой) уменьшается целиком, как картинка — раскладка и текст те же,
-  // поля по бокам шире. Первый экран не трогаем; data-nozoom — секция из нескольких блоков, каждый помещается сам;
-  // блок с картой тоже нет (у Leaflet при уменьшении сбиваются координаты)
-  const fitBlocks = () => {
-    const ws = [...document.querySelectorAll('main > section:not(.hx):not([data-nozoom]) > .wrap')];
-    ws.forEach(w => { w.style.zoom = w.style.maxWidth = ''; });
-    if (innerWidth < 1080 || /a11y-fs-[23]/.test(document.documentElement.className)) return;
-    const hdr = document.querySelector('.hdr');
-    const hh = hdr && /sticky|fixed/.test(getComputedStyle(hdr).position) ? hdr.getBoundingClientRect().height : 0;
-    const room = innerHeight - hh - 16;
-    ws.forEach(w => {
-      if (w.querySelector('.om-map')) return;
-      const r = w.getBoundingClientRect();
-      if (r.height <= room) return;
-      const z = Math.max(.72, room / r.height);
-      w.style.maxWidth = r.width + 'px'; w.style.zoom = z.toFixed(3);   // ширина раскладки прежняя, на экране — в z раз уже
-    });
-  };
-  let fitRaf = 0, fitW = innerWidth, fitH = innerHeight;
+  let fitRaf = 0, fitW = innerWidth;
   const fitSoon = () => { if (!fitRaf) fitRaf = requestAnimationFrame(() => { fitRaf = 0; fitHeads(); }); };
-  fitHeads(); fitBlocks();
-  if (document.fonts) document.fonts.ready.then(() => { fitHeads(); fitBlocks(); });
-  addEventListener('load', fitBlocks);
-  addEventListener('resize', () => {
-    const wc = innerWidth !== fitW, hc = innerHeight !== fitH; fitW = innerWidth; fitH = innerHeight;
-    if (wc) fitSoon();
-    if (wc || hc) requestAnimationFrame(fitBlocks);
-  });
+  fitHeads();
+  if (document.fonts) document.fonts.ready.then(fitHeads);
+  addEventListener('resize', () => { if (innerWidth !== fitW) { fitW = innerWidth; fitSoon(); } });
   document.addEventListener('toggle', fitSoon, true);
   new MutationObserver(fitSoon).observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['class', 'open', 'hidden'] });
 
