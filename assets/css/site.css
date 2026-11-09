@@ -5,6 +5,7 @@
   --white:#FFFFFF; --bg:#FFFFFF; --grey:#F4F4F4; --grey-2:#ECECEC; --ink:#1E1E1E; --head:#383838; --muted:#6E6E6E; --line:#E4E4E4;
   --red:#9E1220; --red-dark:#7C0D18; --red-soft:#F8E7E9; --green:#38B24A; --pale:#E6E6E6;
   --tg:#2AABEE; --vk:#0077FF; --max:#7A4DFF;
+  --max-grad:radial-gradient(circle at 15% 95%,#46C6FD 0,rgba(70,198,253,0) 55%),linear-gradient(135deg,#3E63FC 0%,#3F48EA 45%,#8E4BE2 100%);
   --font:"Montserrat","Arial",system-ui,sans-serif;
   --r:24px; --r-sm:16px;
   --shadow:0 10px 30px rgba(0,0,0,.08);
@@ -47,7 +48,7 @@ button{font:inherit;color:inherit}
 .btn-sm{min-height:46px;font-size:14.5px;padding:0 18px;border-radius:14px}
 .btn-tg{background:var(--tg);color:#fff}
 .btn-vk{background:var(--vk);color:#fff}
-.btn-max{background:var(--max);color:#fff}
+.btn-max{background:var(--max-grad);color:#fff}   /* фирменный градиент MAX, как значок в шапке */
 .btn-msg{min-height:50px;font:900 italic 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;padding:0 8px;gap:8px}
 .msgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}   /* колонки строго равные — кнопки одной ширины */
 @media (max-width:399px){.final-card .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон: в форме «ВКонтакте» не влезает в полширины — кнопки друг под другом */
@@ -88,7 +89,7 @@ button{font:inherit;color:inherit}
 .hm{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;transition:transform .15s}
 /* знаки ВК и MAX — векторные из спрайта (белые), фон кружка — цвета бренда; у MAX фирменный градиент */
 .hm svg{width:22px;height:22px;color:#fff}
-.hm-vk{background:var(--vk)}.hm-max{background:radial-gradient(circle at 15% 95%,#46C6FD 0,rgba(70,198,253,0) 55%),linear-gradient(135deg,#3E63FC 0%,#3F48EA 45%,#8E4BE2 100%)}
+.hm-vk{background:var(--vk)}.hm-max{background:var(--max-grad)}
 @media (hover:hover){.hm:hover{transform:translateY(-2px)}}
 @media (min-width:1200px){.hdr-msg{display:flex;gap:6px;flex:none}}
 .ic{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#262626;color:#fff;text-decoration:none}

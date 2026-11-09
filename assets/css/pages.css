@@ -522,22 +522,24 @@ html.a11y-noimg .exit-pic{display:none!important}
 .fq-acts{display:grid;gap:10px}
 @media (max-width:399px){.fq-acts .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон — кнопки друг под другом, одной ширины */
 @media (min-width:960px){.fq-cols{grid-template-columns:1fr 1fr;gap:12px}.fq-strip{grid-template-columns:minmax(0,1fr) auto;padding:26px 32px}.fq-acts{grid-auto-flow:column;align-items:center}.fq-acts .msgs{grid-template-columns:repeat(2,150px)}}
-/* финальная форма (все страницы): тёмная плашка — слева заголовок, телефон и фото инструктора, справа белая форма */
-.fs-dark{background:#141414;border-radius:var(--r);padding:28px 18px 18px;display:grid;gap:24px}
-.fs-dark .head .it{color:#fff}
-.fs-dark .head .sub-it{color:#E6E6E6}
-.fs-dark .checks li{color:#D2D2D2}
-.fs-dark .sign3d{display:none}
-.final .fs-dark .head{display:flex;flex-direction:column;gap:12px}
+/* финальная форма (все страницы): красная плашка — слева заголовок, галочки и телефон белым, справа белая форма;
+   на красном кнопка записи и выбранная категория тёмные (красное на красном сливается) */
+.fs-red{position:relative;overflow:hidden;background:var(--red);color:#fff;border-radius:var(--r);padding:28px 18px 18px;display:grid;gap:24px}
+.fs-red::after{content:"";position:absolute;right:-140px;top:-140px;width:440px;height:440px;border-radius:50%;border:64px solid rgba(255,255,255,.06);pointer-events:none}
+.fs-red > *{position:relative;z-index:1}
+.fs-red .head .it,.fs-red .head .acc,.fs-red .head .sub-it{color:#fff}
+.fs-red .checks li{color:#fff}
+.fs-red .checks li::before{filter:brightness(0) invert(1)}
+.fs-red .sign3d{display:none}
+.final .fs-red .head{display:flex;flex-direction:column;gap:12px}
 .fs-tel{font:900 italic 30px/1 var(--font);color:#fff;text-decoration:none;margin-top:6px;align-self:flex-start}
-.fs-h{color:#9A9A9A;font-size:14px;margin-top:-4px}
-.fs-ph{position:relative;margin:10px 0 0;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:#262626}
-.fs-ph img{display:block;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
-.fs-ph figcaption{position:absolute;left:12px;bottom:12px;background:#fff;border-radius:14px;padding:10px 14px;display:grid;gap:2px}
-.fs-ph b{font:900 italic 18px/1.1 var(--font);color:var(--head)}.fs-ph span{font-size:13px;color:var(--muted)}
-.fs-dark .final-card{box-shadow:none}
-@media (max-width:959px){.fs-dark{grid-template-columns:minmax(0,1fr)}}   /* планшет: форма под текстом, иначе тесно */
-@media (min-width:960px){.fs-dark{grid-template-columns:minmax(0,1fr) minmax(0,.95fr);padding:48px;gap:56px;align-items:center}.fs-tel{font-size:40px}}
+.fs-h{color:rgba(255,255,255,.75);font-size:14px;margin-top:-4px}
+.fs-red .final-card{box-shadow:none}
+.fs-red .final-card .btn-red{background:#141414}
+@media (hover:hover){.fs-red .final-card .btn-red:hover{background:#000}}
+.fs-red .final-card .chip[aria-pressed="true"]{background:#141414;color:#fff}
+@media (max-width:959px){.fs-red{grid-template-columns:minmax(0,1fr)}}   /* планшет: форма под текстом */
+@media (min-width:960px){.fs-red{grid-template-columns:minmax(0,1fr) minmax(0,.95fr);padding:48px;gap:56px;align-items:center}.fs-tel{font-size:40px}}
 .chips-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
 .chips-row .chips{margin-bottom:0;flex:1 1 auto;min-width:0}
 .chips-row .sh-arr{margin-bottom:2px}   /* у .chips внутренний отступ 2px — низ стрелок ровно по низу табов */
