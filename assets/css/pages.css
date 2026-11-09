@@ -354,6 +354,54 @@ html.a11y-noimg .sign3d{display:none!important}
 .why-cut .wc .tx{align-content:start;gap:10px;padding:12px 18px 22px}
 @media (min-width:1080px){.why-cut .wc .ph img{aspect-ratio:4/3}}
 
+/* «Учиться выгодно и удобно» (главная, после цен): плитки разной ширины — широкая «Приведите друга», красная «Оплата поэтапно», снизу три скидки */
+.bt{display:grid;gap:12px}
+.bt-c{position:relative;overflow:hidden;background:var(--grey);border-radius:var(--r);padding:22px 20px;display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:12px;align-items:start;min-height:180px}
+.sec.grey .bt-c:not(.bt-red){background:#fff}
+.bt-c img{width:96px;height:96px;object-fit:contain;align-self:end;filter:drop-shadow(0 14px 14px rgba(0,0,0,.14))}
+.bt-tx{display:grid;gap:10px;align-content:start}
+.bt-c h3{margin:0;font:900 italic 22px/1.12 var(--font);text-transform:uppercase;color:var(--head)}
+.bt-pill{justify-self:start;padding:8px 14px;border-radius:999px;background:var(--red);color:#fff;font:800 13px/1 var(--font);white-space:nowrap}
+.bt-c p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.bt-st{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.bt-st div{background:#fff;border-radius:var(--r-sm);padding:14px;display:grid;gap:6px;align-content:start}
+.sec.grey .bt-st div{background:var(--grey)}
+.bt-st b{font:900 italic 44px/1 var(--font);color:var(--red)}
+.bt-st span{font-size:13.5px;line-height:1.35;color:var(--ink)}
+.bt-red{background:var(--red);grid-template-columns:minmax(0,1fr)}
+.bt-red h3{color:#fff}.bt-red p{color:#fff;opacity:.92}
+.bt-big{display:grid;gap:4px;margin:6px 0 4px}
+.bt-big b{font:900 italic 40px/1 var(--font);color:#fff;white-space:nowrap}
+.bt-big span{font-size:14px;color:#fff;opacity:.85}
+.bt-note{margin:16px 0 0;display:flex;gap:6px 16px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--muted)}
+.bt-note a{font-weight:700;color:var(--red);text-decoration:underline;text-underline-offset:4px}
+/* маленькие плитки: заголовок на всю ширину, картинка справа от текста */
+.bt-s{grid-template-rows:auto 1fr;row-gap:10px}
+.bt-s .bt-tx{display:contents}
+.bt-s h3{grid-column:1 / -1}.bt-s p{grid-column:1}.bt-s img{grid-column:2;grid-row:2}
+@media (max-width:419px){.bt-st{grid-template-columns:minmax(0,1fr)}.bt-st div{grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:14px}}
+@media (max-width:719px){
+  .bt-c{grid-template-columns:minmax(0,1fr);min-height:0}
+  .bt-c img{position:absolute;right:12px;top:12px;width:72px;height:72px}
+  .bt-s img{grid-column:auto;grid-row:auto}
+  .bt-c:not(.bt-red) h3{padding-right:76px}
+  .bt-w .bt-pill{margin-right:76px}
+}
+@media (min-width:720px){.bt{grid-template-columns:repeat(2,minmax(0,1fr))}.bt-w{grid-column:1 / -1;grid-template-columns:minmax(0,1fr) 170px}.bt-w img{width:170px;height:170px;align-self:center}.bt-st{max-width:480px}}
+@media (min-width:1200px){
+  .bt{grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+  .bt-c{padding:30px 28px;min-height:240px;grid-template-columns:minmax(0,1fr) 130px}
+  .bt-c img{width:130px;height:130px}
+  .bt-w{grid-column:span 7;grid-template-columns:minmax(0,1fr) 210px}
+  .bt-w img{width:210px;height:210px;align-self:center}
+  .bt > .bt-red{grid-column:span 5}
+  .bt > .bt-c:nth-child(n+3){grid-column:span 4}
+  .bt-big b{font-size:52px}
+  .bt-st{max-width:440px}
+  .bt-st b{font-size:52px}
+}
+@media (min-width:1440px){.bt-c{grid-template-columns:minmax(0,1fr) 150px}.bt-c img{width:150px;height:150px}.bt-w{grid-template-columns:minmax(0,1fr) 210px}.bt-w img{width:210px;height:210px}}
+
 
 @media (max-width:899px){.promo{margin-top:22px}.promo-art{top:-26px}}
 
