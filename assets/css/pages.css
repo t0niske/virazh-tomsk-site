@@ -767,7 +767,6 @@ address{font-style:normal}
 @media (max-width:359px){.hdr-row{gap:6px}.logo img{height:28px}.ic{width:40px;height:40px}.menu-btn{padding:0 11px}}
 
 /* ===== Посадочная категории (B АКПП; дальше МКПП и мотоцикл по тому же шаблону) ===== */
-.ofg-top{margin-top:56px}
 .sec:not(.grey) .why-cut .wc{background:var(--grey)}
 .sec.grey .car{background:#fff}
 .sec.grey .official-pic img{mix-blend-mode:multiply}   /* у картинки белый фон — на сером блоке не видно прямоугольника */
@@ -847,3 +846,32 @@ address{font-style:normal}
 #other .pr-cards{grid-template-columns:minmax(0,1fr)}
 #other:not(.grey) .pc{background:var(--grey)}
 @media (min-width:960px){#other .pr-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+
+/* ===== Главная: блоки помещаются в окно браузера, контент не убираем =====
+   первый экран и цены оба серые — между ними один отступ, а не два */
+.hx + .sec.grey{padding-top:0}
+/* карточки на другом фоне (после выноса «Официальной автошколы» чередование ниже сдвинулось) */
+.sec.grey .sc{background:#fff}
+.sec.grey .tn-steps li{background:#fff}
+.sec:not(.grey) .om-it{background:var(--grey)}
+.sec:not(.grey) .om-tx .acts .btn{background:#fff}
+/* компьютер: заголовки блоков шире (1–2 строки), кнопки в карточках цен в ряд, плашка цен плотнее,
+   картинки шагов, фото инструкторов и картинки цен — от высоты окна; у офисов кнопки справа от текста */
+@media (min-width:1080px){
+  .head{max-width:1240px}
+  .pr{padding:clamp(24px,3vh,56px) 32px clamp(20px,2.6vh,40px)}
+  .pr-head{max-width:none;margin-bottom:clamp(16px,2vh,40px)}
+  .pr-note{max-width:none;margin-top:14px}
+  .pc-acts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);padding-top:10px}
+  .pc-list{margin-top:12px;padding-top:12px;gap:4px}.pc-list li{line-height:1.35}
+  .pc-price{margin-top:10px}.pc-chips{margin-top:8px}.pc-steps{margin-top:8px}
+  .sc-pic{aspect-ratio:auto;height:clamp(140px,20vh,248px)}
+  .ins-c .ph{aspect-ratio:auto;height:clamp(220px,34vh,420px)}
+  .om1{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+  .om-tx{grid-template-columns:minmax(0,1fr) auto;column-gap:16px}
+  .om-t{grid-column:1 / -1}
+  .om-d,.om-c{grid-column:1}
+  .om-c{display:flex;flex-wrap:wrap;column-gap:14px;align-items:baseline}
+  .om-tx .acts{grid-column:2;grid-row:2 / span 2;align-self:end;margin-top:0;flex-wrap:nowrap}
+}
+@media (min-width:1100px){.pc{padding:22px 24px}.pc-pic{height:clamp(96px,100vh - 700px,170px)}.pc-pic img{width:clamp(96px,100vh - 700px,170px);height:clamp(96px,100vh - 700px,170px)}   /* картинка настолько крупная, насколько позволяет высота окна (блок цен целиком в экране) */}
