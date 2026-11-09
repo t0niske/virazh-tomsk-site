@@ -91,8 +91,8 @@ sub office_item {
   return qq{<article class="om-it} . ($i ? '' : ' on') . qq{" data-ll="$ll" tabindex="0"><span class="om-n" aria-hidden="true">$n</span>}
        . qq{<div class="om-tx"><b class="om-t">$t</b><span class="om-d">$d</span><div class="om-c">$c<span>$h</span></div>$acts</div></article>};
 }
-# карточка-карусель: под фото две одинаковые метки (коробка и машина), фамилия крупно, имя и отчество ниже,
-# стаж двумя цифрами, кнопка «Записаться»; цитата не выводится — она на странице инструкторов
+# карточка-карусель: под фото две метки (коробка и машина), фамилия крупно, имя и отчество ниже,
+# стаж за рулём, кнопка «Записаться»; цитата не выводится — она на странице инструкторов
 sub ins_carousel {
   my ($attr, $b) = @_;
   my ($ph) = $b =~ m{(<div class="ph[^"]*">.*?</div>)}s;
@@ -105,7 +105,7 @@ sub ins_carousel {
   $btn =~ s/ ?\bbtn-sm\b//; $btn =~ s/ ?\bbtn-block\b//;
   return qq{<article class="ins ins-c"$attr>$ph<div class="ins-in"><div class="ins-pills"><span>$gb</span><span>$d{'Машина'}</span></div>}
        . qq{<span class="nm"><b>$sur</b><span>$rest</span></span>}
-       . qq{<div class="ins-st"><div><b>$d{'За рулём'}</b><span>за рулём</span></div><div><b>$d{'Обучает'}</b><span>обучает</span></div></div>}
+       . qq{<div class="ins-st"><div><b>$d{'За рулём'}</b><span>стаж за рулём</span></div></div>}
        . qq{${btn}Записаться</button></div></article>};
 }
 # limit: полный список живёт на своей странице, в выжимках — только первые карточки
