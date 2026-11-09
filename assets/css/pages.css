@@ -523,7 +523,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 @media (max-width:399px){.fq-acts .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон — кнопки друг под другом, одной ширины */
 @media (min-width:960px){.fq-cols{grid-template-columns:1fr 1fr;gap:12px}.fq-strip{grid-template-columns:minmax(0,1fr) auto;padding:26px 32px}.fq-acts{grid-auto-flow:column;align-items:center}.fq-acts .msgs{grid-template-columns:repeat(2,150px)}}
 /* финальная форма (все страницы): красная плашка — слева заголовок, галочки и телефон белым, справа белая форма;
-   на красном кнопка записи и выбранная категория тёмные (красное на красном сливается) */
+   кнопка «Записаться на обучение» красная; выбранная категория тёмная */
 .fs-red{position:relative;overflow:hidden;background:var(--red);color:#fff;border-radius:var(--r);padding:28px 18px 18px;display:grid;gap:24px}
 .fs-red::after{content:"";position:absolute;right:-140px;top:-140px;width:440px;height:440px;border-radius:50%;border:64px solid rgba(255,255,255,.06);pointer-events:none}
 .fs-red > *{position:relative;z-index:1}
@@ -535,8 +535,6 @@ html.a11y-noimg .exit-pic{display:none!important}
 .fs-tel{font:900 italic 30px/1 var(--font);color:#fff;text-decoration:none;margin-top:6px;align-self:flex-start}
 .fs-h{color:rgba(255,255,255,.75);font-size:14px;margin-top:-4px}
 .fs-red .final-card{box-shadow:none}
-.fs-red .final-card .btn-red{background:#141414}
-@media (hover:hover){.fs-red .final-card .btn-red:hover{background:#000}}
 .fs-red .final-card .chip[aria-pressed="true"]{background:#141414;color:#fff}
 @media (max-width:959px){.fs-red{grid-template-columns:minmax(0,1fr)}}   /* планшет: форма под текстом */
 @media (min-width:960px){.fs-red{grid-template-columns:minmax(0,1fr) minmax(0,.95fr);padding:48px;gap:56px;align-items:center}.fs-tel{font-size:40px}}
