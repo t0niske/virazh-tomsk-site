@@ -54,7 +54,7 @@ button{font:inherit;color:inherit}
 @media (max-width:399px){.final-card .msgs{grid-template-columns:minmax(0,1fr)}}   /* узкий телефон: в форме «ВКонтакте» не влезает в полширины — кнопки друг под другом */
 .link{font-weight:700;font-size:15px;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
 .chip{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border:0;border-radius:14px;background:var(--grey);font:700 14px/1 var(--font);cursor:pointer;white-space:nowrap;color:var(--ink)}
-.chip[aria-pressed="true"]{background:var(--red);color:#fff}
+.chip[aria-pressed="true"]{background:#141414;color:#fff}   /* выбранный таб — чёрный */
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--gut-r)) 18px calc(-1 * var(--gut-l));padding:2px var(--gut-r) 2px var(--gut-l)}
 .chips::-webkit-scrollbar{display:none}
 .pill{display:inline-flex;align-items:center;font:700 12px/1 var(--font);padding:7px 10px;border-radius:999px;white-space:nowrap;background:#fff;color:var(--ink)}
@@ -252,6 +252,7 @@ button{font:inherit;color:inherit}
 .dots i{width:7px;height:7px;border-radius:50%;background:#D0D0D0}
 .dots i.on{width:22px;border-radius:4px;background:var(--red)}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+@media (min-width:720px){.foot.nolink{display:none}.scroller:has(+ .foot.nolink){margin-bottom:-18px}}   /* ряд без ссылки (nolink): на компьютере пустой — скрыт, нижний отступ ленты убран */
 
 /* ===== как проходит обучение: ШАГ 01 ===== */
 .steps{display:grid;gap:12px}

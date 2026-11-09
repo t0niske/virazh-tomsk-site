@@ -65,6 +65,7 @@ sub include_with {
   }
   # nolink=1 — без ссылки «Все …» под лентой (точки прокрутки остаются)
   $s =~ s{\s*<a class="link"[^>]*>.*?</a>}{}s if $a{nolink};
+  $s =~ s{<div class="foot">}{<div class="foot nolink">} if $a{nolink};   # на компьютере такой ряд скрыт (точки только на телефоне)
   # arrows=1 — стрелки листания в одной строке с табами фильтра (по нижнему краю); лента с «подглядывающей» следующей карточкой
   if ($a{arrows} && $s =~ /<div class="scroller[^"]*" id="([\w-]+)"/) {
     my $id = $1;
@@ -160,11 +161,75 @@ sub typo {
   } split /(<script\b.*?<\/script>|<style\b.*?<\/style>|<textarea\b.*?<\/textarea>|<pre\b.*?<\/pre>)/is, $html;
 }
 
+# Точка в конце коротких текстов интерфейса не ставится (подзаголовки, подписи, пункты, тексты карточек, примечания).
+# Остаётся в связном тексте: статьи и документы (.prose, .legal, .sv-grid), таблицы, ответы на вопросы (details, .faq),
+# отзывы (.rev) и метки с инициалами (.tags). Не трогаются сокращения и инициалы: «т. д.», «г.», «Е. Е.».
+my $UNDOT_KEEP = qr/(?:^|\s)(?:prose|legal|sv-grid|faq|rev|rev-list|tags|doc|docs|bio)(?:\s|$)/;   # классы целиком: «faq-grid» — не «faq»
+my $UNDOT_CLS  = qr/(?:^|\s)(?:sub-it|lead|page-lead|ok-msg|note|road-note|pr-note|bot-note|exit-note|tn-note|note-sm|muted|quote|sub)(?:\s|$)/;
+my $ABBR = qr/(?:\p{Lu}|г|гг|д|др|т|ул|пос|руб|коп|тыс|млн|см|ст|пр|им|рис|тел|корп|стр|кв|мин|ч)$/;
+sub undot {
+  my $html = shift;
+  my @t = split /(<script\b.*?<\/script>|<style\b.*?<\/style>|<[^>]+>)/is, $html;
+  my @stack;   # [имя, класс, «не трогать внутри»]
+  for my $i (0 .. $#t) {
+    my $x = $t[$i];
+    next if $x eq '' || $x =~ /^<(?:script|style)\b/i;
+    if ($x =~ m{^<(/?)([a-zA-Z][\w-]*)\b([^>]*?)(/?)>$}) {
+      my ($close, $tag, $attr, $self) = ($1, lc $2, $3, $4);
+      next if $self || $tag =~ /^(?:br|img|input|meta|link|hr|source|use|path|svg|wbr)$/;
+      if (!$close) {
+        my ($cls) = $attr =~ /\bclass="([^"]*)"/; $cls //= '';
+        my $keep = ($tag =~ /^(?:details|table|pre|code|blockquote|textarea)$/) || $cls =~ $UNDOT_KEEP || (@stack && $stack[-1][2]);
+        push @stack, [$tag, $cls, $keep];
+        next;
+      }
+      my $k = $#stack; $k-- while $k >= 0 && $stack[$k][0] ne $tag;
+      next if $k < 0;
+      my ($name, $cls, $keep) = @{$stack[$k]};
+      splice @stack, $k;
+      next if $keep;
+      next unless $name =~ /^(?:p|li|figcaption|dd|small)$/ || $cls =~ $UNDOT_CLS;
+      # ближайший текст перед закрывающим тегом (пропуская закрывающие строчные теги)
+      for (my $j = $i - 1; $j >= 0; $j--) {
+        my $y = $t[$j];
+        next if $y eq '' || $y =~ m{^</(?:a|b|strong|em|i|span|small|u)>$}i;
+        last if $y =~ /^</;
+        next if $y =~ /^\s*$/;
+        if ($y =~ /(?<!\.)\.(\s*)$/ && $y !~ /(?:^|[\s(«"\x{A0};])$ABBR\.\s*$/) { $t[$j] =~ s/\.(\s*)$/$1/; }
+        last;
+      }
+    }
+  }
+  return join '', @t;
+}
+# Последнее слово заголовка и подзаголовка не остаётся на строке одно: склеиваем его с предыдущим неразрывным пробелом
+sub nowidow {
+  my $html = shift;
+  # $max — сколько знаков может занять неразрывный хвост: заголовок крупный, ему меньше
+  my $fix = sub {
+    my ($open, $in, $close, $max) = @_;
+    my $plain = $in; $plain =~ s/<[^>]+>//g; $plain =~ s/&nbsp;/\x{A0}/g; $plain =~ s/&[a-z]+;/x/g; $plain =~ s/\s+$//;
+    my @w = split /[ \t\r\n]+/, $plain;            # куски между обычными пробелами (неразрывные склейки — внутри куска)
+    return $open . $in . $close if @w < 3;          # короткий текст не трогаем
+    return $open . $in . $close if length($w[-2]) + 1 + length($w[-1]) > $max;   # склейка не влезет в строку
+    my @p = split /(<[^>]+>)/, $in;
+    for (my $j = $#p; $j >= 0; $j--) {
+      next if $p[$j] =~ /^</ || $p[$j] !~ /\S/;
+      if ($p[$j] =~ /\S[ \t\r\n]+\S/) { $p[$j] =~ s/[ \t\r\n]+(?=\S+[^ \t\r\n]*$)/&nbsp;/; last }
+      last;
+    }
+    return $open . join('', @p) . $close;
+  };
+  $html =~ s{(<(h[1-3])\b[^>]*>)(.*?)(</\2>)}{ $fix->($1, $3, $4, 14) }gse;
+  $html =~ s{(<(p|span)\b[^>]*\bclass="[^"]*\b(?:sub-it|lead|page-lead)\b[^"]*"[^>]*>)(.*?)(</\2>)}{ $fix->($1, $3, $4, 26) }gse;
+  return $html;
+}
+
 my $version = strftime('%Y%m%d%H%M', localtime);
 my $layout = slurp('src/layout.html');
-my $header = typo(expand_includes(slurp('src/partials/header.html')));
-my $footer = typo(expand_includes(slurp('src/partials/footer.html')));
-my $overlays = typo(expand_includes(slurp('src/partials/overlays.html')));
+my $header = undot(typo(expand_includes(slurp('src/partials/header.html'))));
+my $footer = undot(typo(expand_includes(slurp('src/partials/footer.html'))));
+my $overlays = nowidow(undot(typo(expand_includes(slurp('src/partials/overlays.html')))));
 
 remove_tree($opt{out}); make_path($opt{out});
 
@@ -233,7 +298,7 @@ for my $file (@pages) {
     /^<(?:script|style)\b/i ? $_ : do { (my $x = $_) =~ s{>([^<]+)<}{ my $s = $1; $s =~ s/(\d) (?=\d{3}(?!\d))/$1&nbsp;/g; $s =~ s/(\d) (?=\x{20BD})/$1&nbsp;/g; ">$s<" }ge; $x }
   } split /(<script\b.*?<\/script>|<style\b.*?<\/style>)/is, $content;
   # висячие предлоги и союзы — во всём тексте страницы (см. typo)
-  $content = typo($content);
+  $content = nowidow(undot(typo($content)));
   # активный пункт во внутренних меню (раздел «Сведения» и т.п.)
   $content =~ s{<a class="sv" href="\Q$path\E"}{<a class="sv" href="$path" aria-current="page"}g;
   # ссылка «Все …» под каруселью на её же странице не нужна: помечаем, CSS её прячет

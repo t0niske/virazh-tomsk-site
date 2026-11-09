@@ -370,7 +370,8 @@ html.a11y-noimg .exit-pic{display:none!important}
 /* первый экран главной: сцена «вираж трека» с Omoda (design/hero-scene), номер сразу в форме, под машиной — белая
    плашка «Запись открыта круглый год». Фон серый, как у серых блоков сайта: белая студия сцены ложится на него через multiply.
    На компьютере сцена лежит под колонками и привязана к низу блока: колёса всегда чуть выше плашки записи */
-.hx{position:relative;isolation:isolate;overflow:hidden;overflow:clip;padding:18px 0 32px;background:var(--grey)}
+.hx{position:relative;isolation:isolate;overflow:hidden;overflow:clip;padding:18px 0 44px;background:var(--grey)}
+@media (min-width:720px){.hx{padding-bottom:80px}}
 .hx-top{position:relative;display:grid}
 .hx-text{position:relative;z-index:2}
 .hx h1{display:grid;gap:4px}
@@ -416,10 +417,9 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pm-steps span{display:block;min-width:0;font-size:14.5px;line-height:1.45;color:var(--muted);padding-top:1px}
 .pm-steps span strong{display:block;margin-bottom:3px;color:var(--ink);font-size:16px;line-height:1.3}
 .pm-steps a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25);text-underline-offset:3px;white-space:nowrap}
-.pm-acts{display:grid;gap:10px}
+.pm-acts{display:grid;gap:10px;grid-template-columns:minmax(0,1fr) max-content;align-items:center}
+.pm-acts .btn-max{padding:0 18px}
 .pm-acts .btn{white-space:nowrap}
-.pm-max{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
-@media (hover:hover){.pm-max:hover{background:var(--ink);color:#fff}}
 /* главная, «Об автошколе»: слева слайдер фото из галереи (стрелки и счётчик, site.js [data-slider]),
    справа тёмная карточка — текст, цифры 2×2 на тёмно-серых плитках (наклонный жирный, как в первом экране), кнопки.
    На компьютере высоту ряда задаёт карточка, фото подстраивается под неё */
@@ -561,7 +561,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .ins-st b{font:900 italic 20px/1.1 var(--font);color:var(--head)}
 .ins-st span{font-size:13.5px;color:var(--muted)}
 .ins-c .btn{margin-top:auto;min-height:50px;width:100%}
-@media (min-width:720px){.pm-acts{grid-template-columns:repeat(2,minmax(0,max-content))}.pm-acts .btn{padding:0 28px}}
+@media (min-width:720px){.pm-acts .btn-red{min-height:60px;font-size:17px}}   /* «Записаться» занимает остаток ряда и выше — крупнее MAX */
 /* 720–1099: заголовок и картинка в ряд, шаги ниже (с 900 px — в три колонки, первая шире: в ней способы связи) */
 @media (min-width:720px) and (max-width:1099px){
   .hx .promo{grid-template-columns:minmax(0,1fr) 200px;gap:20px 24px}
@@ -572,7 +572,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 @media (min-width:900px) and (max-width:1099px){.hx .pm-steps{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:20px}}
 @media (min-width:1100px){.hx .promo{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) 210px;gap:28px}}
 @media (min-width:960px){
-  .hx{padding:44px 0 56px}
+  .hx{padding:44px 0 80px}
   .hx-top{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:20px;align-items:center}
   .hx-facts{margin-top:20px}
   .hx-form{margin-top:22px}
@@ -628,8 +628,7 @@ html.a11y-noimg .exit-pic{display:none!important}
 .pc-more{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px #1E1E1E}
 @media (hover:hover){.pc-more:hover{background:var(--ink);color:#fff}}
 .pr-note{margin:20px auto 0;max-width:72ch;text-align:center;font-size:13.5px;line-height:1.5;color:#A8A8A8}
-#prices{padding-top:32px}
-@media (min-width:720px){.pr{padding:56px 32px 40px}.pr-head{margin-bottom:40px}#prices{padding-top:48px}}
+@media (min-width:720px){.pr{padding:56px 32px 40px}.pr-head{margin-bottom:40px}}
 /* три карточки в ряд — с 1100 px: уже названию не хватает ширины («МЕХАНИКА (МКПП)» ~235 px) */
 @media (min-width:1100px){.pr-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.pc{padding:28px;grid-template-rows:auto auto auto auto auto auto auto auto 1fr}.pc-pic{height:170px}.pc-pic img{width:170px;height:170px}}
 
