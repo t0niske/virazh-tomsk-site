@@ -50,6 +50,14 @@ sub include_with {
   if (my $f = $a{only}) {
     $s =~ s{[ \t]*<article\b[^>]*\bdata-f="(?!\Q$f\E")[^"]*".*?</article>\s*}{}gs;
   }
+  # skip=akpp — все карточки, кроме этой группы (на посадочной категории — «Другие категории»)
+  if (my $f = $a{skip}) {
+    $s =~ s{[ \t]*<article\b[^>]*\bdata-f="\Q$f\E".*?</article>\s*}{}gs;
+  }
+  # for=fleetList — подстановка в вставку (стрелки sh-arr для ленты с этим id)
+  $s =~ s/\{for\}/$a{for}/g if $a{for};
+  # nonote=1 — без сноски под лентой шагов («Суммы для категории B…»): на посадочной она лишняя
+  $s =~ s{\s*<p class="road-note">.*?</p>}{}s if $a{nonote};
   # в выжимке и в одной группе фильтровать нечего — кнопки фильтра убираем
   $s =~ s{[ \t]*<div[^>]*\bdata-filter-for=.*?</div>\s*}{}s if $a{only} || $a{limit};
   # view=carousel — карточки инструкторов для карусели на главной (из тех же данных, что на /instruktory)
@@ -71,8 +79,11 @@ sub include_with {
     my $id = $1;
     my $arr = qq{<div class="sh-arr"><button class="sa" type="button" data-for="$id" data-prev aria-label="Листать назад"><svg width="22" height="22" aria-hidden="true"><use href="#i-left"/></svg></button>}
             . qq{<button class="sa" type="button" data-for="$id" data-next aria-label="Листать вперёд"><svg width="22" height="22" aria-hidden="true"><use href="#i-right"/></svg></button></div>};
-    $s =~ s{(<div class="chips"[^>]*>.*?</div>)}{<div class="chips-row">$1$arr</div>}s
-      or $s =~ s{(<div class="scroller)}{<div class="chips-row">$arr</div>\n$1};
+    # arrows=head — табов нет, стрелки стоят в строке заголовка (страница: <div class="sh"> head + <!--#include sh-arr for=id-->)
+    if ($a{arrows} ne 'head') {
+      $s =~ s{(<div class="chips"[^>]*>.*?</div>)}{<div class="chips-row">$1$arr</div>}s
+        or $s =~ s{(<div class="scroller)}{<div class="chips-row">$arr</div>\n$1};
+    }
     $s =~ s{<div class="scroller(?=[" ])}{<div class="scroller has-arr};
   }
   return limit_cards($s, $a{limit});

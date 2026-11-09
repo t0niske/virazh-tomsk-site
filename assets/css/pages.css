@@ -765,3 +765,85 @@ address{font-style:normal}
 .menu .m-util a{color:#fff;font:600 15px/1.3 var(--font);padding:9px 0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#555}
 /* шапка на узком телефоне (320 px): кнопка «Меню» не вылезает за край */
 @media (max-width:359px){.hdr-row{gap:6px}.logo img{height:28px}.ic{width:40px;height:40px}.menu-btn{padding:0 11px}}
+
+/* ===== Посадочная категории (B АКПП; дальше МКПП и мотоцикл по тому же шаблону) ===== */
+.ofg-top{margin-top:56px}
+.sec:not(.grey) .why-cut .wc{background:var(--grey)}
+.sec.grey .car{background:#fff}
+.sec.grey .official-pic img{mix-blend-mode:multiply}   /* у картинки белый фон — на сером блоке не видно прямоугольника */
+/* первый экран: настоящее фото на весь блок; на телефоне фото сверху (лицо не закрываем), текст ниже на тёмном */
+.lp-hero{background:var(--grey);padding:18px 0 44px}
+.lp-hero .crumbs{margin-bottom:18px}
+.lp-cover{position:relative;border-radius:var(--r);overflow:hidden;background:#141414;display:grid;grid-template-columns:minmax(0,1fr)}
+.lp-cover > img{display:block;width:100%;height:300px;object-fit:cover;object-position:74% 22%}
+.lp-cover::before{content:"";position:absolute;left:0;right:0;top:180px;height:120px;background:linear-gradient(180deg,rgba(20,20,20,0),#141414);z-index:1}
+.lp-tx{position:relative;z-index:2;color:#fff;padding:0 18px 22px;margin-top:-28px;display:grid;gap:16px;align-content:center}
+.lp-pill{justify-self:start;display:inline-block;padding:7px 14px;border-radius:999px;border:1.5px solid #fff;font:800 12px/1 var(--font);text-transform:uppercase;letter-spacing:.04em;color:#fff}
+.lp-h1{margin:0;font-size:clamp(22px,calc((100vw - 68px) / 10.4),56px);line-height:1.04;color:#fff}   /* «Получите права» в одну строку и на 320 px */
+.lp-h1 .acc{color:#FF4B55}
+.lp-h1 .nw{white-space:nowrap}
+.lp-lead{margin:0;font-size:17px;line-height:1.55;color:#EDEDED;max-width:46ch}
+.lp-facts{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.lp-facts li{background:rgba(255,255,255,.1);border-radius:16px;padding:14px 12px;display:grid;gap:4px}
+.lp-facts b{font:900 italic clamp(15px,4.4vw,24px)/1.05 var(--font);color:#fff;white-space:nowrap}
+.lp-facts span{font-size:12.5px;line-height:1.3;color:#D8D8D8}
+.lp-acts{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.lp-acts .btn{padding:0 12px}
+.lp-tel{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px #fff;white-space:nowrap}
+@media (min-width:720px){.lp-hero{padding-bottom:80px}.lp-acts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);max-width:520px}}
+@media (min-width:960px){
+  .lp-hero{padding-top:28px}
+  .lp-cover{padding:56px;min-height:600px;align-content:center}
+  .lp-cover > img{position:absolute;inset:0;height:100%;object-position:70% 50%}
+  .lp-cover::before{top:0;bottom:0;height:auto;background:linear-gradient(90deg,rgba(14,14,14,.94) 0%,rgba(14,14,14,.86) 38%,rgba(14,14,14,.35) 62%,rgba(14,14,14,0) 78%)}
+  .lp-tx{max-width:640px;padding:0;margin:0}
+  .lp-facts li{background:rgba(255,255,255,.12);backdrop-filter:blur(6px);padding:18px 16px}
+}
+/* стоимость: тёмная плашка как «Программы и цены» на главной — итог слева, три этапа оплаты на белых карточках */
+.lq-k{font:800 12px/1 var(--font);text-transform:uppercase;letter-spacing:.06em}
+.lq-when{font:800 12px/1.2 var(--font);text-transform:uppercase;letter-spacing:.04em;color:var(--red)}
+.lq-acts{display:flex;margin-top:6px}.lq-acts .btn{padding:0 44px}
+.lq-note{margin:0;font-size:14px;line-height:1.5;color:#D2D2D2}
+.lq1{background:#141414;color:#fff;border-radius:var(--r);padding:28px 16px 22px;display:grid;gap:20px}
+.lq1-total{display:grid;gap:12px;align-content:center;padding:0 4px}
+.lq1-total .lq-k{color:#D2D2D2}
+.lq1-total > b{font:900 italic clamp(48px,14vw,76px)/1 var(--font);white-space:nowrap}
+.lq1-total p{margin:0;color:#E6E6E6;font-size:15.5px;line-height:1.5;max-width:40ch}
+.lq1-cards{display:grid;gap:8px}
+.lq1-c{background:#fff;color:var(--ink);border-radius:var(--r-sm);padding:14px 16px 14px 10px;display:grid;grid-template-columns:88px minmax(0,1fr);gap:12px;align-items:center}
+.lq1-c img{width:88px;height:88px;object-fit:contain}
+.lq1-c div{display:grid;gap:5px}
+.lq1-c h3{margin:0;font:900 italic 18px/1.1 var(--font);text-transform:uppercase;color:var(--head)}
+.lq1-c b{font:900 italic 26px/1 var(--font);color:var(--head);white-space:nowrap}
+.lq1-c p{margin:0;font-size:13.5px;line-height:1.4;color:var(--muted)}
+.lq1 .lq-note{padding:0 4px}
+@media (max-width:399px){.lq1-c{grid-template-columns:68px minmax(0,1fr)}.lq1-c img{width:68px;height:68px}.lq1-c h3{font-size:17px}}
+@media (max-width:359px){.lq1-c{grid-template-columns:56px minmax(0,1fr);gap:10px}.lq1-c img{width:56px;height:56px}}
+@media (min-width:720px){.lq1{padding:40px 32px 28px}}
+@media (min-width:1080px){
+  .lq1{grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);padding:48px;column-gap:40px;row-gap:28px}
+  .lq1-total > b{font-size:clamp(56px,4.6vw,72px)}
+  .lq1-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .lq1-c{grid-template-columns:minmax(0,1fr);padding:18px 20px 24px;align-content:start;gap:14px}
+  .lq1-c img{width:100%;height:150px;filter:drop-shadow(0 14px 14px rgba(0,0,0,.14))}
+  .lq1-c h3{font-size:22px}.lq1-c b{font-size:32px}
+  .lq1 .lq-note{grid-column:1 / -1;padding:0}
+}
+/* автомат или механика: карточка своей коробки красная */
+.lp-who{display:grid;gap:12px}
+.lp-card{background:var(--grey);border-radius:var(--r);padding:22px 20px;display:grid;gap:14px;align-content:start}
+.sec.grey .lp-card{background:#fff}
+.lp-card .lp-pill{border-color:var(--ink);color:var(--ink)}
+.sec .lp-card.lp-red,.sec.grey .lp-card.lp-red{background:var(--red);color:#fff}
+.lp-red .lp-pill{border-color:#fff;color:#fff}
+.lp-red .checks li{color:#fff}
+.lp-red .checks li::before{filter:brightness(0) invert(1)}
+.lp-at{grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:start}
+.lp-at-b{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141414;color:#fff;font:900 italic 24px/1 var(--font)}
+.lp-xh{display:block;font:900 italic 22px/1.15 var(--font);text-transform:uppercase;margin-bottom:10px;color:var(--head)}
+.lp-at p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+@media (min-width:960px){.lp-who{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.lp-card{padding:28px}.lp-at{grid-template-columns:minmax(0,1fr)}}
+/* другие категории — карточки программ с главной */
+#other .pr-cards{grid-template-columns:minmax(0,1fr)}
+#other:not(.grey) .pc{background:var(--grey)}
+@media (min-width:960px){#other .pr-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
