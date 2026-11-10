@@ -58,6 +58,10 @@ sub include_with {
   $s =~ s/\{for\}/$a{for}/g if $a{for};
   # nonote=1 — без сноски под лентой шагов («Суммы для категории B…»): на посадочной она лишняя
   $s =~ s{\s*<p class="road-note">.*?</p>}{}s if $a{nonote};
+  # cat=bM — в форме записи заранее выбрана категория страницы (final-form на посадочной «B, механика»)
+  if (my $c = $a{cat}) {
+    $s =~ s{(<button class="chip" type="button" data-c="([\w-]+)" aria-pressed=")(?:true|false)"}{$1 . ($2 eq $c ? 'true' : 'false') . '"'}ge;
+  }
   # в выжимке и в одной группе фильтровать нечего — кнопки фильтра убираем
   $s =~ s{[ \t]*<div[^>]*\bdata-filter-for=.*?</div>\s*}{}s if $a{only} || $a{limit};
   # view=carousel — карточки инструкторов для карусели на главной (из тех же данных, что на /instruktory)
