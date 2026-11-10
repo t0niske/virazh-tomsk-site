@@ -48,11 +48,12 @@
   box.className = 'ck';
   box.setAttribute('role', 'region');
   box.setAttribute('aria-label', 'Уведомление о cookie');
-  box.innerHTML = '<p>Сайт использует cookie и Яндекс Метрику для статистики. Подробнее — в <a></a></p>' +
+  // неразрывные пробелы ( ) — как build.pl делает в HTML: предлог держится за следующее слово, тире не начинает строку
+  box.innerHTML = '<p>Сайт использует cookie и Яндекс Метрику для статистики. Подробнее — в <a></a></p>' +
     '<button class="btn btn-red" type="button">Понятно</button>';
   var link = box.querySelector('a');
   link.href = href;
-  link.textContent = 'политике конфиденциальности';
+  link.textContent = 'политике конфиденциальности';
   box.querySelector('button').addEventListener('click', function () {
     try { localStorage.setItem(KEY, '1'); } catch (e) {}
     box.remove();
