@@ -53,8 +53,8 @@ sub include_with {
   # skip=akpp — все карточки, кроме этой группы (на посадочной категории — «Другие категории»)
   if (my $f = $a{skip}) {
     $s =~ s{[ \t]*<article\b[^>]*\bdata-f="\Q$f\E".*?</article>\s*}{}gs;
-  }
-  # for=fleetList — подстановка в вставку (стрелки sh-arr для ленты с этим id)
+    $s =~ s{[ \t]*<button class="chip"[^>]*\bdata-f="\Q$f\E"[^>]*>.*?</button>\s*}{}gs;   # и кнопку фильтра этой группы
+  }  # for=fleetList — подстановка в вставку (стрелки sh-arr для ленты с этим id)
   $s =~ s/\{for\}/$a{for}/g if $a{for};
   # nonote=1 — без сноски под лентой шагов («Суммы для категории B…»): на посадочной она лишняя
   $s =~ s{\s*<p class="road-note">.*?</p>}{}s if $a{nonote};

@@ -414,7 +414,28 @@
       }
       if (!shrink(h, .6)) h.style.overflowWrap = 'normal';
     });
+    pgRows();
   };
+  // «Ещё программы»: названия карточек в одном ряду — одинаковое число строк. У соседа строк больше — переносим название
+  // по span.pg-br; не помогло — уменьшаем шрифт всего ряда (до 80 %), пока длинное название не встанет в строки остальных.
+  // Метка — data-br, не class: класс отслеживает MutationObserver ниже, иначе пересчёт зациклится
+  const hLines = h => { const r = document.createRange(); r.selectNodeContents(h); return new Set([...r.getClientRects()].filter(x => x.width > 1).map(x => Math.round(x.bottom))).size; };
+  const pgRows = () => document.querySelectorAll('.pg').forEach(g => {
+    g.querySelectorAll('.pg-c h3').forEach(h => { h.style.fontSize = ''; delete h.dataset.br; });
+    const rows = {};
+    g.querySelectorAll('.pg-c:not(.pg-help)').forEach(c => { const k = Math.round(c.getBoundingClientRect().top); (rows[k] = rows[k] || []).push(c.querySelector('h3')); });
+    Object.values(rows).forEach(hs => {
+      let n = hs.map(hLines);
+      if (hs.length < 2 || Math.min(...n) === Math.max(...n)) return;
+      const max = Math.max(...n);
+      hs.forEach((h, i) => { if (n[i] < max && h.querySelector('.pg-br')) h.dataset.br = ''; });
+      n = hs.map(hLines);
+      if (Math.min(...n) === Math.max(...n)) return;
+      const base = parseFloat(getComputedStyle(hs[0]).fontSize), target = Math.min(...n);
+      for (let k = .96; k > .79; k -= .04) { hs.forEach(h => { h.style.fontSize = base * k + 'px'; }); if (hs.every(h => hLines(h) === target)) return; }
+      hs.forEach(h => { h.style.fontSize = ''; });
+    });
+  });
   let fitRaf = 0, fitW = innerWidth;
   const fitSoon = () => { if (!fitRaf) fitRaf = requestAnimationFrame(() => { fitRaf = 0; fitHeads(); }); };
   fitHeads();
