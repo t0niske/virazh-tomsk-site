@@ -842,10 +842,31 @@ address{font-style:normal}
 .lp-xh{display:block;font:900 italic 22px/1.15 var(--font);text-transform:uppercase;margin-bottom:10px;color:var(--head)}
 .lp-at p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
 @media (min-width:960px){.lp-who{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.lp-card{padding:28px}.lp-at{grid-template-columns:minmax(0,1fr)}}
-/* другие категории — карточки программ с главной */
-#other .pr-cards{grid-template-columns:minmax(0,1fr)}
-#other:not(.grey) .pc{background:var(--grey)}
-@media (min-width:960px){#other .pr-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+/* «Ещё программы автошколы» — все программы карточками (include programs skip=<своя>): крупная картинка, категория,
+   название, цена, коротко, «Подробнее»; последняя ячейка тёмная — «Не знаете, что выбрать?» */
+.pg{display:grid;gap:12px}
+.pg-c{background:var(--grey);border-radius:var(--r);padding:22px 20px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto 1fr auto;align-content:start}
+.sec.grey .pg-c{background:#fff}
+.pg-pic{display:grid;place-items:center;height:120px;margin-bottom:12px}
+.pg-pic img{width:120px;height:120px;object-fit:contain}
+.pg-cat{margin:0;font:600 16px/1.25 var(--font);color:var(--head)}
+.pg-c h3{margin:6px 0 0;font:900 italic 22px/1.12 var(--font);text-transform:uppercase;color:var(--red)}
+.pg-price{margin:14px 0 0;font:800 32px/1 var(--font);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.pg-price small{font-size:15px;font-weight:600;letter-spacing:0;color:var(--muted)}
+.pg-tx{margin:10px 0 0;font-size:15px;line-height:1.45;color:var(--muted)}
+.pg-c .btn{margin-top:20px}
+.pg-help,.sec.grey .pg-help{background:#141414;color:#fff;grid-template-rows:auto auto 1fr auto auto auto;align-content:stretch}
+.pg-ico{justify-self:center;align-self:center;width:120px;height:120px;object-fit:contain;margin:16px 0 0;filter:drop-shadow(0 14px 18px rgba(0,0,0,.45))}
+.pg-help h3{margin:0;color:#fff}
+.pg-help .pg-tx{color:#D2D2D2}
+.pg-tel{margin-top:16px;font:900 italic 28px/1 var(--font);color:#fff;text-decoration:none;align-self:end}
+.pg-h{margin-top:6px;font-size:13.5px;color:#D2D2D2}
+.pg-acts{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px;margin-top:20px}
+.pg-acts .btn{margin-top:0;padding:0 12px}
+@media (min-width:720px){.pg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pg-c{grid-row:span 6;grid-template-rows:subgrid;row-gap:0}   /* картинка, категория, название, цена, текст, кнопка — на одной высоте в ряду */
+  .pg-c.pg-help{grid-template-rows:auto auto 1fr auto auto auto}}
+@media (min-width:1080px){.pg{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.pg-c{padding:28px}.pg-pic{height:150px}.pg-pic img{width:150px;height:150px}.pg-ico{width:170px;height:170px}}
 
 /* ===== Главная: блоки помещаются в окно браузера, контент не убираем =====
    первый экран и цены оба серые — между ними один отступ, а не два */
