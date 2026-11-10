@@ -842,6 +842,16 @@ address{font-style:normal}
 .lp-at-b{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141414;color:#fff;font:900 italic 24px/1 var(--font)}
 .lp-xh{display:block;font:900 italic 22px/1.15 var(--font);text-transform:uppercase;margin-bottom:10px;color:var(--head)}
 .lp-at p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+/* посадочная A: карточки срока (пилюля, срок крупно, пояснение) и учебный мотоцикл */
+.lp-tm .lp-xh{margin:0}
+.lp-tm p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.lp-red.lp-tm .lp-xh,.lp-red.lp-tm p{color:#fff}
+.lp-bike{background:var(--grey);border-radius:var(--r);padding:22px 20px;display:grid;gap:18px}
+.sec.grey .lp-bike{background:#fff}
+.lp-bike-pic img{display:block;width:100%;max-width:640px;height:auto;margin:0 auto;filter:drop-shadow(0 14px 14px rgba(0,0,0,.12))}
+.lp-bike-tx{display:grid;gap:22px;align-content:center}
+.lp-bike-tx .btn{justify-self:start;min-width:220px}
+@media (min-width:960px){.lp-bike{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);padding:40px 48px;gap:48px;align-items:center}}
 @media (max-width:479px){.lp-at{grid-template-columns:minmax(0,1fr)}}   /* на телефоне значок над текстом: «Права без ограничений» помещается в колонку */
 @media (max-width:359px){.lp-xh{font-size:20px}}
 @media (min-width:960px){.lp-who{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.lp-card{padding:28px}.lp-at{grid-template-columns:minmax(0,1fr)}}
