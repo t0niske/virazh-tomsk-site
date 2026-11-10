@@ -381,6 +381,12 @@ for my $dir (qw(assets img media images), $opt{preview} ? qw(docs archive) : ())
     my $to = "$opt{out}/$File::Find::name"; make_path(dirname($to)); copy($File::Find::name, $to) or die "$to: $!";
   } }, $dir);
 }
+# файлы для корня сайта (root/): подтверждение прав в Яндекс Вебмастере и Google Search Console, приём заявок send-form.php
+# (PHP — только в боевой сборке: на GitHub Pages он не выполняется и отдавался бы как текст)
+for my $f (grep { -f } glob('root/* root/.[!.]*')) {
+  next if $opt{preview} && $f =~ /\.php$/;
+  copy($f, "$opt{out}/" . basename($f)) or die "$f: $!";
+}
 if ($opt{base}) {   # в CSS адреса картинок и шрифтов абсолютные от корня сайта
   for my $css (glob("$opt{out}/assets/css/*.css")) {
     my $s = slurp($css); $s =~ s{url\("/(?!/)}{url("$opt{base}/}g; spew($css, $s);
@@ -459,10 +465,22 @@ DirectorySlash Off
 ErrorDocument 404 /404.html
 
 RewriteEngine On
-# https и без www
-RewriteCond %{HTTPS} off [OR]
+# без www. С http на https переводит nginx хостинга; условие %{HTTPS} здесь не годится: Apache стоит за nginx,
+# всегда видит http и зациклил бы переадресацию
 RewriteCond %{HTTP_HOST} ^www\. [NC]
 RewriteRule ^ https://virazh-tomsk.ru%{REQUEST_URI} [L,R=301]
+# старые адреса Joomla (условие по THE_REQUEST — только для адреса, который набрал посетитель, не для внутренних подзапросов):
+# карта сайта JSitemap -> /sitemap.xml
+RewriteCond %{THE_REQUEST} \s/+index\.php\?\S*option=com_jmap [NC]
+RewriteRule ^index\.php$ /sitemap.xml? [L,R=301]
+# служебные адреса Joomla (index.php?option=…, /index.php/component/…) — по ним бьют сканеры уязвимостей; их больше нет: 410
+RewriteCond %{THE_REQUEST} \s/+index\.php\?\S*opt(?:ion|%69on)= [NC]
+RewriteRule ^index\.php$ - [G]
+RewriteCond %{THE_REQUEST} \s/+index\.php[/?]+\.?/?component(?:[/?\s]|$) [NC]
+RewriteRule ^ - [G]
+# /index.php и /index.php/страница -> /страница; параметры (?i= в галерее) сохраняются
+RewriteCond %{THE_REQUEST} \s/+index\.php(?:[/?\s]|$) [NC]
+RewriteRule ^index\.php/?(.*)$ /$1 [L,R=301,NE]
 # /адрес/ -> /адрес (единый вид без слэша)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)/$ /$1 [L,R=301]

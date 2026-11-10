@@ -190,3 +190,10 @@
 /fotogalereya/nashi-vypuskniki?i=whatsapp-image-2020-02-25-at-10.36.53--1--18
 /fotogalereya/nashi-vypuskniki?i=whatsapp-image-2020-02-21-at-12.59.30-17
 /fotogalereya/nashi-vypuskniki?i=whatsapp-image-2020-02-21-at-12.59.28-16
+# Адреса из логов сервера (31.10–10.11.2026): по ним приходят люди — работают через 301
+/kontakty/tomsk
+/svedeniya-ob-obrazovatelnoj-organizatsii
+/tseny
+# Файлы подтверждения прав в Google Search Console и Яндекс Вебмастере (root/)
+/google86bd921a6c4cd76f.html
+/yandex_589d0aa8be7ea944.html

@@ -125,10 +125,19 @@
   document.querySelectorAll('input[type="tel"]').forEach(maskPhone);
   document.querySelectorAll('.consent input').forEach(c => c.addEventListener('change', () => c.closest('.consent').classList.remove('bad')));
 
-  // формы заявки: пока проверяем номер и показываем подтверждение.
-  // TODO: подключить отправку (CRM / почта / Telegram-бот) и цель Яндекс Метрики.
+  // формы заявки: проверяем номер и согласие, отправляем на /send-form.php (обработчик на сервере школы — root/send-form.php:
+  // письмо на почту и копия в файл). На предпросмотре (GitHub Pages) PHP нет — заявка не уходит, об этом пишем в подтверждении.
+  // Цель Метрики «lead» ставит assets/js/stats.js по событию lead:sent.
+  const leadLive = /(^|\.)virazh-tomsk\.ru$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const pageStart = Date.now();
   document.querySelectorAll('form[data-lead]').forEach(form => {
-    form.addEventListener('submit', e => {
+    // ловушка для ботов: поле, которое человек не видит и не заполняет
+    const trap = document.createElement('div');
+    trap.setAttribute('aria-hidden', 'true');
+    trap.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden';
+    trap.innerHTML = '<input type="text" name="website" tabindex="-1" autocomplete="off">';
+    form.appendChild(trap);
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const phone = form.querySelector('input[type="tel"]');
       const ok = phone.value.replace(/\D/g, '').length === 11;
@@ -137,10 +146,54 @@
       // согласие на обработку ПДн — отдельное и активное (152-ФЗ, ред. с 01.09.2025)
       const consent = form.querySelector('.consent input');
       if (consent && !consent.checked) { consent.closest('.consent').classList.add('bad'); consent.focus(); return; }
-      const okMsg = $(form.dataset.lead);
-      form.hidden = true;
-      if (okMsg) okMsg.style.display = 'block';
-      try { localStorage.setItem('leadSent', '1'); } catch (e) {}
+      const btn = form.querySelector('[type="submit"]');
+      if (btn.disabled) return;
+      const old = form.querySelector('.lead-fail'); if (old) old.remove();
+      const done = () => {
+        const okMsg = $(form.dataset.lead);
+        form.hidden = true;
+        if (okMsg) {
+          okMsg.style.display = 'block';
+          if (!leadLive && !okMsg.querySelector('.lead-demo')) okMsg.insertAdjacentHTML('beforeend', '<small class="lead-demo" style="display:block;margin-top:6px">Предпросмотр сайта: заявка не отправлена</small>');
+        }
+        try { localStorage.setItem('leadSent', '1'); } catch (e) {}
+        document.dispatchEvent(new CustomEvent('lead:sent', { detail: { form: form.id } }));
+      };
+      if (!leadLive) { done(); return; }
+      const name = form.querySelector('input[autocomplete="given-name"]');
+      const sel = form.querySelector('select');
+      const chip = form.querySelector('.chip[aria-pressed="true"]');
+      const data = new FormData();
+      data.append('phone', phone.value);
+      if (name && name.value.trim()) data.append('name', name.value.trim());
+      data.append('cat', sel ? sel.value : chip ? chip.dataset.c : '');
+      data.append('form', form.id);
+      data.append('page', location.href);
+      data.append('t', String(Date.now() - pageStart));
+      data.append('website', trap.querySelector('input').value);
+      const label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Отправляем…';
+      let error = 'net';
+      try {
+        const r = await fetch('/send-form.php', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j.ok) { done(); return; }
+        error = j.error || 'net';
+      } catch (err) { /* нет связи */ }
+      btn.disabled = false; btn.textContent = label;
+      if (error === 'phone') { phone.closest('.field').classList.add('bad'); phone.focus(); return; }
+      // не отправилось — даём номер телефона (на странице города — его номер из шапки)
+      const tel = document.querySelector('.hdr-tel .num') ? document.querySelector('.hdr-tel') : null;
+      const p = document.createElement('p');
+      p.className = 'lead-fail'; p.setAttribute('role', 'alert');
+      p.style.cssText = 'margin-top:10px;font-size:14px;line-height:1.45;color:var(--red)';
+      p.textContent = error === 'rate' ? 'Заявок с этого устройства уже несколько. Если нужно срочно, позвоните: ' : 'Не удалось отправить заявку. Позвоните нам: ';
+      const a = document.createElement('a');
+      a.href = tel ? tel.getAttribute('href') : 'tel:+73822345252';
+      a.textContent = tel ? tel.querySelector('.num').textContent.trim() : '+7 (3822) 34-52-52';
+      a.style.cssText = 'color:inherit;font-weight:700;white-space:nowrap';
+      p.appendChild(a);
+      btn.insertAdjacentElement('afterend', p);
     });
   });
 

@@ -29,6 +29,7 @@ for my $f (@pages) {
   open my $h, '<:utf8', $f or die; local $/; my $s = <$h>; close $h;
   (my $rel = $f) =~ s{^\Q$site\E}{};
   next if $s =~ /http-equiv="refresh"/;   # страница-редирект
+  next if $rel =~ m{^/(?:google[0-9a-f]+|yandex_[0-9a-f]+)\.html$};   # файлы подтверждения прав (root/)
   my $h1 = () = $s =~ /<h1\b/g;
   my @miss;
   push @miss, 'title' unless $s =~ m{<title>[^<]{10,}</title>};
