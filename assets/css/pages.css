@@ -914,3 +914,40 @@ address{font-style:normal}
   .om-tx .acts{grid-column:2;grid-row:2 / span 2;align-self:end;margin-top:0;flex-wrap:nowrap}
 }
 @media (min-width:1100px){.pc{padding:22px 24px}.pc-pic{height:clamp(96px,100vh - 784px,170px)}.pc-pic img{width:clamp(96px,100vh - 784px,170px);height:clamp(96px,100vh - 784px,170px)}   /* картинка настолько крупная, насколько позволяет высота окна (блок цен целиком в экране) */}
+
+/* ===== Цены: прайс-таблица (на телефоне — список), первый экран с карточками программ, ссылка на «Скидки и оплата» ===== */
+.pl-card{background:#fff;border-radius:var(--r);padding:6px 10px}
+.sec:not(.grey) .pl-card{background:var(--grey)}
+.pl-card .tbl{border:0;border-radius:0}
+.price-list{min-width:0;font-size:15px}
+.price-list thead th{background:none;color:var(--muted);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.price-list tbody th{background:none;font-weight:700}
+.price-list tbody th a{color:var(--head);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.price-list td:last-child{font:900 italic 20px/1.2 var(--font);color:var(--head);white-space:nowrap;text-align:right}
+.price-list thead th:last-child{text-align:right}
+.pl-h{margin:40px 0 18px;font-size:clamp(22px,3vw,30px);line-height:1.15;color:var(--head)}
+@media (max-width:799px){
+  .pl-card{padding:0 4px}
+  .price-list thead{display:none}
+  .price-list tr{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;padding:14px 10px;border-bottom:1px solid var(--line)}
+  .price-list tr:last-child{border-bottom:0}
+  .price-list th,.price-list td{display:block;border:0!important;padding:0}
+  .price-list tbody th{grid-column:1}
+  .price-list td{grid-column:1;font-size:14px;color:var(--muted)}
+  .price-list td:last-child{grid-column:2;grid-row:1;text-align:right;font-size:18px;color:var(--head)}
+  .pl-biz td:nth-child(2)::after{content:" ч"}
+}
+/* цены: первый экран — заголовок, абзац и все программы крупными карточками */
+.pr-top{padding-bottom:clamp(44px,6vw,80px)}
+.pr-top .page-lead a{color:var(--red);text-decoration:underline;text-underline-offset:3px}
+.pr-top .pg{margin-top:clamp(22px,3vw,32px)}
+@media (max-width:799px){.sv-table.price-list,.price-list tbody{display:block;width:100%;min-width:0}}   /* прайс на телефоне — список во всю ширину, без прокрутки вбок */
+.price-list td small{font:600 13px/1.2 var(--font);color:var(--muted)}
+@media (max-width:799px){.price-list td.pl-none{display:none}.price-list td small{display:block;margin-top:2px}}
+/* цены: ссылка на «Скидки и оплата» (скидки на странице цен не повторяем) */
+.pr-link{display:grid;gap:16px;margin-top:24px;padding:22px 20px;border-radius:var(--r);background:#141414;color:#fff;text-decoration:none}
+.pr-link > span:first-child{display:grid;gap:8px;font-size:15px;line-height:1.5;color:#EDEDED}
+.pr-link b{font:900 italic 22px/1.15 var(--font);text-transform:uppercase;color:#fff}
+.pr-link .btn{justify-self:start;padding-inline:28px}
+@media (hover:hover){.pr-link:hover .btn{filter:brightness(1.08)}}
+@media (min-width:900px){.pr-link{grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:40px;padding:28px 32px}}

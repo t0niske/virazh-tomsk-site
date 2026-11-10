@@ -54,7 +54,10 @@ sub include_with {
   if (my $f = $a{skip}) {
     $s =~ s{[ \t]*<article\b[^>]*\bdata-f="\Q$f\E".*?</article>\s*}{}gs;
     $s =~ s{[ \t]*<button class="chip"[^>]*\bdata-f="\Q$f\E"[^>]*>.*?</button>\s*}{}gs;   # и кнопку фильтра этой группы
-  }  # for=fleetList — подстановка в вставку (стрелки sh-arr для ленты с этим id)
+  }
+  # nohelp=1 — без карточки «Не знаете, что выбрать?» (страница цен: все программы карточками в первом экране)
+  $s =~ s{[ \t]*<article class="pg-c pg-help">.*?</article>\s*}{}s if $a{nohelp};
+  # for=fleetList — подстановка в вставку (стрелки sh-arr для ленты с этим id)
   $s =~ s/\{for\}/$a{for}/g if $a{for};
   # nonote=1 — без сноски под лентой шагов («Суммы для категории B…»): на посадочной она лишняя
   $s =~ s{\s*<p class="road-note">.*?</p>}{}s if $a{nonote};
