@@ -951,3 +951,51 @@ address{font-style:normal}
 .pr-link .btn{justify-self:start;padding-inline:28px}
 @media (hover:hover){.pr-link:hover .btn{filter:brightness(1.08)}}
 @media (min-width:900px){.pr-link{grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:40px;padding:28px 32px}}
+
+/* ===== «Скидки и оплата»: заголовок в тёмной плашке, итог строкой сверху (.lq1-stack), плитка праздничных акций, калькулятор ===== */
+/* «Скидки и оплата»: заголовок страницы внутри тёмной плашки */
+.lq1-head{display:grid;gap:10px;padding:0 4px}
+.lq1-head .h2{margin:0;color:#fff}
+.lq1-head p{margin:0;color:#D2D2D2;font-size:16px;line-height:1.5}
+.lq1 .lq-note a{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+@media (min-width:1080px){.lq1-head{grid-column:1 / -1;padding:0;margin-bottom:4px}}
+.lp-red .link{color:#fff}
+.lp-tm .link{min-height:0;margin-top:2px}
+.calc-row{display:grid;gap:24px}
+.calc-tx{display:grid;gap:14px;align-content:center}
+.calc-tx .h2,.calc-tx .sub-it{margin:0}
+.calc-row .calc{margin-top:0}
+@media (min-width:960px){.calc-row{grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:48px;align-items:center}}
+@media (max-width:719px){.lq1-head .h2{font-size:clamp(20px,6.5vw,32px)}}   /* «для транспортных» склеено (без висячего предлога) — на 320 px помещается */
+.lq1 .lq-note a{white-space:nowrap}
+/* тёмная плашка «итог строкой сверху, карточки во всю ширину» (.lq1-stack): «Скидки и оплата», курсы для компаний; на другие страницы обучения — отдельным шагом */
+.lq1-stack .lq1-c{padding:18px 18px 18px 12px;gap:14px}
+.lq1-stack .lq1-c div{gap:7px}
+.lq1-stack .lq1-c p{font-size:14px;line-height:1.45}
+@media (max-width:399px){.lq1-stack .lq1-c{padding:16px 14px 16px 10px}.lq1-stack .lq1-c h3{font-size:16px}}
+@media (min-width:1080px){
+  .lq1-stack{grid-template-columns:minmax(0,1fr)}
+  .lq1-stack .lq1-total{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:40px;row-gap:10px;align-items:end;padding:0}
+  .lq1-stack .lq1-total .lq-k{grid-column:1 / -1}
+  .lq1-stack .lq1-total p{max-width:44ch;padding-bottom:6px}
+  .lq1-stack .lq-acts{margin:0}
+  .lq1-stack .lq1-cards{gap:16px}
+  .lq1-stack .lq1-c{padding:28px 30px 32px;gap:18px}
+  .lq1-stack .lq1-c img{height:170px}
+  .lq1-stack .lq1-c div{gap:10px}
+  .lq1-stack .lq1-c p{font-size:15px}
+}
+@media (max-width:359px){.lq1-stack .lq1-c{grid-template-columns:48px minmax(0,1fr);gap:10px}.lq1-stack .lq1-c img{width:48px;height:48px}.lq1-stack .lq1-c h3{font-size:15px}}
+@media (min-width:1080px) and (max-width:1199px){.lq1-stack .lq1-c{padding:26px 24px 30px}.lq1-stack .lq1-c h3{font-size:20px}}   /* «автотранспорта» в ширину карточки */
+/* «Скидки и оплата»: акции к праздникам — плитка во всю ширину (вычет и маткапитал на этой странице — отдельным блоком) */
+@media (min-width:720px){.bt > .bt-full{grid-column:auto}}
+@media (min-width:1200px){.bt > .bt-c.bt-full{grid-column:1 / -1;min-height:0}.bt-full p{max-width:60ch}}
+/* калькулятор («Скидки и оплата»): тёмная карточка первого варианта — больше воздуха, «Итого», строки под итогом спокойнее */
+.calc-row .calc{padding:30px 24px 26px;gap:18px}
+.calc-row .calc > .it{margin:0 0 10px}
+.calc-row .calc-out .total{padding-top:14px}
+.calc-row .calc-out .total span{font:800 15px/1 var(--font);text-transform:uppercase;letter-spacing:.05em;color:#fff}
+.calc-sub{display:grid;gap:6px;margin-top:6px}
+.calc-sub .row{font-size:13.5px;color:#CFCFCF}
+.calc-sub .row b{font-weight:600;color:#E2E2E2}
+@media (min-width:960px){.calc-row .calc{padding:40px 40px 32px;gap:20px}.calc-row .calc > .it{margin-bottom:14px}}

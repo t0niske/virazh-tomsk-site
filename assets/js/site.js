@@ -58,6 +58,7 @@
       // итог — стоимость обучения по договору; вычет возвращают позже и только плательщикам НДФЛ, поэтому он отдельной строкой
       const disc = stud.checked ? 3000 : 0, paid = base - disc, back = Math.round(paid * 0.13);
       $('cBase').textContent = rub(base);
+      $('cBaseRow').hidden = !disc;   // без скидки «Стоимость курса» повторяла бы итог
       $('cStudRow').hidden = !disc;
       $('cTaxRow').hidden = !tax.checked;
       $('cTaxVal').textContent = 'до ' + rub(back);

@@ -1,0 +1,26 @@
+<!-- Калькулятор стоимости (страница «Скидки и оплата»): тёмная карточка, итог крупно, строки под итогом — спокойнее.
+     Логика — site.js, блок calc; цены и часы — объект C в site.js и seo/BRANDCORE.md -->
+      <div class="calc" id="calc">
+        <h3 class="it">Расчёт стоимости обучения</h3>
+        <div class="seg" role="group" aria-label="Категория для расчёта">
+          <button type="button" data-c="bA" aria-pressed="true">B АКПП<small>56 ч</small></button>
+          <button type="button" data-c="bM" aria-pressed="false">B МКПП<small>58 ч</small></button>
+          <button type="button" data-c="a" aria-pressed="false">A<small>18 ч</small></button>
+        </div>
+        <div>
+          <label class="toggle"><span>Я студент</span><input type="checkbox" id="cStudent"></label>
+          <label class="toggle"><span>Оформлю налоговый вычет&nbsp;13%</span><input type="checkbox" id="cTax" checked></label>
+        </div>
+        <div class="calc-out">
+          <div class="row" id="cBaseRow" hidden><span>Стоимость курса</span><b class="num" id="cBase">66 000 ₽</b></div>
+          <div class="row" id="cStudRow" hidden><span>Скидка студенту</span><b class="num">−3 000 ₽</b></div>
+          <div class="total"><span>Итого</span><b class="num" id="cTotal">66 000 ₽</b></div>
+          <div class="calc-sub">
+            <div class="row" id="cStartRow"><span>Первый взнос</span><b class="num">5 000 ₽</b></div>
+            <div class="row" id="cExamRow"><span>Экзамен в ГИБДД, отдельно</span><b class="num">5 000 ₽</b></div>
+            <div class="row" id="cTaxRow"><span>Вернёте налоговым вычетом</span><b class="num" id="cTaxVal">до 8 580 ₽</b></div>
+          </div>
+        </div>
+        <button class="btn btn-red btn-block" type="button" data-signup="bA" id="calcCta">Записаться по этой цене</button>
+        <small>Расчёт предварительный. Акции не суммируются, точные условия назовёт администратор</small>
+      </div>
