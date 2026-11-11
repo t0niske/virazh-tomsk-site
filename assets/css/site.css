@@ -326,7 +326,7 @@ button{font:inherit;color:inherit}
 .field{display:grid;gap:6px}
 .field label{font:700 13px/1 var(--font);color:var(--muted)}
 .field input,.field select{min-height:56px;border:2px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);padding:0 16px;font:600 17px/1 var(--font);width:100%;-webkit-appearance:none;appearance:none}
-.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%231E1E1E' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%231E1E1E' stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px;padding-right:40px;text-overflow:ellipsis}   /* длинный пункт не заезжает под стрелку */
 .field input:focus,.field select:focus{border-color:var(--ink);outline:none}
 .field .err{display:none;font-size:13px;color:var(--red);font-weight:600}
 .field.bad input{border-color:var(--red)}
