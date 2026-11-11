@@ -134,10 +134,11 @@ sub limit_cards {
   $s =~ s{[ \t]*<article\b.*?</article>\s*}{ ++$i > $n ? '' : $& }gse;
   return $s;
 }
-# все вставки страницы (с вложенными) — чтобы дата изменения учитывала и их
+# все вставки страницы (с вложенными) — чтобы дата изменения учитывала и их.
+# Имя — до пробела или «-->»: без этого у вставки без параметров захватывалось «final-form--», файл не находился и дата терялась
 sub includes_of {
   my ($s, $seen) = @_; $seen //= {};
-  for my $n ($s =~ /<!--#include\s+([\w.\/-]+)/g) {
+  for my $n ($s =~ /<!--#include\s+([\w.\/-]+?)(?=\s|-->)/g) {
     next if $seen->{$n}++;
     includes_of(slurp("src/partials/$n.html"), $seen) if -f "src/partials/$n.html";
   }
@@ -283,7 +284,12 @@ for my $file (@pages) {
   $head = $1 if $src =~ s{<!--head-->(.*?)<!--/head-->\s*}{}s;
   my $content = expand_includes($src);
   my ($modified, $published) = git_dates($file);
-  for my $inc (includes_of($src)) { my ($d) = git_dates("src/partials/$inc.html"); $modified = $d if $d gt $modified }
+  # «Обновлено», dateModified и lastmod — по содержанию: вставки-оформление (форма записи, стрелки лент, меню «Сведений»)
+  # дату не двигают; список статей — содержание только самой страницы блога, в статьях это блок «Ещё в блоге»
+  for my $inc (includes_of($src)) {
+    next if $inc =~ /^(?:final-form|sh-arr|sveden-nav)$/ || ($inc eq 'blog-cards' && $path ne '/blog');
+    my ($d) = git_dates("src/partials/$inc.html"); $modified = $d if $d gt $modified;
+  }
   $modified ||= strftime('%Y-%m-%d', localtime); $published ||= $modified;
   # предмет-фото в первом экране страницы (meta art: art-ekzameny | подпись | sm — маленький) — после «хлебных крошек»;
   # late — после H1: на телефоне картинка обтекается вводным абзацем, а длинное первое слово заголовка не рвётся
