@@ -994,6 +994,7 @@ address{font-style:normal}
 .calc-row .calc{padding:30px 24px 26px;gap:18px}
 .calc-row .calc > .it{margin:0 0 10px}
 .calc-row .calc-out .total{padding-top:14px}
+.calc-row .calc .toggle:last-child{border-bottom:0}   /* под последним переключателем линии нет: её даёт строка «Итого», иначе две линии подряд */
 .calc-row .calc-out .total span{font:800 15px/1 var(--font);text-transform:uppercase;letter-spacing:.05em;color:#fff}
 .calc-sub{display:grid;gap:6px;margin-top:6px}
 .calc-sub .row{font-size:13.5px;color:#CFCFCF}
@@ -1003,3 +1004,15 @@ address{font-style:normal}
 /* ===== Курсы для транспортных компаний: «256 часов» в итоге плашки ===== */
 .lq1-total > b.lq-long{font-size:clamp(34px,11.5vw,56px)}   /* «256 часов» длиннее суммы — помещается и на 320 px */
 @media (min-width:1080px){.lq1-total > b.lq-long{font-size:clamp(48px,4vw,64px)}}
+@media (min-width:1080px) and (max-width:1199px){.why-cut .wc h3{font-size:20px}}   /* «Сопровождение в ГИБДД» в ширину карточки при четырёх в ряд */
+/* ===== «Скидки и оплата»: первый экран как у «Цен» — заголовок и абзац, этапы оплаты крупными карточками (.pg-pay, без кнопок) ===== */
+@media (min-width:720px){.pg-pay{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.pp-bar{display:grid;gap:8px;margin-top:clamp(28px,4vw,44px)}   /* подзаголовок над карточками: что это за карточки и сколько стоит весь курс */
+.pp-h{margin:0;font:900 italic clamp(22px,5.6vw,30px)/1.1 var(--font);text-transform:uppercase;color:var(--head)}
+.pp-sum{margin:0;font-size:16px;line-height:1.5;color:var(--ink)}
+.pp-sum b{font-weight:800;white-space:nowrap}
+.pr-top .pp-bar + .pg{margin-top:20px}
+.pp-top{margin:0}
+.pp-when{font:600 16px/1.25 var(--font);color:var(--head)}
+@media (min-width:900px){.pp-bar{grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:40px}.pp-sum{padding-bottom:3px}}
+.nw{white-space:nowrap}   /* «3-НДФЛ» не переносится по дефису (в заголовках посадочных .lp-h1 .nw — то же) */
