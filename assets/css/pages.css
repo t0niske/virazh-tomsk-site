@@ -1022,7 +1022,7 @@ address{font-style:normal}
 /* ===== «Квадроцикл и снегоход» (AI): в плашке стоимости длинные названия («Квадроцикл») — на ноутбуках карточки плотнее и шрифт меньше ===== */
 @media (min-width:1080px) and (max-width:1439px){.lq1-sm .lq1-c{padding:16px 14px 20px}.lq1-sm .lq1-c h3{font-size:18px}.lq1-sm .lq1-c img{height:130px}}
 @media (min-width:1080px) and (max-width:1199px){.lq1-sm .lq1-c h3{font-size:16px}}
-@media (max-width:459px){.lp-facts-w{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-facts-w li:last-child{grid-column:1 / -1}}   /* «документ на квадроцикл и снегоход» не помещается в треть ширины телефона — третья плашка на всю строку */
+@media (max-width:559px){.lp-facts-w{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-facts-w li:last-child{grid-column:1 / -1}}   /* «документ на квадроцикл и снегоход» не помещается в треть ширины телефона — третья плашка на всю строку */
 /* ===== «Обучение» (все программы): таблица сравнения без цен (.pl-cmp) — последняя колонка обычный текст, на телефоне подписи у строк ===== */
 .price-list.pl-cmp td:last-child{font:700 15px/1.45 var(--font);color:var(--ink);white-space:normal;text-align:left}
 .price-list.pl-cmp thead th:last-child{text-align:left}
@@ -1061,3 +1061,14 @@ address{font-style:normal}
 @media (min-width:900px) and (max-width:1199px){#read .lp-xh{font-size:19px}}   /* «штрафных баллов» в узкой карточке на ноутбуке */
 @media (max-width:359px){.ex-sum{grid-template-columns:minmax(0,1fr)}}
 .ex-c .lp-pill{align-self:flex-start}
+/* ===== «Автодром»: картинка первого экрана — предмет 320 px (не растягивать), что отрабатывают — плитки с предметами ===== */
+.avd .tn-img{max-width:300px}
+.avd-dr{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.avd-dr li{background:var(--grey);border-radius:var(--r);padding:18px 14px 20px;display:grid;gap:12px;justify-items:center;text-align:center;align-content:start}
+.avd-dr img{width:100%;max-width:150px;height:110px;object-fit:contain;filter:drop-shadow(0 12px 12px rgba(0,0,0,.12))}
+.avd-dr b{font:900 italic 14px/1.15 var(--font);text-transform:uppercase;color:var(--head)}
+.avd-dr li:last-child:nth-child(odd){grid-column:1 / -1}
+@media (min-width:720px){.avd-dr{grid-template-columns:repeat(3,minmax(0,1fr))}.avd-dr li:last-child:nth-child(odd){grid-column:auto}}
+@media (min-width:1080px){.avd-dr{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.avd-dr li{padding:24px 16px 26px}.avd-dr img{height:130px}.avd-dr b{font-size:15px}}
+@media (min-width:900px) and (max-width:1199px){#where .lp-xh{font-size:19px}}
+@media (max-width:379px){.avd-dr li{padding:16px 8px 18px}.avd-dr b{font-size:13px}}   /* «переключение» в плитке на узком телефоне */
