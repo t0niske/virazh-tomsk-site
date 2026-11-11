@@ -174,6 +174,16 @@ sub typo_text {
     $join && $nb eq '&nbsp;' ? qq{<span style="white-space:nowrap">$l/$r</span>} : qq{$l/$r} }ge;
   $t;
 }
+# Склеенный текст: соседние теги без пробела («…в Томске</span><span>Авто-Вираж», «5.0</b><span>369 оценок») поисковик
+# и нейросети читают слитно: «ТомскеАвто-Вираж», «5.0369». Между закрывающим и открывающим тегом ставим пробел: браузер его
+# не показывает, когда хотя бы один сосед — блок, флекс- или грид-элемент. Перед иконками и картинками пробел не ставим —
+# рядом со строчным текстом он был бы виден. Проверка, что вид не изменился: снимки положения всех элементов до и после.
+sub unglue {
+  join '', map {
+    /^<(?:script|style|textarea|pre)\b/i ? $_
+      : s{(</[a-z][\w-]*>)(?=<(?!/|(?:svg|img|picture|source|br|wbr|input|video|iframe|canvas)\b)[a-z])}{$1 }gir
+  } split /(<script\b.*?<\/script>|<style\b.*?<\/style>|<textarea\b.*?<\/textarea>|<pre\b.*?<\/pre>)/is, shift;
+}
 sub typo {
   my ($html, $nb) = (shift, shift // '&nbsp;');
   join '', map {
@@ -360,6 +370,7 @@ for my $file (@pages) {
     ($html = $layout) =~ s/\{\{(\w+)\}\}/exists $v{$1} ? $v{$1} : "{{$1}}"/ge;
     # служебные комментарии (TODO, разметка блоков) остаются только в исходниках
     $html =~ s{[ \t]*<!--(?!\[).*?-->\n?}{}gs;
+    $html = unglue($html);   # склеенный текст для поисковиков (см. unglue)
     $built++;
     push @sitemap, [$path, $m{priority}, $modified] unless $noindex || $path eq '/404';
   }

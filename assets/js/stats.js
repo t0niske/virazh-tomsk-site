@@ -49,7 +49,7 @@
   box.setAttribute('role', 'region');
   box.setAttribute('aria-label', 'Уведомление о cookie');
   // неразрывные пробелы ( ) — как build.pl делает в HTML: предлог держится за следующее слово, тире не начинает строку
-  box.innerHTML = '<p>Сайт использует cookie и Яндекс Метрику для статистики. Подробнее — в <a></a></p>' +
+  box.innerHTML = '<p>Сайт использует cookie и Яндекс Метрику для статистики. Подробнее — в <a></a></p> ' +
     '<button class="btn btn-red" type="button">Понятно</button>';
   var link = box.querySelector('a');
   link.href = href;

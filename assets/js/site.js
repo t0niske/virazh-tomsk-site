@@ -44,7 +44,7 @@
     const diff = Math.round((d - today) / 864e5);
     const st = diff < 0 ? 'прошёл' : diff === 0 ? 'сегодня' : diff === 1 ? 'завтра' : 'через ' + diff + ' ' + days(diff);
     t.setAttribute('datetime', d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
-    t.innerHTML = '<b>' + d.getDate() + ' ' + MON[d.getMonth()] + '</b><small>' + WD[d.getDay()] + ' <span class="exd-st">' + st + '</span></small>';
+    t.innerHTML = '<b>' + d.getDate() + ' ' + MON[d.getMonth()] + '</b> <small>' + WD[d.getDay()] + ' <span class="exd-st">' + st + '</span></small>';
     t.closest('.exd-row').classList.add(diff < 0 ? 'past' : diff <= 7 ? 'soon' : 'next');
   });
   // все даты прошли, а новые ещё не внесены — вместо «время и место сообщит администратор» просим уточнить даты
