@@ -305,18 +305,26 @@
     closeDd(); document.activeElement.blur();
   });
 
-  // нижняя панель на телефоне: появляется после первого экрана, прячется у финальной формы
+  // нижняя панель на телефоне: появляется после первого экрана и только когда листают вверх (вниз — мешает читать), прячется у финальной формы
   const bar = $('bar');
   if (bar) {
     document.body.classList.add('has-bar');
     const firstCta = document.querySelector('.hx, .page-hero');
     const finalForm = $('signup');
-    if ('IntersectionObserver' in window && firstCta) {
-      let heroVisible = true, signupVisible = false;
-      const upd = () => bar.classList.toggle('on', !heroVisible && !signupVisible);
-      new IntersectionObserver(es => { heroVisible = es[0].isIntersecting || es[0].boundingClientRect.top > 0; upd(); }).observe(firstCta);
+    let heroVisible = false, signupVisible = false, goingUp = false, lastY = window.scrollY, ticking = false;
+    const upd = () => bar.classList.toggle('on', goingUp && !heroVisible && !signupVisible);
+    window.addEventListener('scroll', () => {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY, d = y - lastY;
+        if (Math.abs(d) > 6) { goingUp = d < 0 && y > 0; lastY = y; upd(); }
+        ticking = false;
+      });
+    }, { passive: true });
+    if ('IntersectionObserver' in window) {
+      if (firstCta) { heroVisible = true; new IntersectionObserver(es => { heroVisible = es[0].isIntersecting || es[0].boundingClientRect.top > 0; upd(); }).observe(firstCta); }
       if (finalForm) new IntersectionObserver(es => { signupVisible = es[0].isIntersecting; upd(); }, { threshold: .2 }).observe(finalForm);
-    } else { bar.classList.add('on'); }
+    }
   }
 
   // слайдер фото (главная, «Об автошколе»): стрелки листают по кадру, по кругу; счётчик «N / всего» следует за прокруткой
