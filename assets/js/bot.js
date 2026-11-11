@@ -169,7 +169,11 @@
     const top = res[0];
     if (!top || top.score < 0.42) return special('не нашёл');
     prev = { topic: qt.filter(t => !isCat(t)), cats: qt.filter(isCat), it: top.it };
-    const more = res.slice(1, 3).filter(r => r.score >= Math.max(0.42, top.score * 0.75));
+    // «Ещё по теме» — только по значимым словам вопроса: общие («обучение», «права», «автошкола») есть почти в каждом
+    // ответе и подтягивали случайные темы. Значимое — слово, которое встречается не больше чем в 12% ответов базы
+    const key = qt.filter(t => (KB.df.get(t) || 0) <= KB.n * 0.12);
+    const more = key.length ? search(key).filter(r => r.it !== top.it && r.score >= 0.6).slice(0, 2)
+      .filter(r => res.find(x => x.it === r.it).score >= Math.max(0.42, top.score * 0.75)) : [];
     return top.it.a + (more.length ? `<div class="bot-rel"><span>Ещё по теме:</span>${more.map(r => chip(r.it.q)).join('')}</div>` : '');
   }
   function ask(text) {

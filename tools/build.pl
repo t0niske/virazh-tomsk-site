@@ -432,6 +432,8 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
     $t =~ s{\*\*(.+?)\*\*}{<b>$1</b>}g;
     $t =~ s{\[\[записаться\]\]}{<button class="btn btn-red btn-sm" type="button" data-signup>Записаться</button>}g;
     $t =~ s{\[\[позвонить\]\]}{<a class="btn btn-sm" href="tel:+73822345252">Позвонить</a>}g;
+    $t =~ s{\[\[вконтакте\]\]}{<a class="btn btn-sm btn-msg btn-vk" href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-vk"/></svg>ВКонтакте</a>}g;
+    $t =~ s{\[\[max\]\]}{<a class="btn btn-sm btn-msg btn-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-max"/></svg>MAX</a>}g;
     $t =~ s{\[([^\]]+)\]\(([^)\s]+)\)}{<a href="$2">$1</a>}g;
     $t;
   };
@@ -457,7 +459,7 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
   }
   for (@bot_faq) {
     my ($q, $a, $from) = @$_;
-    $q =~ s/<[^>]+>//g; $q =~ s/\s+/ /g; $q =~ s/^\s+|\s+$//g;
+    $q =~ s/<[^>]+>//g; $q =~ s/&nbsp;/\x{A0}/g; $q =~ s/\s+/ /g; $q =~ s/^\s+|\s+$//g;   # &nbsp; в кнопке «Ещё по теме» был виден текстом
     next if $have{ $key->($q) }++;
     $a =~ s{</?(?!a\b|b\b|strong\b|br\b|p\b)\w+[^>]*>}{}g;
     $a =~ s/\s+/ /g; $a =~ s/^\s+|\s+$//g;
