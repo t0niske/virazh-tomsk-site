@@ -500,7 +500,7 @@ html.a11y-noimg .exit-pic{display:none!important}
   .abx .sx-track figure{aspect-ratio:auto;height:100%}
   .abx-card{padding:40px 44px;gap:26px}
   .abx-lead{font-size:17px}
-  .abx-nums b{font-size:36px}.abx-nums li{padding:24px 22px}
+  .abx-nums b{font-size:clamp(28px,2.8vw,36px)}.abx-nums li{padding:24px 22px}   /* «9 машин» в плитке и на 1024 */
 }
 /* главная, «Как проходит обучение»: шаги каруселью (src/partials/steps-cards.html) — серые карточки на белом,
    метка «Шаг N» и срок, заголовок, текст, предмет без подложки, цена этапа, кнопка; стрелки справа от заголовка (site.js [data-for]) */
@@ -1072,3 +1072,10 @@ address{font-style:normal}
 @media (min-width:1080px){.avd-dr{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.avd-dr li{padding:24px 16px 26px}.avd-dr img{height:130px}.avd-dr b{font-size:15px}}
 @media (min-width:900px) and (max-width:1199px){#where .lp-xh{font-size:19px}}
 @media (max-width:379px){.avd-dr li{padding:16px 8px 18px}.avd-dr b{font-size:13px}}   /* «переключение» в плитке на узком телефоне */
+/* ===== «О школе»: ссылки в карточках «Почему рекомендуют», лицензия и реквизиты карточками ===== */
+.why-cut .wc .tx .link{min-height:0;margin-top:2px;justify-self:start}
+.ab-lic{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.ab-kv .kv{gap:10px 20px}
+.ab-docs .link + .link{margin-top:-4px}
+@media (min-width:960px){.ab-lic{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}.ab-kv{padding:30px 32px}}
+.pr-top .abx{margin-top:clamp(22px,3vw,32px)}   /* «О школе»: от абзаца до фото и карточки */
