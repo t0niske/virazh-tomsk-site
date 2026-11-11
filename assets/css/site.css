@@ -34,7 +34,8 @@ button{font:inherit;color:inherit}
 .it .acc{color:var(--red)}
 .h2{font-size:clamp(25px,6.8vw,44px)}
 .sub-it{display:block;font:800 italic 15px/1.2 var(--font);text-transform:uppercase;color:var(--head);margin-top:12px;letter-spacing:.01em}
-.head{margin-bottom:28px;display:grid;gap:12px;max-width:820px}
+.head{margin-bottom:28px;display:grid;gap:10px;max-width:820px}
+.head .sub-it{margin-top:0}   /* внутри заголовка блока отступ задаёт gap, иначе от заголовка до подзаголовка столько же, сколько до содержимого */
 .head p.lead{color:var(--muted);font-size:16px;max-width:56ch}
 
 /* buttons — «таблетки» как у cooleso */
@@ -229,16 +230,18 @@ button{font:inherit;color:inherit}
 .official li{display:flex;gap:10px}
 .official li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--red);margin-top:8px}
 .official .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-@media (max-width:719px){.official .acts .btn{width:100%}}   /* телефон: обе кнопки во всю ширину */
+@media (max-width:719px){.official .acts .btn{width:100%}.official .it{margin-top:calc(-1 * 20vw)}}   /* телефон: заголовок заходит на «100%», без пустоты сверху */   /* телефон: обе кнопки во всю ширину */
 
 /* ===== отзывы ===== */
 .ratings{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px}
-.rt-card{background:var(--grey);border-radius:var(--r);padding:18px;display:flex;gap:16px;align-items:center}
+.rt-card{background:var(--grey);border-radius:var(--r);padding:28px 22px;display:flex;gap:18px;align-items:center}   /* больше воздуха сверху и снизу (просьба 11.11) */
 .rt-card .score{font:900 italic 54px/1 var(--font);color:var(--head)}
 .rt-card .stars{color:#F5A400;letter-spacing:2px;font-size:18px}
+.rt-card .rt-l{flex:none;display:grid;justify-items:center;gap:8px}   /* звёзды под оценкой */
+.rt-card p b{display:block;margin-bottom:4px;font-size:17px}   /* «2ГИС, 369 оценок» крупнее */
 .rt-card p{font-size:14px;color:var(--muted)}
 .rt-card p b{color:var(--ink)}
-.scroller{display:grid;grid-auto-flow:column;grid-auto-columns:84%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--gut-r) 18px var(--gut-l);margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));scrollbar-width:none;overscroll-behavior-x:contain}
+.scroller{display:grid;grid-auto-flow:column;grid-auto-columns:84%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gut-l) var(--gut-r);padding:4px var(--gut-r) 18px var(--gut-l);margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));scrollbar-width:none;overscroll-behavior-x:contain}
 .scroller::-webkit-scrollbar{display:none}
 .scroller>*{scroll-snap-align:start;min-width:0}
 .rev{background:#fff;border:2px solid var(--grey);border-radius:var(--r);padding:18px;display:grid;gap:12px;align-content:start}
@@ -374,7 +377,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
   .why{grid-template-columns:repeat(2,1fr)}
   .stats{grid-template-columns:repeat(4,1fr)}
   .ratings{grid-template-columns:1fr}
-  .scroller{grid-auto-columns:calc((100% - 24px)/3);margin-inline:0;padding-inline:0}
+  .scroller{grid-auto-columns:calc((100% - 24px)/3);margin-inline:0;padding-inline:0;scroll-padding-inline:0}
   .steps{grid-template-columns:repeat(2,1fr)}
   .offices{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
   .teen-grid{grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
@@ -464,7 +467,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 .rd p{font-size:15px;line-height:1.5;color:#D6D6D6}
 .rd-pay{margin-top:8px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;background:#1E1E1E;border:1px solid #303030;border-radius:14px;padding:12px 14px;color:#D6D6D6;font-size:13.5px;line-height:1.35}
 .rd-pay b{font:900 italic 24px/1 var(--font);color:#fff;white-space:nowrap}
-.road-note{margin-top:22px;color:#D6D6D6;font-size:14.5px}
+.road-note{margin-top:4px;color:#D6D6D6;font-size:14.5px}
 
 /* ===== вопросы: карточка «Не нашли ответ?» ===== */
 .faq-aside{display:grid;gap:22px;align-content:start}
