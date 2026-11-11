@@ -175,6 +175,11 @@ sub typo_text {
     $join && $nb eq '&nbsp;' ? qq{<span style="white-space:nowrap">$l/$r</span>} : qq{$l/$r} }ge;
   $t;
 }
+# картинка для соцсетей (og:image): у посадочных — фото их первого экрана (lp-hero), у остальных страниц — общая
+sub og_image {
+  my ($img) = shift =~ m{<section class="lp-hero">.*?<img\b[^>]*?\bsrc="(/img/[^"]+)"}s;
+  return $opt{site} . ($img // '/img/hero-bg.webp');
+}
 # Склеенный текст: соседние теги без пробела («…в Томске</span><span>Авто-Вираж», «5.0</b><span>369 оценок») поисковик
 # и нейросети читают слитно: «ТомскеАвто-Вираж», «5.0369». Между закрывающим и открывающим тегом ставим пробел: браузер его
 # не показывает, когда хотя бы один сосед — блок, флекс- или грид-элемент. Перед иконками и картинками пробел не ставим —
@@ -366,7 +371,7 @@ for my $file (@pages) {
       description => esc($m{description} // ''),
       canonical => $canonical, robots => $robots, head => $head,
       body_class => $m{body} // '', header => $hdr, footer => $footer, overlays => $ovl,
-      content => $content, version => $version,
+      content => $content, version => $version, og_image => og_image($content),
     );
     # своя страница города: в шапке и плавающих кнопках — его телефон (meta phone: +7 (383) 205-24-34 | +73832052434)
     if (my $ph = $m{phone}) {
@@ -376,6 +381,8 @@ for my $file (@pages) {
     ($html = $layout) =~ s/\{\{(\w+)\}\}/exists $v{$1} ? $v{$1} : "{{$1}}"/ge;
     # служебные комментарии (TODO, разметка блоков) остаются только в исходниках
     $html =~ s{[ \t]*<!--(?!\[).*?-->\n?}{}gs;
+    # у страницы 404 нет своего адреса: canonical и og:url на несуществующий /404 не нужны
+    $html =~ s{<link rel="canonical"[^>]*>\n?|<meta property="og:url"[^>]*>\n?}{}g if $path eq '/404';
     $html = unglue($html);   # склеенный текст для поисковиков (см. unglue)
     $built++;
     push @sitemap, [$path, $m{priority}, $modified] unless $noindex || $path eq '/404';

@@ -34,7 +34,7 @@ for my $f (@pages) {
   my @miss;
   push @miss, 'title' unless $s =~ m{<title>[^<]{10,}</title>};
   push @miss, 'description' unless $s =~ m{<meta name="description" content="[^"]{30,}"};
-  push @miss, 'canonical' unless $s =~ m{<link rel="canonical" href="https://};
+  push @miss, 'canonical' unless $s =~ m{<link rel="canonical" href="https://} || $rel eq '/404.html';   # у 404 своего адреса нет
   push @miss, "h1=$h1" unless $h1 == 1;
   if (@miss) { print "$rel: нет/ошибка — @miss\n"; $err++ }
   while ($s =~ m{\b(?:href|src)="(/[^"#]*)"}g) {
