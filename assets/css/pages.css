@@ -1079,3 +1079,7 @@ address{font-style:normal}
 .ab-docs .link + .link{margin-top:-4px}
 @media (min-width:960px){.ab-lic{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}.ab-kv{padding:30px 32px}}
 .pr-top .abx{margin-top:clamp(22px,3vw,32px)}   /* «О школе»: от абзаца до фото и карточки */
+/* ===== «Инструкторы» и «Автопарк» ===== */
+@media (min-width:960px){.lp-cover.lp-ins > img{object-position:60% 18%}}   /* головы инструкторов выше середины — не срезать */
+.fl-hero .tn-img{filter:drop-shadow(0 22px 22px rgba(0,0,0,.14))}
+.ins-noq .ins .quote{display:none}   /* «Инструкторы»: без строки-описания под фото (просьба владельца 11.11); на главной и посадочных остаются */
