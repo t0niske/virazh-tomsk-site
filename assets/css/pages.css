@@ -994,7 +994,7 @@ address{font-style:normal}
 .calc-row .calc{padding:30px 24px 26px;gap:18px}
 .calc-row .calc > .it{margin:0 0 10px}
 .calc-row .calc-out .total{padding-top:14px}
-.calc-row .calc .toggle:last-child{border-bottom:0}   /* под последним переключателем линии нет: её даёт строка «Итого», иначе две линии подряд */
+.calc-row #cStudRow[hidden] + .total{border-top:0;padding-top:6px}   /* без скидки линия только под последним переключателем, как под «Я студент», — вторая над «Итого» не нужна */
 .calc-row .calc-out .total span{font:800 15px/1 var(--font);text-transform:uppercase;letter-spacing:.05em;color:#fff}
 .calc-sub{display:grid;gap:6px;margin-top:6px}
 .calc-sub .row{font-size:13.5px;color:#CFCFCF}
