@@ -47,6 +47,14 @@
     t.innerHTML = '<b>' + d.getDate() + ' ' + MON[d.getMonth()] + '</b><small>' + WD[d.getDay()] + ' <span class="exd-st">' + st + '</span></small>';
     t.closest('.exd-row').classList.add(diff < 0 ? 'past' : diff <= 7 ? 'soon' : 'next');
   });
+  // все даты прошли, а новые ещё не внесены — вместо «время и место сообщит администратор» просим уточнить даты
+  document.querySelectorAll('.exd').forEach(box => {
+    if (!box.querySelector('.exd-row') || box.querySelector('.exd-row:not(.past)')) return;
+    const note = box.nextElementSibling;
+    if (note && note.classList.contains('exd-note') && note.firstChild && note.firstChild.nodeType === 3) {
+      note.firstChild.textContent = 'Даты следующих экзаменов уточняйте у администратора: ';
+    }
+  });
 
   // калькулятор
   const calc = $('calc');
@@ -108,6 +116,8 @@
   // даже если у кнопки нет data-signup="…" (значения — как в списке s-cat и в CATS файла root/send-form.php)
   const PAGE_CAT = { 'vosstanovlenie-navykov-vozhdeniya': 'vn', 'gostekhnadzor-kategoriya-ai': 'ai', 'perepodgotovka-i-povyshenie-kvalifikatsii': 'pro', novosibirsk: 'nsk' };
   const pageCat = PAGE_CAT[location.pathname.replace(/(\/index\.html|\.html)?\/?$/, '').split('/').pop()] || '';
+  // в Новосибирске томские цены в списке окна записи не показываем: стоимость там уточняют по телефону
+  if (pageCat === 'nsk' && $('s-cat')) [...$('s-cat').options].forEach(o => { o.textContent = o.textContent.replace(/\s+—\s+[\d\s ]+₽$/, ''); });
 
   // выбор категории в финальной форме; если у страницы своя программа, а такой кнопки нет, кнопки категорий не показываем
   const fCats = $('fCats');
@@ -154,7 +164,34 @@
     });
   }
   document.querySelectorAll('input[type="tel"]').forEach(maskPhone);
-  document.querySelectorAll('.consent input').forEach(c => c.addEventListener('change', () => c.closest('.consent').classList.remove('bad')));
+  // согласие не отмечено — красный текст и подсказка под галочкой; отметили — подсказка уходит
+  const consentHint = (label, on) => {
+    let p = label.nextElementSibling;
+    if (!on) { if (p && p.classList.contains('consent-err')) p.remove(); return; }
+    if (p && p.classList.contains('consent-err')) return;
+    p = document.createElement('p');
+    p.className = 'consent-err'; p.setAttribute('role', 'alert');
+    p.style.cssText = 'margin:-4px 0 0 30px;font-size:13px;font-weight:600;color:var(--red)';
+    p.textContent = 'Отметьте согласие, чтобы отправить заявку';
+    label.insertAdjacentElement('afterend', p);
+  };
+  document.querySelectorAll('.consent input').forEach(c => c.addEventListener('change', () => {
+    const label = c.closest('.consent'); label.classList.remove('bad'); consentHint(label, false);
+  }));
+
+  // когда перезвоним: часы работы Пн–Пт 9:00–18:00 по Томску (seo/BRANDCORE.md); праздники — основные, без переносов
+  const HOLIDAYS = ['01-01', '01-02', '01-03', '01-04', '01-05', '01-06', '01-07', '01-08', '02-23', '03-08', '05-01', '05-09', '06-12', '11-04'];
+  const DAY_ACC = ['в воскресенье', 'в понедельник', 'во вторник', 'в среду', 'в четверг', 'в пятницу', 'в субботу'];
+  const workday = d => d.getUTCDay() % 6 !== 0 && !HOLIDAYS.includes(String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0'));
+  const callbackText = () => {
+    const now = new Date(Date.now() + 7 * 36e5);   // время в Томске (UTC+7, без перехода на летнее)
+    const h = now.getUTCHours();
+    if (workday(now) && h >= 9 && h < 18) return '';   // рабочее время — остаётся «Перезвоним в рабочее время»
+    if (workday(now) && h < 9) return 'Перезвоним сегодня после 9:00';
+    const d = new Date(now.getTime()); let n = 0;
+    do { d.setUTCDate(d.getUTCDate() + 1); n++; } while (!workday(d) && n < 20);
+    return 'Перезвоним ' + (n === 1 ? 'завтра' : n < 7 ? DAY_ACC[d.getUTCDay()] : d.getUTCDate() + ' ' + MON[d.getUTCMonth()]) + ' после 9:00';
+  };
 
   // формы заявки: проверяем номер и согласие, отправляем на /send-form.php (обработчик на сервере школы — root/send-form.php:
   // письмо на почту и копия в файл). На предпросмотре (GitHub Pages) PHP нет — заявка не уходит, об этом пишем в подтверждении.
@@ -176,7 +213,7 @@
       if (!ok) { phone.focus(); return; }
       // согласие на обработку ПДн — отдельное и активное (152-ФЗ, ред. с 01.09.2025)
       const consent = form.querySelector('.consent input');
-      if (consent && !consent.checked) { consent.closest('.consent').classList.add('bad'); consent.focus(); return; }
+      if (consent && !consent.checked) { consent.closest('.consent').classList.add('bad'); consentHint(consent.closest('.consent'), true); consent.focus(); return; }
       const btn = form.querySelector('[type="submit"]');
       if (btn.disabled) return;
       const old = form.querySelector('.lead-fail'); if (old) old.remove();
@@ -185,6 +222,9 @@
         form.hidden = true;
         if (okMsg) {
           okMsg.style.display = 'block';
+          // в нерабочее время — когда именно перезвоним (текст после <b>Заявка принята</b>)
+          const when = callbackText(), tn = [...okMsg.childNodes].find(x => x.nodeType === 3 && x.textContent.trim());
+          if (when && tn) tn.textContent = when;
           if (!leadLive && !okMsg.querySelector('.lead-demo')) okMsg.insertAdjacentHTML('beforeend', '<small class="lead-demo" style="display:block;margin-top:6px">Предпросмотр сайта: заявка не отправлена</small>');
         }
         try { localStorage.setItem('leadSent', '1'); } catch (e) {}
