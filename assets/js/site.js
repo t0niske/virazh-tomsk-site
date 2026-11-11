@@ -55,14 +55,17 @@
     const stud = $('cStudent'), tax = $('cTax');
     const render = () => {
       const base = C[cat].price;
-      // итог — стоимость обучения по договору; вычет возвращают позже и только плательщикам НДФЛ, поэтому он отдельной строкой
+      // итог: без вычета — стоимость по договору; с вычетом — «от» стоимость минус вычет (вернут до 13% после оплаты, сколько — зависит от НДФЛ),
+      // а сумма по договору — строкой «Оплата по договору»
       const disc = stud.checked ? 3000 : 0, paid = base - disc, back = Math.round(paid * 0.13);
       $('cBase').textContent = rub(base);
       $('cBaseRow').hidden = !disc;   // без скидки «Стоимость курса» повторяла бы итог
       $('cStudRow').hidden = !disc;
       $('cTaxRow').hidden = !tax.checked;
       $('cTaxVal').textContent = 'до ' + rub(back);
-      $('cTotal').textContent = rub(paid);
+      $('cTotal').textContent = tax.checked ? 'от ' + rub(paid - back) : rub(paid);
+      $('cPayRow').hidden = !tax.checked;
+      $('cPay').textContent = rub(paid);
       $('cStartRow').hidden = !C[cat].start;
       $('cExamRow').hidden = cat === 'a';
       $('calcCta').dataset.signup = cat;

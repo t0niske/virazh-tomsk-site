@@ -995,6 +995,7 @@ address{font-style:normal}
 .calc-row .calc > .it{margin:0 0 10px}
 .calc-row .calc-out .total{padding-top:14px}
 .calc-row #cStudRow[hidden] + .total{border-top:0;padding-top:6px}   /* без скидки линия только под последним переключателем, как под «Я студент», — вторая над «Итого» не нужна */
+.calc-row .calc-out .total b{font-size:clamp(26px,8.4vw,36px)}   /* «от 57 420 ₽» с вычетом помещается рядом с «Итого» и на 320 px */
 .calc-row .calc-out .total span{font:800 15px/1 var(--font);text-transform:uppercase;letter-spacing:.05em;color:#fff}
 .calc-sub{display:grid;gap:6px;margin-top:6px}
 .calc-sub .row{font-size:13.5px;color:#CFCFCF}
