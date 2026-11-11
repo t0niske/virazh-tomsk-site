@@ -472,6 +472,11 @@ RewriteEngine On
 # всегда видит http и зациклил бы переадресацию
 RewriteCond %{HTTP_HOST} ^www\. [NC]
 RewriteRule ^ https://virazh-tomsk.ru%{REQUEST_URI} [L,R=301]
+HT
+  # перенесённые страницы — первыми и сразу на итоговый адрес: /tseny/ и /index.php/kontakty/tomsk — одна переадресация, без цепочки
+  $ht .= "# Перенесённые страницы (также со слэшем на конце и с префиксом index.php/ старого сайта)\n";
+  $ht .= "RewriteRule ^(?:index\\.php/)?" . quotemeta(substr($_->[0], 1)) . "/?\$ $_->[1] [L,R=301]\n" for @redirects;
+  $ht .= <<'HT';
 # старые адреса Joomla (условие по THE_REQUEST — только для адреса, который набрал посетитель, не для внутренних подзапросов):
 # карта сайта JSitemap -> /sitemap.xml
 RewriteCond %{THE_REQUEST} \s/+index\.php\?\S*option=com_jmap [NC]
@@ -481,16 +486,12 @@ RewriteCond %{THE_REQUEST} \s/+index\.php\?\S*opt(?:ion|%69on)= [NC]
 RewriteRule ^index\.php$ - [G]
 RewriteCond %{THE_REQUEST} \s/+index\.php[/?]+\.?/?component(?:[/?\s]|$) [NC]
 RewriteRule ^ - [G]
-# /index.php и /index.php/страница -> /страница; параметры (?i= в галерее) сохраняются
+# /index.php, /index.php/страница и /index.php/страница/ -> /страница за одну переадресацию; параметры (?i= в галерее) сохраняются
 RewriteCond %{THE_REQUEST} \s/+index\.php(?:[/?\s]|$) [NC]
-RewriteRule ^index\.php/?(.*)$ /$1 [L,R=301,NE]
+RewriteRule ^index\.php/?(.*?)/?$ /$1 [L,R=301,NE]
 # /адрес/ -> /адрес (единый вид без слэша)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)/$ /$1 [L,R=301]
-HT
-  $ht .= "# Перенесённые страницы\n";
-  $ht .= "RewriteRule ^" . substr($_->[0], 1) . "\$ $_->[1] [L,R=301]\n" for @redirects;
-  $ht .= <<'HT';
 # /адрес -> /адрес/index.html (внутренне, без редиректа)
 RewriteCond %{REQUEST_FILENAME}/index.html -f
 RewriteRule ^(.+)$ /$1/index.html [L]
