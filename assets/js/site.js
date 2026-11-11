@@ -104,27 +104,54 @@
     if (b) b.click();
   });
 
-  // выбор категории в финальной форме
-  segClick($('fCats'), () => {});
+  // программа страницы: на этих страницах окно записи и нижняя форма сразу выбирают её,
+  // даже если у кнопки нет data-signup="…" (значения — как в списке s-cat и в CATS файла root/send-form.php)
+  const PAGE_CAT = { 'vosstanovlenie-navykov-vozhdeniya': 'vn', 'gostekhnadzor-kategoriya-ai': 'ai', 'perepodgotovka-i-povyshenie-kvalifikatsii': 'pro', novosibirsk: 'nsk' };
+  const pageCat = PAGE_CAT[location.pathname.replace(/(\/index\.html|\.html)?\/?$/, '').split('/').pop()] || '';
 
-  // маска телефона +7 (XXX) XXX-XX-XX
+  // выбор категории в финальной форме; если у страницы своя программа, а такой кнопки нет, кнопки категорий не показываем
+  const fCats = $('fCats');
+  segClick(fCats, () => {});
+  if (fCats && pageCat && !fCats.querySelector('[data-c="' + pageCat + '"]')) {
+    fCats.hidden = true;
+    fCats.closest('form').dataset.cat = pageCat;
+    const lead = fCats.closest('.final-card') && fCats.closest('.final-card').querySelector('.lead');
+    if (lead) lead.textContent = 'Оставьте номер телефона:';
+  }
+
+  // маска телефона +7 (XXX) XXX-XX-XX. Понимает привычный ввод: 8 913…, 7 913…, +7 913…, 913…,
+  // вставку «8 (913) 123-45-67» и автозаполнение браузера. Первая 7 или 8 — код страны, в номер она не попадает
+  const telDigits = v => {
+    let d = v.replace(/\D/g, '');
+    if (/^\s*(\+\s*7|7|8)/.test(v)) d = d.slice(1);         // код страны в начале: +7, 7 или 8
+    if (d.length > 10 && /^[78]/.test(d)) d = d.slice(1);   // вставили «8 913…» поверх уже набранного «+7 (»
+    return d.slice(0, 10);
+  };
+  // скобка и дефисы появляются только перед следующей цифрой, иначе их нельзя стереть
+  const telFormat = n => '+7 (' + n.slice(0, 3) + (n.length > 3 ? ') ' + n.slice(3, 6) : '')
+    + (n.length > 6 ? '-' + n.slice(6, 8) : '') + (n.length > 8 ? '-' + n.slice(8, 10) : '');
   function maskPhone(input) {
-    input.addEventListener('input', () => {
-      let d = input.value.replace(/\D/g, '');
-      if (d.startsWith('8')) d = '7' + d.slice(1);
-      if (!d.startsWith('7')) d = '7' + d;
-      d = d.slice(0, 11);
-      const p = d.slice(1);
-      let out = '+7';
-      if (p.length) out += ' (' + p.slice(0, 3);
-      if (p.length >= 3) out += ')';
-      if (p.length > 3) out += ' ' + p.slice(3, 6);
-      if (p.length > 6) out += '-' + p.slice(6, 8);
-      if (p.length > 8) out += '-' + p.slice(8, 10);
-      input.value = out;
+    let prev = input.value;
+    input.addEventListener('input', e => {
+      const v = input.value, n = telDigits(v);
+      const del = e.inputType ? e.inputType.startsWith('delete') : v.length < prev.length;
       const f = input.closest('.field'); f && f.classList.remove('bad');
+      if (!n) {
+        // цифр номера ещё нет: «8», «7», «+7» → «+7 (»; одиночный «+» оставляем; при стирании поле пустеет
+        input.value = del ? '' : /^\s*\+\s*$/.test(v) ? '+' : /^\s*(\+\s*7|7|8)\D*$/.test(v) ? '+7 (' : '';
+        prev = input.value; return;
+      }
+      const out = telFormat(n);
+      const pos = input.selectionStart == null ? v.length : input.selectionStart;
+      input.value = prev = out;
+      // правка в середине номера: курсор остаётся после той же цифры, что и до форматирования
+      if (pos < v.length && document.activeElement === input) {
+        const k = telDigits(v.slice(0, pos)).length;
+        let i = 4, c = 0;   // 4 — сразу после «+7 (»
+        while (i < out.length && c < k) { if (/\d/.test(out[i])) c++; i++; }
+        input.setSelectionRange(i, i);
+      }
     });
-    input.addEventListener('focus', () => { if (!input.value) input.value = '+7 ('; });
   }
   document.querySelectorAll('input[type="tel"]').forEach(maskPhone);
   document.querySelectorAll('.consent input').forEach(c => c.addEventListener('change', () => c.closest('.consent').classList.remove('bad')));
@@ -170,7 +197,8 @@
       const data = new FormData();
       data.append('phone', phone.value);
       if (name && name.value.trim()) data.append('name', name.value.trim());
-      data.append('cat', sel ? sel.value : chip ? chip.dataset.c : '');
+      data.append('cat', form.dataset.cat || (sel ? sel.value : chip ? chip.dataset.c : ''));   // data-cat — программа страницы, кнопки категорий скрыты
+      if (form.dataset.topic) data.append('topic', form.dataset.topic);   // тема кнопки, которой открыли окно записи
       data.append('form', form.id);
       data.append('page', location.href);
       data.append('t', String(Date.now() - pageStart));
@@ -208,10 +236,13 @@
   document.addEventListener('click', e => {
     const s = e.target.closest('[data-signup]');
     if (s && sheet) {
-      const cat = s.dataset.signup;
-      if (cat && C[cat]) $('s-cat').value = cat;
+      // пункт программы страницы, иначе кнопки; без программы — первый пункт (иначе оставался выбор с прошлого открытия).
+      // Программа страницы важнее: на «Восстановлении навыков» карточки машин и инструкторов несут bA/bM, а нужна vn (машина уйдёт темой)
+      const sel = $('s-cat'), want = pageCat || s.dataset.signup;
+      sel.value = [...sel.options].some(o => o.value === want) ? want : sel.options[0].value;
       $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + '. Перезвоним в рабочее время' : 'Перезвоним в рабочее время и подберём группу';
       const f = $('sheetForm'); f.hidden = false; $('sheetOk').style.display = 'none';
+      f.dataset.topic = s.dataset.topic || '';
       closeMenu();
       openSheet(sheet); return;
     }

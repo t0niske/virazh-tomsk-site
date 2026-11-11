@@ -1,7 +1,8 @@
 <?php
 // Приём заявок с форм сайта «Авто-Вираж» (virazh-tomsk.ru). Заменяет send-form.php старого сайта.
 //
-// Форма (assets/js/site.js) шлёт POST: phone — обязательно; name, cat, form, page — необязательно;
+// Форма (assets/js/site.js) шлёт POST: phone — обязательно; name, cat, topic, form, page — необязательно
+// (topic — тема кнопки, которой открыли окно записи, например «Хочу учиться на Kia Rio»);
 // t — сколько миллисекунд прошло от загрузки страницы; website — ловушка для ботов (человек это поле не видит).
 // Ответ — JSON: {"ok":true,"id":424} или {"ok":false,"error":"phone|rate|mail|..."}.
 //
@@ -21,7 +22,8 @@ const DUP_WINDOW = 600;         // тот же номер повторно в т
 const BOT_LOG_MAX = 5000000;    // журнал отсеянных заявок не растёт больше 5 МБ
 const CATS = [
   'bA' => 'B автомат', 'bM' => 'B механика', 'a' => 'A мотоцикл', 'ai' => 'AI квадроцикл, снегоход',
-  'pro' => 'Курсы для транспортных компаний', 'x' => 'Пока не решил(а)',
+  'vn' => 'Восстановление навыков вождения', 'pro' => 'Курсы для транспортных компаний', 'nsk' => 'Обучение в Новосибирске',
+  'x' => 'Пока не решил(а)',
 ];
 const FORMS = [
   'heroForm' => 'первый экран главной', 'mainForm' => 'форма «Запись на обучение» внизу страницы',
@@ -61,7 +63,7 @@ function csv_append(string $file, array $row): void {
   $new = !is_file($file);
   $h = fopen($file, 'ab');
   if (!$h) return;
-  if ($new) { fwrite($h, "\xEF\xBB\xBF"); fputcsv($h, ['№', 'дата', 'телефон', 'имя', 'что интересует', 'форма', 'страница', 'IP', 'браузер', 'итог'], ';', '"', ''); }
+  if ($new) { fwrite($h, "\xEF\xBB\xBF"); fputcsv($h, ['№', 'дата', 'телефон', 'имя', 'что интересует', 'тема', 'форма', 'страница', 'IP', 'браузер', 'итог'], ';', '"', ''); }
   // защита от формул при открытии в Excel: значение не начинается с = + - @
   fputcsv($h, array_map(fn($v) => preg_match('/^[=+\-@]/', (string)$v) ? "'" . $v : (string)$v, $row), ';', '"', '');
   fclose($h);
@@ -87,13 +89,14 @@ $phone = sprintf('+7 (%s) %s-%s-%s', substr($digits, 1, 3), substr($digits, 4, 3
 
 $name = clean((string)($_POST['name'] ?? ''), 60);
 $cat = CATS[(string)($_POST['cat'] ?? '')] ?? '';
+$topic = clean((string)($_POST['topic'] ?? ''), 120);
 $form = FORMS[(string)($_POST['form'] ?? '')] ?? '';
 $page = clean((string)($_POST['page'] ?? ''), 300);
 if ($page !== '' && !in_array(strtolower((string)parse_url($page, PHP_URL_HOST)), HOSTS, true)) $page = '';
 $ip = client_ip();
 $ua = clean((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 200);
 $now = time();
-$row = fn(string $id, string $result) => [$id, date('d.m.Y H:i', $now), $digits, $name, $cat, $form, $page, $ip, $ua, $result];
+$row = fn(string $id, string $result) => [$id, date('d.m.Y H:i', $now), $digits, $name, $cat, $topic, $form, $page, $ip, $ua, $result];
 
 // бот: заполнил скрытое поле или отправил форму быстрее человека. Отвечаем «принято», чтобы не подбирал обход,
 // но заявку не теряем — она пишется в bots.csv (если там окажется человек, номер будет виден)
@@ -139,6 +142,7 @@ $body = "Новая заявка с сайта virazh-tomsk.ru\n\n"
       . "Телефон: {$phone}\n"
       . 'Имя: ' . ($name !== '' ? $name : 'не указано') . "\n"
       . 'Что интересует: ' . ($cat !== '' ? $cat : 'не указано') . "\n"
+      . ($topic !== '' && $topic !== $cat ? "Тема: {$topic}\n" : '')
       . ($form !== '' ? "Форма: {$form}\n" : '')
       . ($page !== '' ? "Страница: {$page}\n" : '')
       . 'Дата: ' . date('d.m.Y H:i', $now) . " (время томское)\n"
