@@ -59,6 +59,8 @@ sub include_with {
   $s =~ s{[ \t]*<article class="pg-c pg-help">.*?</article>\s*}{}s if $a{nohelp};
   # for=fleetList — подстановка в вставку (стрелки sh-arr для ленты с этим id)
   $s =~ s/\{for\}/$a{for}/g if $a{for};
+  # nosignup=1 — без кнопок «Записаться» (страница «Спасибо»: заявка уже отправлена, повтор с того же номера письма не даёт)
+  $s =~ s{\s*<button\b[^>]*\bdata-signup\b[^>]*>.*?</button>}{}gs if $a{nosignup};
   # nonote=1 — без сноски под лентой шагов («Суммы для категории B…»): на посадочной она лишняя
   $s =~ s{\s*<p class="road-note">.*?</p>}{}s if $a{nonote};
   # cat=bM — в форме записи заранее выбрана категория страницы (final-form на посадочной «B, механика»)

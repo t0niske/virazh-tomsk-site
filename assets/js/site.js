@@ -14,6 +14,8 @@
   };
   const rub = n => n.toLocaleString('ru-RU') + ' ₽';   // неразрывный пробел: сумма не рвётся на две строки
   const $ = id => document.getElementById(id);
+  // начало адреса сайта: на предпросмотре GitHub Pages всё лежит в подпапке /virazh-tomsk-site (по адресу самого скрипта)
+  const BASE = ((((document.currentScript && document.currentScript.src) || '').match(/^https?:\/\/[^/]+(\/.*?)?\/assets\/js\/site\.js/)) || [])[1] || '';
   const pressOnly = (group, btn) => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
   const segClick = (el, fn) => {
     if (!el) return;
@@ -198,6 +200,26 @@
   // Цель Метрики «lead» ставит assets/js/stats.js по событию lead:sent.
   const leadLive = /(^|\.)virazh-tomsk\.ru$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   const pageStart = Date.now();
+
+  // страница «Спасибо»: «Перезвоним … на номер …», ссылка «Исправить», пометка предпросмотра, цель Метрики «lead»
+  // (событие — после загрузки всех скриптов: stats.js подключается после site.js)
+  const ty = $('ty');
+  if (ty) {
+    let lead = null;
+    try { lead = JSON.parse(sessionStorage.getItem('lead') || 'null'); } catch (e) {}
+    const text = $('tyText'), when = callbackText() || 'Перезвоним в рабочее время';
+    text.textContent = lead && lead.phone ? when + ' на номер ' : when;
+    if (lead && lead.phone) {
+      const b = document.createElement('b'); b.textContent = lead.phone; text.appendChild(b);
+      $('tyFix').hidden = false;
+    }
+    if (lead && lead.demo) ty.insertAdjacentHTML('beforeend', '<p class="ty-demo">Предпросмотр сайта: заявка не отправлена</p>');
+    if (lead && !lead.counted) {
+      lead.counted = true;
+      try { sessionStorage.setItem('lead', JSON.stringify(lead)); } catch (e) {}
+      document.addEventListener('DOMContentLoaded', () => document.dispatchEvent(new CustomEvent('lead:sent', { detail: { form: lead.form } })));
+    }
+  }
   document.querySelectorAll('form[data-lead]').forEach(form => {
     // ловушка для ботов: поле, которое человек не видит и не заполняет
     const trap = document.createElement('div');
@@ -218,6 +240,14 @@
       if (btn.disabled) return;
       const old = form.querySelector('.lead-fail'); if (old) old.remove();
       const done = () => {
+        // после заявки — страница «Спасибо» (src/pages/spasibo.html). Номер и форма — в sessionStorage, не в адресе;
+        // цель Метрики «lead» ставится уже там. Исправление номера на самой «Спасибо» вторую цель не считает
+        try {
+          sessionStorage.setItem('lead', JSON.stringify({ phone: phone.value, form: form.id, demo: !leadLive, counted: !!$('ty') }));
+          try { localStorage.setItem('leadSent', '1'); } catch (e) {}
+          location.href = BASE + '/spasibo';
+          return;
+        } catch (e) { /* хранилище недоступно (приватный режим) — подтверждение на месте, как раньше */ }
         const okMsg = $(form.dataset.lead);
         form.hidden = true;
         if (okMsg) {
@@ -283,6 +313,10 @@
       $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + '. Перезвоним в рабочее время' : 'Перезвоним в рабочее время и подберём группу';
       const f = $('sheetForm'); f.hidden = false; $('sheetOk').style.display = 'none';
       f.dataset.topic = s.dataset.topic || '';
+      // «Исправить» на странице «Спасибо» — в поле уже введённый номер
+      if (s.hasAttribute('data-fix')) {
+        try { const l = JSON.parse(sessionStorage.getItem('lead') || 'null'); if (l && l.phone) $('s-phone').value = l.phone; } catch (e) {}
+      }
       closeMenu();
       openSheet(sheet); return;
     }

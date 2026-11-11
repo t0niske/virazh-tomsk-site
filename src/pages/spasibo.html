@@ -1,0 +1,70 @@
+<!--meta
+title: Заявка принята — Авто-Вираж
+description: Заявка на обучение в автошколе «Авто-Вираж» принята. Администратор перезвонит в рабочее время и подберёт программу, офис и группу.
+noindex: 1
+-->
+<!--head--><style>
+/* страница «Спасибо» (после отправки формы). Стили только этой страницы */
+.ty-top{max-width:860px;text-align:center;display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:14px}
+.ty-top > img{width:150px;height:150px;object-fit:contain}
+.ty-top .page-lead{margin:0;text-wrap:balance}
+.ty-top .page-lead b{color:var(--ink);white-space:nowrap}
+.ty-fixline{font-size:14.5px;color:var(--muted)}
+.ty-fix{border:0;background:none;padding:0;font:inherit;color:var(--red);font-weight:700;text-decoration:underline;cursor:pointer}
+.ty-demo{font-size:13.5px;color:var(--muted)}
+.ty-btns{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:660px;margin-top:6px}
+.ty-btns .btn-red{grid-column:1 / -1;white-space:nowrap}
+@media (min-width:720px){.ty-btns{grid-template-columns:1.5fr 1fr 1fr}.ty-btns .btn-red{grid-column:auto}}
+.ty-more{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.ty-more a{display:flex;align-items:center;gap:12px;background:var(--grey);border-radius:16px;padding:12px 16px;text-decoration:none;color:var(--head);font:800 italic 16px/1.2 var(--font);text-transform:uppercase}
+.ty-more img{width:52px;height:52px;object-fit:contain;flex:none}
+</style><!--/head-->
+<!-- Страница «Спасибо». Сюда переходит любая форма заявки после отправки (assets/js/site.js, блок форм):
+     номер и форма передаются через sessionStorage (не в адресе), текст «Перезвоним … на номер …» и цель Метрики «lead»
+     ставит site.js. Если зайти напрямую, без заявки, — общий текст без номера. Страница закрыта от поиска (noindex). -->
+<section class="sec" style="padding-top:32px">
+  <div class="wrap ty-top" id="ty">
+    <img src="/img/icons/ok-check.webp" alt="" width="320" height="320">
+    <h1 class="it h1">Заявка принята</h1>
+    <p class="page-lead" id="tyText">Перезвоним в рабочее время</p>
+    <p class="ty-fixline" id="tyFix" hidden>Номер с ошибкой? <button class="ty-fix" type="button" data-signup data-fix data-topic="Исправлен номер в заявке">Исправить</button></p>
+    <div class="ty-btns">
+      <a class="btn btn-red" href="tel:+73822345252">+7 (3822) 34-52-52</a>
+      <a class="btn btn-msg btn-vk" href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener"><svg width="22" height="22" aria-hidden="true"><use href="#i-vk"/></svg>ВКонтакте</a>
+      <a class="btn btn-msg btn-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener"><svg width="22" height="22" aria-hidden="true"><use href="#i-max"/></svg>MAX</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec grey" id="deals">
+  <div class="wrap">
+<!--#include deals-->
+  </div>
+</section>
+
+<section class="sec" id="route">
+  <div class="wrap">
+    <div class="sh">
+      <div class="head">
+        <h2 class="it h2">Как проходит обучение <span class="acc">и сколько стоит каждый этап</span></h2>
+        <span class="sub-it">От договора до прав — в среднем 2,5–3 месяца</span>
+      </div>
+      <div class="sh-arr">
+        <button class="sa" type="button" data-for="stepList" data-prev aria-label="Предыдущий шаг"><svg width="22" height="22" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <button class="sa" type="button" data-for="stepList" data-next aria-label="Следующий шаг"><svg width="22" height="22" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
+    </div>
+<!--#include steps-cards nosignup=1-->
+  </div>
+</section>
+
+<section class="sec grey">
+  <div class="wrap">
+    <div class="head"><h2 class="it h2">Ещё <span class="acc">полезное</span></h2></div>
+    <div class="ty-more">
+      <a href="/tseny/tseny-tomsk"><img src="/img/icons/cat-b-auto.webp" alt="" width="320" height="320" loading="lazy">Цены на обучение</a>
+      <a href="/ekzameny"><img src="/img/icons/step-inner-exam.webp" alt="" width="320" height="320" loading="lazy">Экзамены и расписание</a>
+      <a href="/otzyvy"><img src="/img/icons/trust-rating.webp" alt="" width="320" height="320" loading="lazy">Отзывы выпускников</a>
+    </div>
+  </div>
+</section>
