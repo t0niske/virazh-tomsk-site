@@ -1048,3 +1048,16 @@ address{font-style:normal}
 .tn-steps b span{font:inherit;color:inherit}   /* «24/7» сборка оборачивает в span — не наследовать стиль подписи */
 .tn-facts li::after{display:none}   /* факты, а не этапы — без стрелок между плитками («Учись онлайн») */
 @media (max-width:719px){.tn-acts{display:grid}.tn-acts .btn{width:100%}}   /* телефон: кнопки во всю ширину («С 16 лет», онлайн, блок на главной) */
+/* ===== «Экзамены»: два шага карточками (внутренний экзамен и ГИБДД) с суммами внизу ===== */
+.ex-two{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.ex-c{display:flex;flex-direction:column;gap:14px}
+.ex-c p,.ex-c ul{margin:0}
+.ex-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:auto;padding-top:6px}
+.ex-sum div{background:#fff;border-radius:16px;padding:14px;display:grid;gap:6px;align-content:start}
+.sec.grey .ex-sum div{background:var(--grey)}
+.ex-sum b{font:900 italic clamp(20px,5.6vw,26px)/1 var(--font);color:var(--head);white-space:nowrap}
+.ex-sum span{font-size:13px;line-height:1.35;color:var(--muted)}
+@media (min-width:900px){.ex-two{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ex-c{padding:30px 32px}}
+@media (min-width:900px) and (max-width:1199px){#read .lp-xh{font-size:19px}}   /* «штрафных баллов» в узкой карточке на ноутбуке */
+@media (max-width:359px){.ex-sum{grid-template-columns:minmax(0,1fr)}}
+.ex-c .lp-pill{align-self:flex-start}
