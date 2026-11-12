@@ -1,25 +1,54 @@
 <!--meta
 title: Статьи о правах и экзаменах — Авто-Вираж
 description: Статьи о правах в Томске: сколько длится обучение, как сдать экзамен в ГИБДД, штрафные баллы на вождении и как выбрать автошколу.
-art: art-blog | Блокнот, ручка и ключ от машины
 -->
-<section class="page-hero">
+<!-- «Блог» в новом стиле: первый экран как у «Цен» (заголовок, абзац), фильтр по темам (Экзамены / Обучение / Оплата), статьи карточками,
+     тёмная полоса «Остались вопросы?» со ссылкой на «Вопросы и ответы» и телефоном, форма. Тексты статей — у ветки переноса -->
+<section class="page-hero pr-top" id="blog">
   <div class="wrap">
     <nav class="crumbs" aria-label="Навигация"><a href="/">Главная</a><span>/</span><span>Блог</span></nav>
     <h1 class="it h1">Блог <span class="acc">автошколы</span></h1>
-    <p class="page-lead">Полезные статьи об обучении на права в Томске: сроки, экзамен ГИБДД и советы, как сдать с первого раза.</p>
-  </div>
-</section>
-<section class="sec sec-tight">
-  <div class="wrap">
-    <div class="posts big">
-      <a class="post" href="/blog/nalogovyj-vychet-za-avtoshkolu"><span class="post-img"><img src="/img/art/art-oplata.webp" alt="" loading="lazy"></span><span class="post-in"><b>Налоговый вычет за автошколу</b><small>Как вернуть 13%: документы и два способа подачи</small></span></a>
-      <a class="post" href="/blog/peresdacha-ekzamena-v-gibdd"><span class="post-img"><img src="/img/art/art-ekzameny.webp" alt="" loading="lazy"></span><span class="post-in"><b>Пересдача экзамена в ГИБДД</b><small>Когда можно пересдать и как подготовиться</small></span></a>
-      <a class="post" href="/blog/skolko-dlitsya-obuchenie-na-prava-kategorii-b"><span class="post-img"><img src="/images/2026/04/10/create_a_clean_modern_editorial_thumbnail_image_f-1775811852397.webp" alt="" loading="lazy"></span><span class="post-in"><b>Сколько длится обучение на права категории B</b><small>2,5–3 месяца: из чего складывается срок</small></span></a>
-      <a class="post" href="/blog/kak-vybrat-avtoshkolu-v-tomske"><span class="post-img"><img src="/images/2026/04/10/a_professional_realistic_editorial_hero_image_for-1775809405463.webp" alt="" loading="lazy"></span><span class="post-in"><b>Как выбрать автошколу в Томске</b><small>7 критериев и как их проверить</small></span></a>
-      <a class="post" href="/blog/tablica-shtrafnyh-ballov-na-ekzamene-v-gibdd"><span class="post-img"><img src="/images/2026/04/06/professional_blog_image_about_driving_exam_evaluat-1775468113502.webp" alt="" loading="lazy"></span><span class="post-in"><b>Таблица штрафных баллов на экзамене в ГИБДД</b><small>Таблица баллов и частые ошибки</small></span></a>
-      <a class="post" href="/blog/kak-sdat-na-prava-v-tomske"><span class="post-img"><img src="/images/2026/04/06/remove_the_phone_number_from_the_car_keep_everyth-1775455967347.webp" alt="" loading="lazy"></span><span class="post-in"><b>Как сдать на права в Томске</b><small>Этапы, цены и экзамен в ГИБДД</small></span></a>
+    <p class="page-lead">Полезные статьи об обучении на права в Томске: сроки, экзамен в ГИБДД, налоговый вычет и советы, как сдать с первого раза</p>
+    <div class="chips bl-chips" role="group" aria-label="Темы статей" data-filter-for="blogList">
+      <button class="chip" type="button" data-f="all" aria-pressed="true">Все статьи</button>
+      <button class="chip" type="button" data-f="exam" aria-pressed="false">Экзамены</button>
+      <button class="chip" type="button" data-f="study" aria-pressed="false">Обучение</button>
+      <button class="chip" type="button" data-f="pay" aria-pressed="false">Оплата</button>
+    </div>
+    <h2 class="sr">Статьи</h2>
+    <div class="bl-list" id="blogList">
+      <a class="bl-c" href="/blog/nalogovyj-vychet-za-avtoshkolu" data-f="pay">
+        <span class="bl-pic bl-obj"><img src="/img/art/art-oplata.webp" alt="" width="720" height="720" loading="lazy"></span>
+        <span class="bl-tx"><span class="lp-pill">Оплата</span><b>Налоговый вычет<br>за автошколу</b><small>Как вернуть 13%: документы и два способа подачи</small><span class="bl-go">Читать <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+      </a>
+      <a class="bl-c" href="/blog/peresdacha-ekzamena-v-gibdd" data-f="exam">
+        <span class="bl-pic bl-obj"><img src="/img/art/art-ekzameny.webp" alt="" width="720" height="720" loading="lazy"></span>
+        <span class="bl-tx"><span class="lp-pill">Экзамены</span><b>Пересдача экзамена<br>в ГИБДД</b><small>Когда можно пересдать и как подготовиться</small><span class="bl-go">Читать <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+      </a>
+      <a class="bl-c" href="/blog/skolko-dlitsya-obuchenie-na-prava-kategorii-b" data-f="study">
+        <span class="bl-pic"><img src="/images/2026/04/10/create_a_clean_modern_editorial_thumbnail_image_f-1775811852397.webp" alt="" width="1264" height="848" loading="lazy"></span>
+        <span class="bl-tx"><span class="lp-pill">Обучение</span><b>Сколько длится<br>обучение на права</b><small>2,5–3 месяца: из чего складывается срок</small><span class="bl-go">Читать <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+      </a>
+      <a class="bl-c" href="/blog/kak-vybrat-avtoshkolu-v-tomske" data-f="study">
+        <span class="bl-pic"><img src="/images/2026/04/10/a_professional_realistic_editorial_hero_image_for-1775809405463.webp" alt="" width="1264" height="848" loading="lazy"></span>
+        <span class="bl-tx"><span class="lp-pill">Обучение</span><b>Как выбрать<br>автошколу</b><small>7 критериев и как их проверить</small><span class="bl-go">Читать <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+      </a>
+      <a class="bl-c" href="/blog/tablica-shtrafnyh-ballov-na-ekzamene-v-gibdd" data-f="exam">
+        <span class="bl-pic"><img src="/images/2026/04/06/professional_blog_image_about_driving_exam_evaluat-1775468113502.webp" alt="" width="1264" height="848" loading="lazy"></span>
+        <span class="bl-tx"><span class="lp-pill">Экзамены</span><b>Штрафные баллы<br>на экзамене</b><small>Таблица баллов и частые ошибки</small><span class="bl-go">Читать <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+      </a>
+      <a class="bl-c" href="/blog/kak-sdat-na-prava-v-tomske" data-f="exam">
+        <span class="bl-pic"><img src="/images/2026/04/06/remove_the_phone_number_from_the_car_keep_everyth-1775455967347.webp" alt="" width="1264" height="848" loading="lazy"></span>
+        <span class="bl-tx"><span class="lp-pill">Экзамены</span><b>Как сдать<br>на права в Томске</b><small>Этапы, цены и экзамен в ГИБДД</small><span class="bl-go">Читать <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+      </a>
     </div>
   </div>
 </section>
+
+<section class="sec grey" id="ask">
+  <div class="wrap">
+    <a class="pr-link" href="/voprosy"><span><b>Остались вопросы?</b>Ответы о сроках, оплате, документах и экзаменах собраны на странице «Вопросы и ответы». Или позвоните: +7&nbsp;(3822)&nbsp;34-52-52</span><span class="btn btn-red">Вопросы и ответы</span></a>
+  </div>
+</section>
+
 <!--#include final-form-->
