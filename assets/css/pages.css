@@ -1020,7 +1020,7 @@ address{font-style:normal}
 @media (min-width:900px){.pp-bar{grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:40px}.pp-sum{padding-bottom:3px}}
 .nw{white-space:nowrap}   /* «3-НДФЛ» не переносится по дефису (в заголовках посадочных .lp-h1 .nw — то же) */
 /* ===== «Квадроцикл и снегоход» (AI): в плашке стоимости длинные названия («Квадроцикл») — на ноутбуках карточки плотнее и шрифт меньше ===== */
-@media (min-width:1080px) and (max-width:1439px){.lq1-sm .lq1-c{padding:16px 14px 20px}.lq1-sm .lq1-c h3{font-size:18px}.lq1-sm .lq1-c img{height:130px}}
+@media (min-width:1080px) and (max-width:1599px){.lq1-sm .lq1-c{padding:16px 14px 20px}.lq1-sm .lq1-c h3{font-size:18px}.lq1-sm .lq1-c img{height:130px}}
 @media (min-width:1080px) and (max-width:1199px){.lq1-sm .lq1-c h3{font-size:16px}}
 @media (max-width:559px){.lp-facts-w{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-facts-w li:last-child{grid-column:1 / -1}}   /* «документ на квадроцикл и снегоход» не помещается в треть ширины телефона — третья плашка на всю строку */
 /* ===== «Обучение» (все программы): таблица сравнения без цен (.pl-cmp) — последняя колонка обычный текст, на телефоне подписи у строк ===== */
