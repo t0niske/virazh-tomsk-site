@@ -6,16 +6,19 @@
 #   bash tools/deploy.sh rollback   # вернуть предыдущую версию из резерва (последнюю по времени)
 #   bash tools/deploy.sh check [https://virazh-tomsk.ru]   # проверить адреса, переадресации, robots, приём заявок
 #
-# Первый перенос: папка Joomla целиком уходит в ~/virazh-joomla-ГГГГММДД (база данных не трогается), откат — rollback.
+# Первый перенос: папка Joomla целиком уходит в ~/virazh-joomla-ГГГГММДД — вне www, из интернета не открывается
+# (база данных не трогается), откат — rollback. Новый сайт собирается в пустой ~/virazh-new, поверх Joomla ничего не льётся.
 # Картинки, видео и PDF старого сайта (/images, /media/attachments, /media/videos) копируются на сервере из папки Joomla,
-# чтобы старые адреса файлов продолжили работать; файлы из репозитория при совпадении путей главнее.
+# чтобы старые адреса файлов продолжили работать. Старая Joomla взломана (веб-шеллы в media/, подброшенные .txt/.html
+# в images/), поэтому копируется только белый список форматов с проверкой сигнатуры и без PHP-кода внутри; остальное —
+# в список пропущенных ~/deploy-upload/skipped-*.txt. Файлы из репозитория при совпадении путей главнее.
 # Заявки: ~/virazh-leads (counter.txt, leads.csv, bots.csv), права 700/600; при первом переносе счётчик берётся из Joomla.
 set -euo pipefail
 
 KEY="$HOME/.ssh/virazh_regru"
 HOST="u1605290@server178.hosting.reg.ru"
 SITE="www/virazh-tomsk.ru"          # от домашней папки /var/www/u1605290/data
-BUILD="C:/Users/anton/dev/virazh-site-build"
+BUILD="C:/Users/anton/dev/virazh-release"   # своя папка: virazh-site-build раздаёт предпросмотр дизайн-сессия
 ssh_() { ssh -i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=20 "$HOST" "$@"; }
 cd "$(dirname "$0")/.."
 
@@ -42,15 +45,38 @@ tar -xzf "deploy-upload/site-$ts.tar.gz" -C virazh-new
 src=""
 if [ -f "$SITE/configuration.php" ]; then src="$SITE"; else src=$(ls -d virazh-joomla-* 2>/dev/null | tail -1 || true); fi
 if [ -n "$src" ]; then
-  echo "Файлы старого сайта берутся из ~/$src"
-  mkdir -p virazh-new/images virazh-new/media
-  # -n: не перезаписывать файлы из репозитория; служебное Joomla не копируем
-  (cd "$src/images" && find . -type f ! -path './sampledata/*' ! -path './_spmedia_thumbs/*' \
-      ! -name 'joomla_black.png' ! -name 'powered_by.png' ! -path './index.html' -print0) \
-    | (cd "$src/images" && xargs -0 cp -n --parents -t ~/virazh-new/images)
-  for d in attachments videos; do
-    [ -d "$src/media/$d" ] && (cd "$src/media" && cp -rn "$d" ~/virazh-new/media/)
-  done
+  echo "Файлы старого сайта берутся из ~/$src — только картинки, PDF, документы и видео, с проверкой содержимого"
+  log="deploy-upload/skipped-$ts.txt"; : > "$log"; copied=0; skipped=0
+  safe_copy() {   # папка-источник и папка-цель (от ~); существующие в цели файлы (из репозитория) не перезаписываются
+    local from=$1 to=$2 f ext sig
+    [ -d "$from" ] || return 0
+    while IFS= read -r -d '' f; do
+      f=${f#./}
+      case "$f" in sampledata/*|_spmedia_thumbs/*|joomla_black.png|powered_by.png) continue ;; esac
+      ext=${f##*.}; ext=${ext,,}
+      sig=$(od -An -tx1 -N12 -- "$from/$f" | tr -d ' \n')
+      case "$ext" in
+        jpg|jpeg) [[ $sig == ffd8ff* ]] ;;
+        png) [[ $sig == 89504e47* ]] ;;
+        gif) [[ $sig == 47494638* ]] ;;
+        webp) [[ $sig == 52494646????????57454250* ]] ;;
+        pdf) [[ $sig == 25504446* ]] ;;
+        mp4|m4v|mov) [[ ${sig:8:8} == 66747970 ]] ;;
+        docx|xlsx|pptx) [[ $sig == 504b0304* ]] ;;
+        doc|xls|ppt) [[ $sig == d0cf11e0* ]] ;;
+        *) false ;;
+      esac || { echo "формат: $from/$f" >> "$log"; skipped=$((skipped + 1)); continue; }
+      if grep -qaE '<\?php|eval\(|base64_decode\(|gzinflate\(' -- "$from/$f"; then
+        echo "код внутри: $from/$f" >> "$log"; skipped=$((skipped + 1)); continue
+      fi
+      [ -e "$to/$f" ] && continue
+      mkdir -p "$to/$(dirname "$f")" && cp -p -- "$from/$f" "$to/$f" && copied=$((copied + 1))
+    done < <(cd "$from" && find . -type f -print0)
+  }
+  safe_copy "$src/images" virazh-new/images
+  safe_copy "$src/media/attachments" virazh-new/media/attachments
+  safe_copy "$src/media/videos" virazh-new/media/videos
+  echo "Файлов старого сайта скопировано: $copied, пропущено: $skipped (список — ~/$log)"
 else
   echo "ВНИМАНИЕ: папка старого сайта не найдена, /images и /media только из репозитория"
 fi
@@ -116,6 +142,12 @@ check() {
   expect /obuchenie/ 301 /obuchenie
   expect /send-form.php 405
   expect /counter.txt 404
+  # безопасность: скрытые файлы и любой PHP, кроме send-form.php, не отдаются и не исполняются
+  expect /.htaccess 403
+  for u in /images/probe.php /media/attachments/probe.phtml /images/probe.php.jpg; do
+    local c; c=$(curl -s -o /dev/null -A "$ua" -w '%{http_code}' --max-time 20 "$base$u"); n=$((n + 1))
+    [[ "$c" == 403 || "$c" == 404 ]] || { echo "ОШИБКА $u → $c (ожидалось 403 или 404)"; bad=$((bad + 1)); }
+  done
   expect /net-takoj-stranicy 404
   expect /images/2026/03/27/201.webp 200
   expect /media/videos/2023/11/22/img_4385.mp4 200

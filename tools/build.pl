@@ -496,8 +496,35 @@ AddDefaultCharset utf-8
 Options -Indexes -MultiViews
 DirectorySlash Off
 ErrorDocument 404 /404.html
+# Безопасность: на том же аккаунте хостинга лежат старые взломанные сайты. На этом сайте исполняется только send-form.php;
+# любой другой PHP-файл (и «x.php.jpg») не запускается и не отдаётся, даже если его подбросят в images/ или media/
+<FilesMatch "(?i)\.(?:php[0-9]?|phtml|pht|phar|phps|inc)(?:\.|$)">
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+# пропускаются только send-form.php (приём заявок) и index.php — его нет, но это адрес старого сайта: доступ проверяется
+# раньше переадресаций, и без этого /index.php и /index.php?… отдавали бы 403 вместо 301 на новые адреса
+<FilesMatch "^(?i:send-form|index)\.php$">
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Allow from all
+  </IfModule>
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
+</FilesMatch>
 
 RewriteEngine On
+# скрытые файлы (.htaccess, .user.ini, .git и т. п.) не отдаются, кроме /.well-known/
+RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F]
+# index.php и send-form.php разрешены только в корне: такие файлы в подпапках (подброшенные) — 403.
+# index.php в корне не исполняется никогда: любой запрос к нему переадресуют правила ниже
+RewriteRule ^.+/(?:index|send-form)\.php - [F,NC]
 # без www. С http на https переводит nginx хостинга; условие %{HTTPS} здесь не годится: Apache стоит за nginx,
 # всегда видит http и зациклил бы переадресацию
 RewriteCond %{HTTP_HOST} ^www\. [NC]
