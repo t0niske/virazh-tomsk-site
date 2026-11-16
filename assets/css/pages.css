@@ -1161,3 +1161,35 @@ address{font-style:normal}
   .pc-chips,.pc-price{grid-column:1}
 }
 @media (min-width:1440px){.pc-pic{grid-row:2 / span 3}.pc-name{grid-column:1}}   /* на широких: картинка рядом с названием, часами и ценой, часы в одну строку */
+/* Правки владельца 16.11 (телефон): */
+/* заголовок «Выберите категорию и начните обучение» — во всю ширину, ровно в 2 строки (размер от ширины экрана) */
+/* (размер — общий для всех H2, ниже) */
+/* цифры в плашках первого экрана крупнее; на телефоне плашки 2 + 1 на всех страницах, чтобы крупные цифры помещались */
+@media (max-width:559px){.lp-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-facts li:last-child{grid-column:1 / -1}.lp-facts b{font-size:clamp(17px,7vw,28px)}.lp-facts-words b{font-size:clamp(16px,5.4vw,24px)}}
+@media (min-width:560px){.lp-facts b{font-size:clamp(22px,3.6vw,30px)}.lp-facts-words b{font-size:clamp(20px,3.2vw,26px)}}   /* «Хромовка», «Площадка» — слова, а не цифры: чуть меньше, чтобы влезали */
+/* шаги: на телефоне цена, под ней подпись; на планшете и шире — в строку, если помещается */
+@media (max-width:639px){.sc-pay{flex-direction:column;align-items:flex-start;gap:6px}}
+/* Правки владельца 16.11, вторая партия (телефон) */
+/* все H2 одного размера: от 720 px — 44 px; на телефоне — от ширины экрана (393 px → 24 px), «Выберите категорию» в одну строку */
+main .h2,main h2.it,main .promo .it,main .pp-h,main .official .it{font-size:44px}
+@media (max-width:719px){main h2.h2,main h2.it,main .promo .it,main .pp-h,main .official .it{font-size:min(44px,calc((100vw - 64px) / 13.7))}}
+/* «24/7» не отдельной строкой: внутренний span (склейка при сборке) — строчный */
+.pm-steps span span{display:inline;padding-top:0}
+/* прайс и сравнение программ на телефоне: заголовок строки крупнее, больше воздуха между строками, подпись ближе к значению */
+@media (max-width:799px){.price-list tr{padding:18px 12px;row-gap:6px}.price-list tbody th{font:800 17px/1.25 var(--font);color:var(--head)}.price-list td{font-size:14.5px;line-height:1.5}.price-list td:last-child{font-size:20px}
+  .pl-cmp tr{row-gap:12px}.pl-cmp tbody th{font-size:18px}.pl-cmp td::before{margin-bottom:3px}.pl-cmp td:last-child{font-size:15px}}
+/* карточки с плашкой: плашка → заголовок 18 px, заголовок → текст 10 px (заголовок ближе к своему тексту) */
+.lp-card > .lp-xh{margin:0 0 -4px}.lp-card > .lp-pill + .lp-xh{margin-top:4px}
+/* «Об автошколе»: заголовок во всю ширину на телефоне */
+@media (max-width:719px){.h1.h1-fit{font-size:min(48px,calc((100vw - 32px) / 8.43));max-width:none}}
+/* офисы: телефон крупно, цветом заголовка; часы сразу под ним */
+.office .of-tel{justify-self:start;font:800 19px/1.2 var(--font);color:var(--head);text-decoration:none}
+.office .of-tel + .hours{margin-top:-8px}
+/* автодром: текст плиток 15 px; в широкой плитке на телефоне картинка крупнее */
+.avd-dr b{font-size:15px}
+@media (max-width:719px){.avd-dr li:last-child:nth-child(odd) img{height:150px;max-width:300px}}
+@media (max-width:379px){.avd-dr b{font-size:13.5px}}
+/* инструкторы: марка машины и стаж крупнее */
+.ins dt{font-size:12.5px}.ins dd{font:800 16px/1.2 var(--font)}.ins dl div{padding:10px 12px}
+.om-c b{font-size:18px;color:var(--head)}   /* телефон офиса на карте — заметно, цветом заголовка (как в карточках офисов) */
+main .lq1-head h1.h2{font-size:44px}@media (max-width:719px){main .lq1-head h1.h2{font-size:clamp(20px,6.5vw,32px)}}   /* это H1 «Курсы для транспортных компаний» с классом h2 — свой размер, как было (общий размер H2 его не трогает) */

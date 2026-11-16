@@ -103,7 +103,7 @@ sub office_item {
   my ($ll) = $art =~ /data-ll="([^"]+)"/;
   my ($t) = $art =~ m{<b>(.*?)</b>}s;
   my ($d) = $art =~ m{</b>(?:</address>)?<p>([^<]+)</p>};
-  my ($num) = $art =~ m{<p class="num"[^>]*>([^<]+)</p>};
+  my ($num) = $art =~ m{<(?:p|a) class="(?:of-tel )?num"[^>]*>([^<]+)</(?:p|a)>};   # телефон офиса: <a class="of-tel num"> (с 16.11) или старый <p class="num">
   my ($h) = $art =~ m{<p class="hours">([^<]+)</p>};
   my ($acts) = $art =~ m{(<div class="acts">.*?</div>)}s;
   my $n = $i + 1;
