@@ -507,9 +507,10 @@ ErrorDocument 404 /404.html
     Require all denied
   </IfModule>
 </FilesMatch>
-# пропускаются только send-form.php (приём заявок) и index.php — его нет, но это адрес старого сайта: доступ проверяется
-# раньше переадресаций, и без этого /index.php и /index.php?… отдавали бы 403 вместо 301 на новые адреса
-<FilesMatch "^(?i:send-form|index)\.php$">
+# пропускаются только crm.php (вход в систему заявок, код — вне сайта в ~/virazh-crm), send-form.php (старый адрес приёма
+# заявок, передаёт в crm.php) и index.php — его нет, но это адрес старого сайта: доступ проверяется раньше переадресаций,
+# и без этого /index.php и /index.php?… отдавали бы 403 вместо 301 на новые адреса
+<FilesMatch "^(?i:crm|send-form|index)\.php$">
   <IfModule !mod_authz_core.c>
     Order deny,allow
     Allow from all
@@ -522,9 +523,11 @@ ErrorDocument 404 /404.html
 RewriteEngine On
 # скрытые файлы (.htaccess, .user.ini, .git и т. п.) не отдаются, кроме /.well-known/
 RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F]
-# index.php и send-form.php разрешены только в корне: такие файлы в подпапках (подброшенные) — 403.
+# crm.php, send-form.php и index.php разрешены только в корне: такие файлы в подпапках (подброшенные) — 403.
 # index.php в корне не исполняется никогда: любой запрос к нему переадресуют правила ниже
-RewriteRule ^.+/(?:index|send-form)\.php - [F,NC]
+RewriteRule ^.+/(?:crm|index|send-form)\.php - [F,NC]
+# система заявок: админка /crm и /crm/…, приём заявок /api/lead, счётчик /api/visit, вебхук MAX — в crm.php
+RewriteRule ^(?:crm(?:/.*)?|api/(?:lead|visit)|max/webhook)$ /crm.php [L]
 # без www. С http на https переводит nginx хостинга; условие %{HTTPS} здесь не годится: Apache стоит за nginx,
 # всегда видит http и зациклил бы переадресацию
 RewriteCond %{HTTP_HOST} ^www\. [NC]

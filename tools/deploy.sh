@@ -12,13 +12,19 @@
 # чтобы старые адреса файлов продолжили работать. Старая Joomla взломана (веб-шеллы в media/, подброшенные .txt/.html
 # в images/), поэтому копируется только белый список форматов с проверкой сигнатуры и без PHP-кода внутри; остальное —
 # в список пропущенных ~/deploy-upload/skipped-*.txt. Файлы из репозитория при совпадении путей главнее.
-# Заявки: ~/virazh-leads (counter.txt, leads.csv, bots.csv), права 700/600; при первом переносе счётчик берётся из Joomla.
+# Заявки принимает система заявок (CRM, папка crm/ репозитория): её код лежит вне сайта, в ~/virazh-crm, сайт
+# заходит в неё через crm.php. stage кладёт новый код в ~/virazh-crm-new и прогоняет на сервере её тесты; switch
+# переносит в него .env и storage/ (база, логи, копии) прежней версии, при первом разе создаёт .env (номера заявок
+# продолжают counter.txt Joomla), применяет миграции и ДОБАВЛЯЕТ в crontab две строки (прежние строки не трогаются,
+# копия crontab — ~/deploy-upload/crontab-*.bak). Первого руководителя админки создаёт владелец сам, своим паролем:
+#   ssh … '/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя"'
 set -euo pipefail
 
 KEY="$HOME/.ssh/virazh_regru"
 HOST="u1605290@server178.hosting.reg.ru"
 SITE="www/virazh-tomsk.ru"          # от домашней папки /var/www/u1605290/data
 BUILD="C:/Users/anton/dev/virazh-release"   # своя папка: virazh-site-build раздаёт предпросмотр дизайн-сессия
+PHP="/opt/php/8.3/bin/php"          # PHP командной строки на сервере (сайт тоже на 8.3: этого требует Joomla 6)
 ssh_() { ssh -i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=20 "$HOST" "$@"; }
 cd "$(dirname "$0")/.."
 
@@ -29,16 +35,30 @@ stage() {
   rm -f "$BUILD"/_*.html
   grep -q '^Disallow: /$' "$BUILD/robots.txt" && { echo "robots.txt закрывает сайт — это сборка предпросмотра"; exit 1; }
   grep -l 'content="noindex, nofollow"' "$BUILD/index.html" >/dev/null && { echo "главная закрыта от индексации"; exit 1; }
-  [ -f "$BUILD/send-form.php" ] && [ -f "$BUILD/.htaccess" ] || { echo "в сборке нет send-form.php или .htaccess"; exit 1; }
+  [ -f "$BUILD/send-form.php" ] && [ -f "$BUILD/crm.php" ] && [ -f "$BUILD/.htaccess" ] || { echo "в сборке нет send-form.php, crm.php или .htaccess"; exit 1; }
+  [ -f crm/app/bootstrap.php ] && [ -f crm/.env.example ] || { echo "нет папки crm/ (система заявок)"; exit 1; }
   local ts; ts=$(date +%Y%m%d-%H%M)
-  local tgz; tgz="$(mktemp -d)/site-$ts.tar.gz"
+  local tmp; tmp="$(mktemp -d)"
+  local tgz="$tmp/site-$ts.tar.gz" ctgz="$tmp/crm-$ts.tar.gz"
   tar -czf "$tgz" -C "$BUILD" .
-  echo "Архив: $(du -h "$tgz" | cut -f1)"
+  # система заявок: только код — без локальных .env и storage/ (база, логи)
+  tar -czf "$ctgz" -C crm --exclude=./.env --exclude='./storage/*' --exclude='*.sqlite*' .
+  tar -tzf "$ctgz" | grep -qE '(^|/)\.env$|\.sqlite' && { echo "в архив CRM попал .env или база"; exit 1; }
+  echo "Архивы: сайт $(du -h "$tgz" | cut -f1), система заявок $(du -h "$ctgz" | cut -f1)"
   ssh_ 'mkdir -p ~/deploy-upload && chmod 700 ~/deploy-upload'
-  scp -q -i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes "$tgz" "$HOST:deploy-upload/"
-  ssh_ bash -s "$ts" "$SITE" <<'REMOTE'
+  scp -q -i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes "$tgz" "$ctgz" "$HOST:deploy-upload/"
+  ssh_ bash -s "$ts" "$SITE" "$PHP" <<'REMOTE'
 set -euo pipefail
-ts=$1; SITE=$2; cd ~
+ts=$1; SITE=$2; PHP=$3; cd ~
+# система заявок: новый код рядом с рабочим, проверка тестами (своя временная база, без писем и запросов наружу)
+rm -rf virazh-crm-new && mkdir virazh-crm-new
+tar -xzf "deploy-upload/crm-$ts.tar.gz" -C virazh-crm-new
+find virazh-crm-new -type d -exec chmod 755 {} + ; find virazh-crm-new -type f -exec chmod 644 {} +
+rm -f "deploy-upload/crm-$ts.tar.gz"
+if ! out=$("$PHP" virazh-crm-new/tests/leads/run.php 2>&1); then
+  printf '%s\n' "$out" | tail -20; echo "Тесты системы заявок не прошли на сервере — выкладка остановлена"; exit 1
+fi
+echo "Система заявок: ~/virazh-crm-new, тесты на сервере — $(printf '%s\n' "$out" | tail -1)"
 rm -rf virazh-new && mkdir virazh-new
 tar -xzf "deploy-upload/site-$ts.tar.gz" -C virazh-new
 # откуда брать файлы старого сайта: из рабочей папки, пока там Joomla, иначе из резервной копии Joomla
@@ -87,20 +107,69 @@ REMOTE
 }
 
 switch_() {
-  ssh_ bash -s "$SITE" <<'REMOTE'
+  ssh_ bash -s "$SITE" "$PHP" <<'REMOTE'
 set -euo pipefail
-SITE=$1; cd ~
-[ -f virazh-new/index.html ] && [ -f virazh-new/.htaccess ] && [ -f virazh-new/send-form.php ] || { echo "~/virazh-new не готова — сначала stage"; exit 1; }
+SITE=$1; PHP=$2; cd ~
+[ -f virazh-new/index.html ] && [ -f virazh-new/.htaccess ] && [ -f virazh-new/crm.php ] || { echo "~/virazh-new не готова — сначала stage"; exit 1; }
+[ -f virazh-crm-new/app/bootstrap.php ] || [ -f virazh-crm/app/bootstrap.php ] || { echo "~/virazh-crm-new не готова — сначала stage"; exit 1; }
 if [ -f "$SITE/configuration.php" ]; then bak="virazh-joomla-$(date +%Y%m%d)"; else bak="virazh-prev-$(date +%Y%m%d-%H%M)"; fi
 [ -e "$bak" ] && bak="$bak-$(date +%H%M%S)"
-# хранилище заявок; при первом переносе счётчик продолжает Joomla-овский counter.txt
-mkdir -p virazh-leads && chmod 700 virazh-leads
-if [ ! -f virazh-leads/counter.txt ] && [ -f "$SITE/counter.txt" ]; then
-  cp "$SITE/counter.txt" virazh-leads/counter.txt && chmod 600 virazh-leads/counter.txt
-  echo "Счётчик заявок: $(cat virazh-leads/counter.txt)"
+counter() { local c; c=$(tr -dc '0-9' < "$1" 2>/dev/null || true); echo "${c:-0}"; }
+
+# 1. система заявок: новый код получает .env и storage/ прежней версии (база не копируется — папка переезжает целиком)
+if [ -d virazh-crm-new ]; then
+  if [ -d virazh-crm ]; then
+    [ -f virazh-crm/.env ] && mv virazh-crm/.env virazh-crm-new/.env
+    if [ -d virazh-crm/storage ]; then rm -rf virazh-crm-new/storage && mv virazh-crm/storage virazh-crm-new/storage; fi
+    crmprev="virazh-crm-prev-$(date +%Y%m%d-%H%M%S)"
+    mv virazh-crm "$crmprev" && echo "Прежний код системы заявок: ~/$crmprev"
+  fi
+  mv virazh-crm-new virazh-crm
 fi
+mkdir -p virazh-crm/storage && chmod 700 virazh-crm/storage
+c0=0
+if [ ! -f virazh-crm/.env ]; then
+  # первый раз: боевые настройки; номера заявок продолжают counter.txt Joomla (если она ещё на месте)
+  [ -f "$SITE/counter.txt" ] && c0=$(counter "$SITE/counter.txt")
+  secret=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
+  sed -e 's|^APP_ENV=.*|APP_ENV=production|' -e 's|^APP_URL=.*|APP_URL=https://virazh-tomsk.ru|' \
+      -e "s|^LEADS_SECRET=.*|LEADS_SECRET=$secret|" -e "s|^LEADS_FIRST_ID=.*|LEADS_FIRST_ID=$((c0 + 1))|" \
+      -e 's|^MAIL_DRIVER=.*|MAIL_DRIVER=mail|' virazh-crm/.env.example > virazh-crm/.env
+  chmod 600 virazh-crm/.env
+  echo "Создан ~/virazh-crm/.env: письма на $(grep '^MAIL_TO=' virazh-crm/.env | cut -d= -f2), первая заявка — №$((c0 + 1))"
+fi
+"$PHP" virazh-crm/database/migrate.php
+chmod 600 virazh-crm/storage/*.sqlite 2>/dev/null || true
+
+# 2. сайт
 mv "$SITE" "$bak" && mv virazh-new "$SITE"
 echo "Сайт подменён. Предыдущая версия: ~/$bak"
+# пока шла подмена, старый сайт мог принять ещё заявку — тогда сдвигаем первый номер (если в новой базе заявок ещё нет)
+if [ "$c0" -gt 0 ] && [ -f "$bak/counter.txt" ]; then
+  c1=$(counter "$bak/counter.txt")
+  if [ "$c1" -gt "$c0" ]; then sed -i "s|^LEADS_FIRST_ID=.*|LEADS_FIRST_ID=$((c1 + 1))|" virazh-crm/.env; echo "Первая заявка — №$((c1 + 1))"; fi
+fi
+
+# 3. расписание: только ДОБАВИТЬ две строки, если их ещё нет; прежние строки (задания «Сто дорог») остаются как есть
+run="$PHP $HOME/virazh-crm/cron/run.php >/dev/null 2>&1"
+backup="$PHP $HOME/virazh-crm/cron/backup.php >/dev/null 2>&1"
+if crontab -l 2>/dev/null | grep -qF "$HOME/virazh-crm/cron/run.php"; then
+  echo "Расписание системы заявок уже есть в crontab"
+elif cur=$(crontab -l 2>/dev/null) && [ -n "$cur" ]; then
+  printf '%s\n' "$cur" > "deploy-upload/crontab-$(date +%Y%m%d-%H%M%S).bak"
+  n0=$(printf '%s\n' "$cur" | wc -l)
+  { printf '%s\n' "$cur"
+    echo "# Авто-Вираж: система заявок (раз в минуту), копия базы (03:40) — $(date +%d.%m.%Y)"
+    echo "* * * * * $run"
+    echo "40 3 * * * $backup"; } | crontab -
+  n1=$(crontab -l | wc -l)
+  [ "$n1" -eq $((n0 + 3)) ] && echo "В crontab добавлены 2 строки (было $n0, стало $n1)" \
+    || echo "ВНИМАНИЕ: в crontab было $n0 строк, стало $n1 — сверить с копией ~/deploy-upload/crontab-*.bak"
+else
+  echo "crontab не прочитан — строки добавить вручную (crontab -e):"; echo "* * * * * $run"; echo "40 3 * * * $backup"
+fi
+grep -q . <(find virazh-crm/storage -name '*.sqlite' 2>/dev/null) || echo "ВНИМАНИЕ: база системы заявок не найдена"
+"$PHP" -r 'require getenv("HOME")."/virazh-crm/app/bootstrap.php"; echo "Сотрудников в админке: ".App\Support\Db::pdo()->query("SELECT COUNT(*) FROM staff")->fetchColumn()."\n";' 2>/dev/null || true
 echo "Откат: bash tools/deploy.sh rollback"
 REMOTE
 }
@@ -114,6 +183,10 @@ bak=$(ls -td virazh-prev-* virazh-joomla-* 2>/dev/null | head -1 || true)
 failed="virazh-failed-$(date +%Y%m%d-%H%M%S)"
 mv "$SITE" "$failed" && mv "$bak" "$SITE"
 echo "Возвращена ~/$bak. Снятая версия лежит в ~/$failed"
+# система заявок (~/virazh-crm с базой) не откатывается: старая Joomla её не использует, база заявок сохраняется
+p=$(ls -td virazh-crm-prev-* 2>/dev/null | head -1 || true)
+[ -n "$p" ] && echo "Код системы заявок не менялся; прежняя версия кода — ~/$p (без .env и базы)"
+true
 REMOTE
 }
 
@@ -140,9 +213,15 @@ check() {
   expect /index.php/component/jce 410
   expect /kontakty/tomsk 301 /kontakty
   expect /obuchenie/ 301 /obuchenie
+  # система заявок: приём только POST, админка просит войти, сам crm.php напрямую ничего не открывает
   expect /send-form.php 405
+  expect /api/lead 405
+  expect /api/visit 204
+  expect /crm 303 /crm/login
+  expect /crm/login 200
+  expect /crm.php 404
   expect /counter.txt 404
-  # безопасность: скрытые файлы и любой PHP, кроме send-form.php, не отдаются и не исполняются
+  # безопасность: скрытые файлы и любой PHP, кроме crm.php и send-form.php, не отдаются и не исполняются
   expect /.htaccess 403
   for u in /images/probe.php /media/attachments/probe.phtml /images/probe.php.jpg; do
     local c; c=$(curl -s -o /dev/null -A "$ua" -w '%{http_code}' --max-time 20 "$base$u"); n=$((n + 1))
@@ -167,5 +246,5 @@ case "${1:-}" in
   switch) switch_ ;;
   rollback) rollback ;;
   check) check "${2:-}" ;;
-  *) sed -n '2,15p' "$0"; exit 1 ;;
+  *) sed -n '2,21p' "$0"; exit 1 ;;
 esac

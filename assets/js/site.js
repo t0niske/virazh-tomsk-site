@@ -115,7 +115,7 @@
   });
 
   // программа страницы: на этих страницах окно записи и нижняя форма сразу выбирают её,
-  // даже если у кнопки нет data-signup="…" (значения — как в списке s-cat и в CATS файла root/send-form.php)
+  // даже если у кнопки нет data-signup="…" (значения — как в списке s-cat и в CAT_LABEL ниже)
   const PAGE_CAT = { 'vosstanovlenie-navykov-vozhdeniya': 'vn', 'gostekhnadzor-kategoriya-ai': 'ai', 'perepodgotovka-i-povyshenie-kvalifikatsii': 'pro', novosibirsk: 'nsk' };
   const pageCat = PAGE_CAT[location.pathname.replace(/(\/index\.html|\.html)?\/?$/, '').split('/').pop()] || '';
   // в Новосибирске томские цены в списке окна записи не показываем: стоимость там уточняют по телефону
@@ -195,11 +195,14 @@
     return 'Перезвоним ' + (n === 1 ? 'завтра' : n < 7 ? DAY_ACC[d.getUTCDay()] : d.getUTCDate() + ' ' + MON[d.getUTCMonth()]) + ' после 9:00';
   };
 
-  // формы заявки: проверяем номер и согласие, отправляем на /send-form.php (обработчик на сервере школы — root/send-form.php:
-  // письмо на почту и копия в файл). На предпросмотре (GitHub Pages) PHP нет — заявка не уходит, об этом пишем в подтверждении.
-  // Цель Метрики «lead» ставит assets/js/stats.js по событию lead:sent.
+  // формы заявки: проверяем номер и согласие, отправляем в систему заявок /api/lead (CRM: crm/, на хостинге ~/virazh-crm —
+  // база заявок, письмо на почту, админка /crm). На предпросмотре (GitHub Pages) PHP нет — заявка не уходит, об этом пишем.
+  // Цель Метрики «lead» ставит assets/js/stats.js по событию lead:sent (на странице «Спасибо»).
   const leadLive = /(^|\.)virazh-tomsk\.ru$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  const pageStart = Date.now();
+  // «Что интересует» в заявке — подписи для CRM (как в списке окна записи; значения — PAGE_CAT, s-cat, кнопки категорий)
+  const CAT_LABEL = { bA: 'Категория B на автомате', bM: 'Категория B на механике', a: 'Категория A (мотоцикл)',
+    ai: 'Категория AI (квадроцикл, снегоход)', vn: 'Восстановление навыков вождения', pro: 'Курсы для транспортных компаний',
+    nsk: 'Обучение в Новосибирске', x: 'Пока не решил(а)' };
 
   // страница «Спасибо»: «Перезвоним … на номер …», ссылка «Исправить», пометка предпросмотра, цель Метрики «lead»
   // (событие — после загрузки всех скриптов: stats.js подключается после site.js)
@@ -261,27 +264,36 @@
         document.dispatchEvent(new CustomEvent('lead:sent', { detail: { form: form.id } }));
       };
       if (!leadLive) { done(); return; }
+      // заявка — в систему заявок (CRM, crm/docs/lead-api.md): что интересует + тема кнопки, страница, метки рекламы,
+      // связь с заходом (assets/js/visits.js); согласие проверено выше
       const name = form.querySelector('input[autocomplete="given-name"]');
       const sel = form.querySelector('select');
       const chip = form.querySelector('.chip[aria-pressed="true"]');
+      const cat = form.dataset.cat || (sel ? sel.value : chip ? chip.dataset.c : '');   // data-cat — программа страницы
+      const service = [CAT_LABEL[cat] || '', form.dataset.topic || ''].filter(Boolean).join(' — ');   // тема кнопки окна записи
+      const vz = window.VZvisits || {};
       const data = new FormData();
       data.append('phone', phone.value);
       if (name && name.value.trim()) data.append('name', name.value.trim());
-      data.append('cat', form.dataset.cat || (sel ? sel.value : chip ? chip.dataset.c : ''));   // data-cat — программа страницы, кнопки категорий скрыты
-      if (form.dataset.topic) data.append('topic', form.dataset.topic);   // тема кнопки, которой открыли окно записи
-      data.append('form', form.id);
-      data.append('page', location.href);
-      data.append('t', String(Date.now() - pageStart));
+      data.append('consent', '1');
+      if (service) data.append('service', service.slice(0, 150));
+      data.append('page_url', location.href);
+      Object.keys(vz.utm || {}).forEach(k => data.append(k, vz.utm[k]));
+      if (vz.vid) { data.append('visitor_id', vz.vid); data.append('visit_id', vz.sid); }
       data.append('website', trap.querySelector('input').value);
       const label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Отправляем…';
       let error = 'net';
       try {
-        const r = await fetch('/send-form.php', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const r = await fetch(BASE + '/api/lead', { method: 'POST', body: data, headers: { Accept: 'application/json' } });
         const j = await r.json().catch(() => ({}));
-        if (r.ok && j.ok) { done(); return; }
-        error = j.error || 'net';
-      } catch (err) { /* нет связи */ }
+        if (r.ok && j.success) {
+          if (vz.event) { vz.event('lead', String(j.lead_id || '')); vz.flush(); }
+          done(); return;
+        }
+        error = r.status === 429 ? 'rate' : j.errors && j.errors.phone ? 'phone' : 'net';
+        if (vz.event) vz.event('form_error', String(r.status));
+      } catch (err) { if (vz.event) vz.event('form_error', 'network'); /* нет связи */ }
       btn.disabled = false; btn.textContent = label;
       if (error === 'phone') { phone.closest('.field').classList.add('bad'); phone.focus(); return; }
       // не отправилось — даём номер телефона (на странице города — его номер из шапки)
