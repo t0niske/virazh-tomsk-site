@@ -174,7 +174,43 @@ final class Visits
         $stmt = $pdo->prepare("SELECT * FROM visits WHERE $where ORDER BY started_at DESC, id DESC LIMIT $perPage OFFSET " . (($page - 1) * $perPage));
         $stmt->execute($params);
 
-        return ['rows' => $stmt->fetchAll(), 'total' => (int) $count->fetchColumn()];
+        return ['rows' => self::withMessengers($stmt->fetchAll()), 'total' => (int) $count->fetchColumn()];
+    }
+
+    /**
+     * Отметки «перешёл во ВКонтакте» и «перешёл в MAX» для строк списка: события vk / max счётчика
+     * и уход на vk.com, vk.ru, max.ru по обычной ссылке (out). Одним запросом на страницу списка.
+     *
+     * @param list<array> $rows
+     * @return list<array> те же строки с went_vk и went_max (bool)
+     */
+    public static function withMessengers(array $rows): array
+    {
+        if ($rows === []) {
+            return $rows;
+        }
+
+        $ids = array_map(static fn (array $r): int => (int) $r['id'], $rows);
+        $stmt = Db::pdo()->prepare(
+            'SELECT visit_id, name, data FROM visit_events WHERE visit_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ")
+               AND (name IN ('vk', 'max') OR (name = 'out' AND (data LIKE '%vk.com%' OR data LIKE '%vk.ru%' OR data LIKE '%max.ru%')))"
+        );
+        $stmt->execute($ids);
+        $went = [];
+
+        foreach ($stmt->fetchAll() as $e) {
+            $data = strtolower((string) $e['data']);
+            $where = $e['name'] === 'out' ? (str_contains($data, 'max.ru') ? 'max' : 'vk') : $e['name'];
+            $went[(int) $e['visit_id']][$where] = true;
+        }
+
+        foreach ($rows as &$r) {
+            $r['went_vk'] = isset($went[(int) $r['id']]['vk']);
+            $r['went_max'] = isset($went[(int) $r['id']]['max']);
+        }
+        unset($r);
+
+        return $rows;
     }
 
     /**

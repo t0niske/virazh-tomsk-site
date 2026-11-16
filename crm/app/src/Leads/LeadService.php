@@ -60,7 +60,9 @@ final class LeadService
                 'search' => Leads::searchString($data['name'], $data['phone'], $data['service']),
             ]);
             $lead = Leads::find($id);
-            Leads::event($id, 'created', self::describeRequest($data), Actor::client($data['name']), self::requestData($data));
+            Leads::event($id, 'created', self::describeRequest($data)
+                . (($data['suspect'] ?? null) !== null ? ' Похоже на робота: ' . $data['suspect'] . (Sms::enabled() ? ' — SMS не отправлено.' : '.') : ''),
+                Actor::client($data['name']), self::requestData($data));
             $created = true;
             $reopened = true;
         } else {
@@ -81,12 +83,14 @@ final class LeadService
             }
 
             $lead = Leads::update((int) $existing['id'], $fields);
-            Leads::event((int) $lead['id'], 'repeat', self::describeRequest($data) . ($reopened ? ' Заявка снова открыта.' : ''),
+            Leads::event((int) $lead['id'], 'repeat', self::describeRequest($data) . ($reopened ? ' Заявка снова открыта.' : '')
+                . (($data['suspect'] ?? null) !== null ? ' Похоже на робота: ' . $data['suspect'] . '.' : ''),
                 Actor::client($data['name']), self::requestData($data));
             $created = false;
         }
 
-        if ($sendSms) {
+        // Заявка «похоже на робота» (форма без скриптов): SMS не шлём — робот-«бомбер» подставляет чужие номера.
+        if ($sendSms && ($data['suspect'] ?? null) === null) {
             self::sendAcceptedSms($lead, $schedule, $callAt, $now);
         }
 
@@ -142,7 +146,7 @@ final class LeadService
         $now = Clock::now();
         $schedule = Schedule::fromSettings();
         $misses = (int) $lead['attempt'] + 1;
-        $plan = $schedule->afterMiss($misses, $now, new DateTimeImmutable($lead['created_at']));
+        $plan = $schedule->afterMiss($now);
 
         $lead = Leads::update((int) $lead['id'], [
             'status' => Status::NO_ANSWER,
@@ -156,12 +160,14 @@ final class LeadService
         ]);
 
         // В историю — точная дата: «сегодня» через неделю читалось бы неверно.
-        $next = ($plan['action'] === 'call' ? 'Следующий звонок ' : 'Попытки закончились, последнее сообщение клиенту ')
-            . $plan['at']->format('d.m в H:i') . '.';
-        Leads::event((int) $lead['id'], 'call_miss', "Не дозвонились ($misses из {$schedule->maxAttempts}). $next", $actor,
+        $next = $plan['action'] === 'call'
+            ? 'Следующий звонок ' . $plan['at']->format('d.m в H:i') . '.'
+            : 'Попытки закончились, клиенту отправлено сообщение «не дозвонились». Если не перезвонит — «Не дозвонились» '
+                . $plan['at']->format('d.m в H:i') . '.';
+        Leads::event((int) $lead['id'], 'call_miss', "Не дозвонились (звонок $misses). $next", $actor,
             ['attempt' => $misses, 'next_action_at' => Clock::sql($plan['at'])]);
 
-        if ($misses === 1) {
+        if ($plan['action'] === 'give_up') {
             self::sendMissedMessage($lead);
         }
 
@@ -170,8 +176,13 @@ final class LeadService
         return $lead;
     }
 
-    /** Смена статуса: записан, отказ, думает, переписка, мусор, снова новая. */
-    public static function setStatus(array $lead, string $status, Actor $actor, ?string $reason = null): array
+    /**
+     * Смена статуса: записан, отказ, думает, придёт на договор, переписка, мусор, снова новая.
+     *
+     * @param ?string $reason причина отказа (для «Отказ»)
+     * @param ?string $note когда ждать клиента (для «Придёт на договор»)
+     */
+    public static function setStatus(array $lead, string $status, Actor $actor, ?string $reason = null, ?string $note = null): array
     {
         if (!isset(Status::LABELS[$status])) {
             throw new \InvalidArgumentException("Неизвестный статус $status");
@@ -206,9 +217,16 @@ final class LeadService
         }
 
         $fields['refusal_reason'] = $status === Status::REFUSED ? ($reason !== null && $reason !== '' ? mb_substr($reason, 0, 150) : 'Не указана') : null;
+        $note = $note !== null ? trim($note) : '';
+        $fields['contract_note'] = $status === Status::CONTRACT && $note !== '' ? mb_substr($note, 0, 200) : null;
 
         $lead = Leads::update((int) $lead['id'], $fields);
-        Leads::event((int) $lead['id'], 'status', Status::label($status) . ($status === Status::REFUSED ? ': ' . $lead['refusal_reason'] : ''), $actor,
+        $detail = match (true) {
+            $status === Status::REFUSED => ': ' . $lead['refusal_reason'],
+            $status === Status::CONTRACT && $lead['contract_note'] !== null => ': ' . $lead['contract_note'],
+            default => '',
+        };
+        Leads::event((int) $lead['id'], 'status', Status::label($status) . $detail, $actor,
             ['status' => $status]);
         AdminChat::refresh($lead);
 

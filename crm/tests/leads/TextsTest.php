@@ -135,6 +135,25 @@ test('Режим Пн–Пт 9:00–18:00: тексты, первый звоно
     eq('в ближайшее рабочее время', $s->promise($tue, $s->firstCallAt($tue, 'now'), 'now'));
 });
 
+test('Офис с 9:00, но ночные заявки — с 10:00: к 9 часам люди ещё не на связи', function (): void {
+    $s = new Schedule([1, 2, 3, 4, 5], '09:00', '18:00', slots: ['morning' => '10:00', 'day' => '13:00', 'evening' => '17:00']);
+
+    eq('2026-11-11 10:00', $s->firstCallAt(new DateTimeImmutable('2026-11-10 23:42'), 'now')->format('Y-m-d H:i'), 'ночная заявка — на 10:00');
+    eq('2026-11-10 10:00', $s->firstCallAt(new DateTimeImmutable('2026-11-10 07:15'), 'now')->format('Y-m-d H:i'), 'до открытия — на 10:00');
+    eq('2026-11-16 10:00', $s->firstCallAt(new DateTimeImmutable('2026-11-14 11:00'), 'now')->format('Y-m-d H:i'), 'выходные — понедельник 10:00');
+    eq('2026-11-10 09:20', $s->firstCallAt(new DateTimeImmutable('2026-11-10 09:20'), 'now')->format('Y-m-d H:i'), 'заявка в 9:20 — человек на связи, звоним сразу');
+    eq('завтра после 10:00', $s->describe(new DateTimeImmutable('2026-11-11 10:00'), new DateTimeImmutable('2026-11-10 23:42')));
+
+    putenv('WORK_HOURS=09:00-18:00');
+    try {
+        Settings::reset();
+        eq('10:00', Settings::get('slot_morning'), '«Утром» по умолчанию с 10:00, даже если офис с 9:00');
+    } finally {
+        putenv('WORK_HOURS=10:00-18:00');
+        Settings::reset();
+    }
+});
+
 test('Кнопка «Адреса классов» показывает режим работы из настроек', function (): void {
     putenv('WORK_DAYS=1-5');
     putenv('WORK_HOURS=09:00-18:00');

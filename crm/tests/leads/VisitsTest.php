@@ -322,3 +322,18 @@ test('Заходы: график собирается в HTML, подсказк�
     ok(str_contains($html, 'Поиск Google<b>1</b>'), 'в подсказке — число по источнику');
     ok(str_contains($html, '<th>Итого</th>'), 'строка «Итого»');
 });
+
+test('Заходы: в списке видно, кто перешёл во ВКонтакте и в MAX', function (): void {
+    Clock::set('2026-11-16 12:00:00');
+    beacon(view('page000000V1', '/', [], 'sessionVKVKVKVKVKVKVKVK', 'visitorVKVKVKVKVKVKVKVK'));
+    beacon(['t' => 'event', 'vid' => 'visitorVKVKVKVKVKVKVKVK', 'sid' => 'sessionVKVKVKVKVKVKVKVK', 'pid' => 'page000000V1', 'name' => 'vk', 'data' => 'https://vk.com/stodorog']);
+    beacon(view('page000000X1', '/', [], 'sessionMAXMAXMAXMAXMAXM', 'visitorMAXMAXMAXMAXMAXM'));
+    beacon(['t' => 'event', 'vid' => 'visitorMAXMAXMAXMAXMAXM', 'sid' => 'sessionMAXMAXMAXMAXMAXM', 'pid' => 'page000000X1', 'name' => 'out', 'data' => 'https://max.ru/stodorog_bot']);
+    beacon(view('page000000N1', '/', [], 'sessionNONENONENONENONE', 'visitorNONENONENONENONE'));
+    beacon(['t' => 'event', 'vid' => 'visitorNONENONENONENONE', 'sid' => 'sessionNONENONENONENONE', 'pid' => 'page000000N1', 'name' => 'out', 'data' => 'https://2gis.ru/tomsk']);
+
+    $rows = array_column(Visits::search(['kind' => 'all'], 1)['rows'], null, 'sid');
+    eq([true, false], [$rows['sessionVKVKVKVKVKVKVKVK']['went_vk'], $rows['sessionVKVKVKVKVKVKVKVK']['went_max']], 'кнопка ВК');
+    eq([false, true], [$rows['sessionMAXMAXMAXMAXMAXM']['went_vk'], $rows['sessionMAXMAXMAXMAXMAXM']['went_max']], 'ссылка на max.ru');
+    eq([false, false], [$rows['sessionNONENONENONENONE']['went_vk'], $rows['sessionNONENONENONENONE']['went_max']], 'другой сайт — без отметок');
+});

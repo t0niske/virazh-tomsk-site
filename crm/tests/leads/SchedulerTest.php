@@ -9,6 +9,7 @@ use App\Leads\LeadService;
 use App\Leads\Report;
 use App\Leads\Scheduler;
 use App\Leads\Status;
+use App\Max\AdminChat;
 use App\Support\Db;
 
 test('Планировщик: утренняя очередь в 10:00 по ночным заявкам', function (): void {
@@ -31,6 +32,27 @@ test('Планировщик: утренняя очередь в 10:00 по но
 
     Clock::set('2026-11-09 10:01');
     eq([], Scheduler::run(), 'очередь не повторяется');
+});
+
+test('Планировщик: офис с 9:00 — ночная заявка и утренняя очередь в 10:00', function (): void {
+    putenv('WORK_HOURS=09:00-18:00');
+    try {
+        App\Leads\Settings::reset();
+        Clock::set('2026-11-09 23:42');
+        $lead = Tests::lead();
+        eq('2026-11-10 10:00:00', $lead['due_at'], 'ночная заявка — на 10:00, не на 9:00');
+
+        App\Leads\Settings::set('cron.weekly', '2026-46');
+        App\Leads\Settings::set('cron.daily', '2026-11-10');
+        Clock::set('2026-11-10 09:30');
+        eq([], Scheduler::run(), 'в 9:30 офис открыт, но ни очереди, ни напоминаний');
+
+        Clock::set('2026-11-10 10:00');
+        eq(['Утренняя очередь: 1'], Scheduler::run());
+    } finally {
+        putenv('WORK_HOURS=10:00-18:00');
+        App\Leads\Settings::reset();
+    }
 });
 
 test('Планировщик: напоминания через 15 минут в чат и через 30 руководителю', function (): void {
@@ -66,7 +88,7 @@ test('Планировщик: взятую заявку не напоминае�
     eq([], Scheduler::run());
 });
 
-test('Планировщик: повторный звонок, сообщение на 3-й день и «не дозвонились»', function (): void {
+test('Планировщик: напоминание о повторном звонке и «не дозвонились» после SMS', function (): void {
     Settings_set_morning_done('2026-11-03');
     Clock::set('2026-11-03 10:00');
     $lead = Tests::lead();
@@ -75,26 +97,35 @@ test('Планировщик: повторный звонок, сообщени�
     Clock::set('2026-11-03 10:05');
     $lead = LeadService::miss($lead, $actor);
 
-    Clock::set('2026-11-03 11:35');
+    Clock::set('2026-11-03 13:00');
     eq(["Напоминание о звонке №{$lead['id']}"], Scheduler::run());
     $calls = Tests::maxCalls();
-    ok(str_contains(end($calls)['text'], 'Пора звонить') && str_contains(end($calls)['text'], 'попытка 2 из 4'), end($calls)['text']);
+    ok(str_contains(end($calls)['text'], 'Пора звонить') && str_contains(end($calls)['text'], 'звонок 2'), end($calls)['text']);
 
     $lead = LeadService::miss(Leads::find((int) $lead['id']), $actor);
+    Clock::set('2026-11-03 17:00');
     $lead = LeadService::miss($lead, $actor);
-    $lead = LeadService::miss($lead, $actor);
-    eq('final_message', $lead['next_action']);
+    eq('give_up', $lead['next_action']);
+    ok(str_contains(AdminChat::statusLine($lead), 'ждём, что перезвонит'), AdminChat::statusLine($lead));
+
+    Clock::set('2026-11-04 16:59');
+    Settings_set_morning_done('2026-11-04');
+    eq([], Scheduler::run(), 'сутки ждём звонка клиента');
 
     Clock::set($lead['next_action_at']);
-    Settings_set_morning_done(substr($lead['next_action_at'], 0, 10));
-    eq(["Последнее сообщение по №{$lead['id']}"], Scheduler::run());
-    eq('Здравствуйте! Это автошкола «Авто-Вираж». Ваша заявка на обучение ещё актуальна? Позвоните нам: +7 (983) 234-56-56.', end(Tests::$sms)['text']);
-
-    $lead = Leads::find((int) $lead['id']);
-    Clock::set($lead['next_action_at']);
-    Settings_set_morning_done(substr($lead['next_action_at'], 0, 10));
     eq(["№{$lead['id']} — не дозвонились"], Scheduler::run());
     eq(Status::UNREACHABLE, Leads::find((int) $lead['id'])['status']);
+});
+
+test('Планировщик: заявки, запланированные по старым правилам, получают последнее сообщение', function (): void {
+    Settings_set_morning_done('2026-11-03');
+    Clock::set('2026-11-03 10:00');
+    $lead = Tests::lead();
+    Leads::update((int) $lead['id'], ['status' => Status::NO_ANSWER, 'next_action' => 'final_message', 'next_action_at' => '2026-11-03 10:30:00']);
+
+    Clock::set('2026-11-03 10:31');
+    eq(["Последнее сообщение по №{$lead['id']}"], Scheduler::run());
+    eq('give_up', Leads::find((int) $lead['id'])['next_action']);
 });
 
 test('Планировщик: звонок в выбранное клиентом время', function (): void {

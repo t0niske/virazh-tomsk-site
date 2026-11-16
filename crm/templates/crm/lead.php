@@ -11,7 +11,7 @@ use App\Leads\Status;
 /**
  * @var list<array> $visits заходы на сайт этого клиента
  * @var array $lead @var list<array> $events @var list<array> $chat @var ?array $siteChat @var list<array> $staffList @var ?string $staffName
- * @var string $statusLine @var list<string> $reasons @var list<array> $sms
+ * @var string $statusLine @var list<string> $reasons @var list<array> $sms @var array{rows: list<array>, actions: string} $calls
  */
 $id = (int) $lead['id'];
 $closed = Status::isClosed($lead['status']);
@@ -25,42 +25,87 @@ $defaultAt = Schedule::fromSettings()->nextOpen(Clock::now()->modify('+1 hour'))
 ?>
 <a class="back link" href="/crm">← Все заявки</a>
 
+<?php if (($lead['suspect'] ?? null) !== null): ?>
+  <div class="robot-alert" role="alert">
+    <div><strong>Проверьте, не робот ли.</strong> <?= V::e(mb_strtoupper(mb_substr($lead['suspect'], 0, 1)) . mb_substr($lead['suspect'], 1)) ?> — так часто отправляют роботы-«бомберы» с чужими номерами.<?= \App\Sms\Sms::enabled() ? ' SMS клиенту не отправлено.' : '' ?></div>
+    <form method="post" action="<?= $action('human') ?>"><?= V::csrf() ?><button class="btn btn--sm">Это человек</button></form>
+  </div>
+<?php endif; ?>
+
 <section class="lead-head panel">
   <div class="lead-head__title">
     <h1>№<?= $id ?> · <?= V::e($lead['name']) ?></h1>
     <div><?= V::status($lead) ?></div>
   </div>
   <a class="phone-btn" href="tel:<?= V::e($lead['phone']) ?>">📞 <?= V::phone($lead['phone']) ?></a>
-  <p class="status-line"><?= nl2br(V::e($statusLine)) ?></p>
+  <?php if ($staffName !== null): ?><p class="status-line">Ответственный: <?= V::e($staffName) ?></p><?php endif; ?>
 
   <div class="actions">
     <?php if (!$closed): ?>
       <?php if ($lead['status'] === Status::NEW): ?>
         <form method="post" action="<?= $action('take') ?>"><?= V::csrf() ?><button class="btn btn--primary">Беру</button></form>
       <?php endif; ?>
-      <form method="post" action="<?= $action('miss') ?>"><?= V::csrf() ?><button class="btn">Не дозвонился</button></form>
-      <form method="post" action="<?= $action('status') ?>"><?= V::csrf() ?><input type="hidden" name="status" value="talked"><button class="btn">Думает</button></form>
-      <form method="post" action="<?= $action('status') ?>"><?= V::csrf() ?><input type="hidden" name="status" value="contract"><button class="btn">Придёт на договор</button></form>
-      <form method="post" action="<?= $action('status') ?>"><?= V::csrf() ?><input type="hidden" name="status" value="enrolled"><button class="btn btn--ok">Записан</button></form>
-      <details class="dropdown">
-        <summary class="btn">Отказ</summary>
-        <form class="dropdown__body" method="post" action="<?= $action('status') ?>">
-          <?= V::csrf() ?>
-          <input type="hidden" name="status" value="refused">
-          <label class="field"><span>Причина</span>
-            <select name="reason">
-              <?php foreach ($reasons as $reason): ?><option><?= V::e($reason) ?></option><?php endforeach; ?>
-            </select>
-          </label>
-          <label class="field"><span>Или своими словами</span><input name="reason_other" maxlength="150"></label>
-          <button class="btn btn--danger">Записать отказ</button>
-        </form>
-      </details>
       <form method="post" action="<?= $action('status') ?>" data-confirm="Отметить заявку как мусорную (тест, бот, неверный номер)?"><?= V::csrf() ?><input type="hidden" name="status" value="junk"><button class="btn btn--ghost">Мусор</button></form>
     <?php else: ?>
       <form method="post" action="<?= $action('status') ?>"><?= V::csrf() ?><input type="hidden" name="status" value="new"><button class="btn">Вернуть в работу</button></form>
     <?php endif; ?>
   </div>
+</section>
+
+<section class="panel calls" aria-labelledby="calls-title">
+  <h2 id="calls-title">Звонки</h2>
+  <?php foreach ($calls['rows'] as $row): ?>
+    <div class="calls__row calls__row--<?= $row['state'] ?>">
+      <div class="calls__when"><b><?= V::e($row['label']) ?></b><?php if ($row['when'] !== ''): ?><span><?= V::e($row['when']) ?></span><?php endif; ?></div>
+      <div class="calls__text">
+        <?php if ($row['state'] === 'miss'): ?><span class="calls__miss">✕ <?= V::e($row['text']) ?></span>
+        <?php elseif ($row['state'] === 'now'): ?><b><?= V::e($row['text']) ?></b>
+        <?php else: ?><?= V::e($row['text']) ?><?php endif; ?>
+        <?php if (($row['hint'] ?? '') !== ''): ?><span class="calls__hint"><?= V::e($row['hint']) ?></span><?php endif; ?>
+      </div>
+      <?php if ($row['state'] === 'now' && $calls['actions'] !== 'none'): ?>
+        <div class="calls__actions">
+          <?php if ($calls['actions'] === 'call'): ?>
+            <form method="post" action="<?= $action('miss') ?>"><?= V::csrf() ?><button class="btn">Не ответил</button></form>
+          <?php endif; ?>
+          <details class="dropdown dropdown--right result-menu">
+            <summary class="btn btn--primary"><?= in_array($lead['status'], [Status::TALKED, Status::CONTRACT, Status::CHAT], true) && ($lead['next_action'] ?? null) !== 'give_up' ? 'Сменить итог' : 'Поговорили' ?> ▾</summary>
+            <div class="dropdown__body result-menu__body">
+              <form method="post" action="<?= $action('status') ?>"><?= V::csrf() ?><input type="hidden" name="status" value="talked">
+                <button class="menu-item">Думает<small>перезвонить позже — время в «Запланировать»</small></button></form>
+              <details class="menu-sub">
+                <summary class="menu-item">Придёт на договор<small>спросим, когда ждать</small></summary>
+                <form method="post" action="<?= $action('status') ?>">
+                  <?= V::csrf() ?>
+                  <input type="hidden" name="status" value="contract">
+                  <label class="field"><span>Когда ждать</span>
+                    <textarea name="note" rows="2" maxlength="200" placeholder="Например: во вторник после 15:00, на Мира, 50"><?= V::e($lead['contract_note'] ?? '') ?></textarea>
+                  </label>
+                  <button class="btn btn--primary">Сохранить</button>
+                </form>
+              </details>
+              <form method="post" action="<?= $action('status') ?>"><?= V::csrf() ?><input type="hidden" name="status" value="enrolled">
+                <button class="menu-item menu-item--ok">Записан<small>заключил договор</small></button></form>
+              <details class="menu-sub">
+                <summary class="menu-item">Отказ<small>выбрать причину</small></summary>
+                <form method="post" action="<?= $action('status') ?>">
+                  <?= V::csrf() ?>
+                  <input type="hidden" name="status" value="refused">
+                  <label class="field"><span>Причина</span>
+                    <select name="reason">
+                      <?php foreach ($reasons as $reason): ?><option><?= V::e($reason) ?></option><?php endforeach; ?>
+                    </select>
+                  </label>
+                  <label class="field"><span>Или своими словами</span><input name="reason_other" maxlength="150"></label>
+                  <button class="btn btn--danger">Записать отказ</button>
+                </form>
+              </details>
+            </div>
+          </details>
+        </div>
+      <?php endif; ?>
+    </div>
+  <?php endforeach; ?>
 </section>
 
 <div class="lead-grid">

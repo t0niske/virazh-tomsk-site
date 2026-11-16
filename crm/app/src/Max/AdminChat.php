@@ -93,6 +93,10 @@ final class AdminChat
             $lead['name'] . ', ' . Phone::format($lead['phone']),
         ];
 
+        if (($lead['suspect'] ?? null) !== null) {
+            array_splice($lines, 1, 0, ["⚠️ Проверьте, не робот ли: {$lead['suspect']}." . (\App\Sms\Sms::enabled() ? ' SMS клиенту не отправлено.' : '')]);
+        }
+
         if (($lead['service'] ?? '') !== '') {
             $lines[] = $lead['service'];
         }
@@ -120,15 +124,23 @@ final class AdminChat
         $who = Leads::staffName($lead['assigned_to'] !== null ? (int) $lead['assigned_to'] : null);
 
         if ($status === Status::NO_ANSWER) {
-            $line .= ' ' . $lead['attempt'] . ' из ' . Settings::get('max_attempts');
+            $line .= ' · звонков: ' . $lead['attempt'];
         }
 
         if ($status === Status::REFUSED && ($lead['refusal_reason'] ?? '') !== '') {
             $line .= ' · ' . $lead['refusal_reason'];
         }
 
+        if ($status === Status::CONTRACT && ($lead['contract_note'] ?? '') !== '') {
+            $line .= ' · ждём: ' . $lead['contract_note'];
+        }
+
         if ($who !== null) {
             $line .= ' · ' . $who;
+        }
+
+        if ($status === Status::NO_ANSWER && ($lead['next_action'] ?? null) === 'give_up') {
+            $line .= "\nЗвонки закончились, клиенту отправлено «не дозвонились» — ждём, что перезвонит";
         }
 
         if (!Status::isClosed($status) && ($lead['next_action_at'] ?? null) !== null && $lead['next_action'] !== 'give_up') {

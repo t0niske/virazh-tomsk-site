@@ -117,8 +117,9 @@ final class View
         $label = Status::label($status);
         $detail = match ($status) {
             Status::NEW => $lead['due_at'] <= Clock::sql() ? self::ago($lead['due_at']) : 'на ' . self::date($lead['due_at']),
-            Status::NO_ANSWER => $lead['attempt'] . ' из ' . \App\Leads\Settings::get('max_attempts'),
+            Status::NO_ANSWER => 'звонков: ' . $lead['attempt'],
             Status::REFUSED => mb_strtolower((string) $lead['refusal_reason']),
+            Status::CONTRACT => (string) ($lead['contract_note'] ?? ''),
             default => '',
         };
 

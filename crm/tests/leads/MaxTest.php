@@ -70,7 +70,7 @@ test('MAX: «Не дозвонился», «Думает», «Придёт на 
     $row = Leads::find((int) $lead['id']);
     eq(Status::NO_ANSWER, $row['status']);
     eq(1, (int) $row['attempt']);
-    eq('Записали недозвон (1 из 4)', lastAnswer()['notification']);
+    eq('Записали недозвон (звонок 1)', lastAnswer()['notification']);
 
     press("a:talked:{$lead['id']}");
     eq(Status::TALKED, Leads::find((int) $lead['id'])['status']);

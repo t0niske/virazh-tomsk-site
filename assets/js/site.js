@@ -207,6 +207,13 @@
   const CAT_LABEL = { bA: 'Категория B на автомате', bM: 'Категория B на механике', a: 'Категория A (мотоцикл)',
     ai: 'Категория AI (квадроцикл, снегоход)', vn: 'Восстановление навыков вождения', pro: 'Курсы для транспортных компаний',
     nsk: 'Обучение в Новосибирске', x: 'Пока не решил(а)' };
+  // защита от роботов (как на «Сто дорог»): при открытии страницы берём подписанную метку времени, с заявкой шлём её и js=1.
+  // Быстрее 3 секунд после открытия — CRM заявку не создаёт; без метки или без скриптов — создаёт с пометкой «робот?»
+  let formTs = '';
+  if (leadLive && document.querySelector('form[data-lead]')) {
+    fetch(BASE + '/api/form-ts', { cache: 'no-store', headers: { Accept: 'application/json' } })
+      .then(r => (r.ok ? r.json() : {})).then(j => { if (j && typeof j.form_ts === 'string') formTs = j.form_ts; }).catch(() => {});
+  }
 
   // страница «Спасибо»: «Перезвоним … на номер …», ссылка «Исправить», пометка предпросмотра, цель Метрики «lead»
   // (событие — после загрузки всех скриптов: stats.js подключается после site.js)
@@ -287,6 +294,8 @@
       // переписка с ИИ-помощником в этой вкладке (bot.js) — CRM покажет её в карточке заявки
       try { const c = sessionStorage.getItem('vz_chat'); if (c) data.append('chat_id', c); } catch (e) { /* без хранилища */ }
       data.append('website', trap.querySelector('input').value);
+      data.append('js', '1');
+      if (formTs) data.append('form_ts', formTs);
       const label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Отправляем…';
       let error = 'net';

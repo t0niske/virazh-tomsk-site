@@ -229,6 +229,7 @@ check() {
   expect /api/lead 405
   expect /api/visit 204
   expect /api/chat 405
+  expect /api/form-ts 200
   expect /crm 303 /crm/login
   expect /crm/login 200
   expect /crm.php 404

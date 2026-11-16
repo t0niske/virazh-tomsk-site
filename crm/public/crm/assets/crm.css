@@ -133,6 +133,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--orange); box-sha
 .span2 { grid-column: 1 / -1; }
 .row { display: flex; gap: 6px; }
 .tag { display: inline-block; font-style: normal; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 6px; background: var(--orange-soft); color: var(--orange-text); vertical-align: middle; }
+.tag--vk { background: #E6EEFA; color: #234E86; }
+.tag--max { background: #EFE8FA; color: #5B3A8E; }
 .plain { list-style: none; margin: 0; padding: 0; }
 .plain li { padding: 8px 0; border-top: 1px solid var(--line); }
 .plain li:first-child { border-top: 0; padding-top: 0; }
@@ -344,3 +346,41 @@ input:focus, select:focus, textarea:focus { border-color: var(--orange); box-sha
   .vchart-table th, .vchart-table td { padding: 8px 6px; font-size: 13px; }
   .vchart-table td:first-child { white-space: normal; }
 }
+
+/* Блок «Звонки» в карточке заявки: утро → день → вечер → сообщение (App\Crm\CallPlan) */
+.btn--sm { min-height: 34px; padding: 6px 12px; font-size: 14px; }
+.dropdown--right .dropdown__body { left: auto; right: 0; }
+.calls h2 { margin-bottom: 6px; }
+.calls__row { display: grid; grid-template-columns: 150px 1fr auto; gap: 6px 14px; align-items: center; padding: 12px 10px; border-top: 1px solid var(--line); font-size: 14px; }
+.calls h2 + .calls__row { border-top: 0; }
+.calls__when b { display: block; }
+.calls__when span { color: var(--muted); font-size: 13px; }
+.calls__miss { color: #8C8A85; }
+.calls__hint { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+.calls__row--now { background: var(--orange-soft); border-radius: 10px; border-top-color: transparent; }
+.calls__row--now + .calls__row { border-top-color: transparent; }
+.calls__row--later { color: var(--muted); }
+.calls__row--later .calls__when b { font-weight: 600; }
+.calls__row--done .calls__text { color: var(--muted); }
+.calls__actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; max-width: 460px; }
+@media (max-width: 720px) {
+  .calls__row { grid-template-columns: 1fr; }
+  .calls__when { display: flex; gap: 8px; align-items: baseline; }
+  .calls__actions { justify-content: flex-start; max-width: none; }
+}
+/* Меню «Поговорили ▾»: итог разговора */
+.result-menu__body { width: 290px; padding: 8px; }
+.menu-item { display: block; width: 100%; text-align: left; padding: 9px 10px; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 600; background: none; border: 0; color: var(--text); cursor: pointer; list-style: none; }
+.menu-item::-webkit-details-marker { display: none; }
+.menu-item:hover, .menu-sub[open] > .menu-item { background: #F4F2EE; }
+.menu-item small { display: block; margin-top: 1px; color: var(--muted); font-size: 12px; font-weight: 400; }
+.menu-item--ok { color: var(--ok); }
+.menu-sub > form { padding: 6px 10px 10px; }
+@media (max-width: 720px) {
+  .calls__actions > form, .calls__actions > .dropdown { flex: 1 1 40%; }
+  .calls__actions .btn { width: 100%; }
+}
+/* Заявка «похоже на робота» */
+.badge--robot { margin-left: 6px; font-size: 12px; padding: 1px 8px; background: var(--danger-soft); color: var(--danger); }
+.robot-alert { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border-radius: 12px; background: var(--danger-soft); color: var(--danger); font-size: 14px; }
+.robot-alert .btn { background: #fff; }

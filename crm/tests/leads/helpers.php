@@ -32,6 +32,8 @@ final class Tests
         }
 
         Settings::reset();
+        // праздники Виража по умолчанию (04.11.2026 и др.) — для боевого графика; тесты считают даты без них
+        Settings::set('holidays', '');
         Clock::set(null);
         App\Chat\Chat::useModel(null, false);
         self::$max = new LogMaxApi();

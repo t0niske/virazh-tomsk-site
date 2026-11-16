@@ -43,8 +43,9 @@ final class Settings
 09.05.2027
 12.06.2027
 04.11.2027",
-            // «Утром» начинается с открытия офиса.
-            'slot_morning' => trim($start) ?: '09:00',
+            // «Утром» — с 10:00, даже если офис открывается раньше: к 9 часам люди ещё не на связи.
+            // С этого времени звоним по ночным заявкам.
+            'slot_morning' => '10:00',
             'slot_day' => '13:00',
             'slot_evening' => '17:00',
             'answer_minutes' => '10',
@@ -53,9 +54,7 @@ final class Settings
             'weekend_from_time' => '17:30',
             'remind_chat_minutes' => '15',
             'remind_manager_minutes' => '30',
-            'retry_delay_minutes' => '90',
-            'max_attempts' => '4',
-            'final_day' => '3',
+            'retry_delay_minutes' => '60',
             'give_up_hours' => '24',
             'dedupe_days' => '30',
             'retention_months' => '12',

@@ -16,6 +16,7 @@ use App\Leads\Clock;
 use App\Leads\Texts;
 use App\Max\Max;
 use App\Support\Env;
+use App\Support\FormToken;
 
 /** POST /api/lead и /send-form.php — приём заявок по контракту docs/lead-api.md. */
 final class LeadController
@@ -24,6 +25,7 @@ final class LeadController
     private const IP_WINDOW = 600;     // за 10 минут
     private const PHONE_LIMIT = 3;     // заявок на один номер
     private const PHONE_WINDOW = 3600; // за час
+    private const MIN_FORM_SECONDS = 3; // быстрее человек форму не заполнит
 
     public static function handle(string $method): void
     {
@@ -59,7 +61,16 @@ final class LeadController
         // Ловушка для ботов: человек это поле не видит. Боту отвечаем «успешно», но ничего не сохраняем.
         if (trim((string) ($input['website'] ?? '')) !== '') {
             Log::write('spam.log', "Ловушка website сработала, IP $ip");
-            self::respond(200, ['success' => true, 'lead_id' => null, 'title' => Settings::get('form_title'), 'message' => 'Спасибо! Мы свяжемся с вами.']);
+            self::fakeSuccess();
+
+            return;
+        }
+
+        $robot = self::robotCheck($input);
+
+        if ($robot['block'] !== null) {
+            Log::write('spam.log', $robot['block'] . ", IP $ip");
+            self::fakeSuccess();
 
             return;
         }
@@ -90,6 +101,11 @@ final class LeadController
 
         $data['ip'] = $ip !== '' ? substr($ip, 0, 45) : null;
         $data['user_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? mb_substr((string) $_SERVER['HTTP_USER_AGENT'], 0, 255) : null;
+        $data['suspect'] = $robot['suspect'];
+
+        if ($robot['suspect'] !== null) {
+            Log::write('spam.log', "Заявка с пометкой «{$robot['suspect']}», IP $ip");
+        }
 
         $result = LeadService::accept($data);
         $lead = $result['lead'];
@@ -108,7 +124,40 @@ final class LeadController
         self::respond(200, $response);
     }
 
-    /** Поля формы: multipart/urlencoded, на всякий случай и JSON. */
+    /**
+     * Защита от роботов (form_ts и js из docs/lead-api.md). block — не создавать заявку: форма отправлена быстрее
+     * 3 секунд после открытия страницы. suspect — создать, но пометить и не слать SMS: форма ушла без скриптов
+     * (js ≠ 1) или без подписанной метки времени.
+     *
+     * @return array{block: ?string, suspect: ?string}
+     */
+    public static function robotCheck(array $input, ?int $now = null): array
+    {
+        $age = FormToken::age((string) ($input['form_ts'] ?? ''), $now);
+
+        if ($age !== null && $age < self::MIN_FORM_SECONDS) {
+            return ['block' => "Форма отправлена за $age с после открытия страницы", 'suspect' => null];
+        }
+
+        $reasons = [];
+
+        if ((string) ($input['js'] ?? '') !== '1') {
+            $reasons[] = 'форма без скриптов';
+        }
+
+        if ($age === null) {
+            $reasons[] = 'нет метки формы';
+        }
+
+        return ['block' => null, 'suspect' => $reasons === [] ? null : implode(', ', $reasons)];
+    }
+
+    /** Роботу отвечаем как при успехе, чтобы он не понял, что его отсеяли. */
+    private static function fakeSuccess(): void
+    {
+        self::respond(200, ['success' => true, 'lead_id' => null, 'title' => Settings::get('form_title'), 'message' => 'Спасибо! Мы свяжемся с вами.']);
+    }
+
     /**
      * Связь с заходом на сайт: форма шлёт visitor_id и visit_id сама, а если она ушла без JavaScript —
      * берём их из cookie счётчика sd_vid и sd_sid (docs/visits-api.md).
@@ -124,6 +173,7 @@ final class LeadController
         return $input;
     }
 
+    /** Поля формы: multipart/urlencoded, на всякий случай и JSON. */
     private static function input(): array
     {
         if ($_POST !== []) {

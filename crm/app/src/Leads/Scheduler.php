@@ -24,7 +24,9 @@ final class Scheduler
         $schedule = Schedule::fromSettings();
         $done = [];
 
-        if ($schedule->isWorkDay($now) && $now >= $schedule->opensAt($now) && Settings::get('cron.morning') !== $now->format('Y-m-d')) {
+        // Утренняя очередь — когда начинаются звонки по ночным заявкам («Утром — с», по умолчанию 10:00).
+        if ($schedule->isWorkDay($now) && $now >= $schedule->firstCallAt($now->setTime(0, 0), 'now')
+            && Settings::get('cron.morning') !== $now->format('Y-m-d')) {
             Settings::set('cron.morning', $now->format('Y-m-d'));
             $done[] = self::morningQueue($now);
         }
@@ -79,7 +81,7 @@ final class Scheduler
 
         foreach (self::dueLeads($now) as $lead) {
             $what = $lead['next_action'] === 'message' ? '✉️ Пора написать в MAX' : '📞 Пора звонить';
-            $attempt = (int) $lead['attempt'] > 0 ? ' · попытка ' . ((int) $lead['attempt'] + 1) . ' из ' . $schedule->maxAttempts : '';
+            $attempt = (int) $lead['attempt'] > 0 ? ' · звонок ' . ((int) $lead['attempt'] + 1) : '';
             AdminChat::post(
                 "$what: №{$lead['id']} {$lead['name']}, " . Phone::format($lead['phone']) . $attempt
                     . (($lead['service'] ?? '') !== '' ? "\n" . $lead['service'] : ''),
@@ -98,6 +100,7 @@ final class Scheduler
                 continue;
             }
 
+            // final_message — у заявок, запланированных по старым правилам (до «утро → день → вечер → SMS»).
             if ($lead['next_action'] === 'final_message') {
                 LeadService::sendFinal($lead);
                 $done[] = "Последнее сообщение по №{$lead['id']}";

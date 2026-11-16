@@ -97,6 +97,7 @@ $periods = ['today' => 'Сегодня', 'week' => 'Эта неделя', 'last_
             <td class="nowrap" data-label="Поступила"><?= V::date($lead['created_at']) ?><?= (int) $lead['off_hours'] ? ' <span class="tag" title="Ночью или в выходной">🌙</span>' : '' ?></td>
             <td data-label="Клиент">
               <a class="strong" href="/crm/lead/<?= $lead['id'] ?>"><?= V::e($lead['name']) ?></a>
+              <?php if (($lead['suspect'] ?? null) !== null): ?><span class="badge badge--robot" title="<?= V::e($lead['suspect']) ?>">робот?</span><?php endif; ?>
               <div class="muted nowrap"><?= V::phone($lead['phone']) ?><?= (int) $lead['request_count'] > 1 ? ' · заявок: ' . $lead['request_count'] : '' ?></div>
             </td>
             <td data-label="Услуга"><?= V::e($lead['service'] ?: '—') ?><div class="muted small"><?= V::e($lead['source']) ?></div></td>

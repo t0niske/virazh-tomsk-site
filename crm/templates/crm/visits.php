@@ -79,6 +79,8 @@ $kinds = ['human' => 'люди (без ботов)', 'bot' => 'только бо
             <td data-label="Отметки">
               <?php if ($v['lead_id'] !== null): ?><a class="badge badge--enrolled" href="/crm/lead/<?= (int) $v['lead_id'] ?>">Заявка №<?= (int) $v['lead_id'] ?></a><?php endif; ?>
               <?php if ((int) $v['has_tel']): ?><span class="tag">☎ телефон</span><?php endif; ?>
+              <?php if (!empty($v['went_vk'])): ?><span class="tag tag--vk">→ ВКонтакте</span><?php endif; ?>
+              <?php if (!empty($v['went_max'])): ?><span class="tag tag--max">→ MAX</span><?php endif; ?>
               <?php if ($v['kind'] !== 'human'): ?><span class="badge badge--<?= $v['kind'] === 'bot' ? 'junk' : 'no_answer' ?>"><?= $v['kind'] === 'bot' ? 'бот' : 'подозрительно' ?></span><?php endif; ?>
             </td>
           </tr>

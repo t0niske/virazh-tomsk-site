@@ -123,6 +123,7 @@ final class LeadsController
             'sms' => self::smsFor($id),
             'visits' => Visits::forLead($lead),
             'siteChat' => ($lead['chat_id'] ?? null) !== null ? Chat::findByChatId($lead['chat_id']) : null,
+            'calls' => CallPlan::build($lead, $events, \App\Leads\Schedule::fromSettings(), Clock::now()),
         ]);
     }
 
@@ -168,9 +169,23 @@ final class LeadsController
                     $reason = trim((string) ($_POST['reason_other'] ?? '')) ?: $reason;
                 }
 
-                LeadService::setStatus($lead, $status, $actor, $reason);
-                Audit::log($actor, 'lead_status', $id, Status::label($status) . ($status === Status::REFUSED ? ": $reason" : ''));
+                $note = trim((string) ($_POST['note'] ?? ''));
+                LeadService::setStatus($lead, $status, $actor, $reason, $note);
+                Audit::log($actor, 'lead_status', $id, Status::label($status) . match ($status) {
+                    Status::REFUSED => ": $reason",
+                    Status::CONTRACT => $note !== '' ? ": $note" : '',
+                    default => '',
+                });
                 View::flash('Статус: ' . Status::label($status));
+                break;
+
+            case 'human':
+                if (($lead['suspect'] ?? null) !== null) {
+                    Leads::update($id, ['suspect' => null]);
+                    Leads::event($id, 'comment', 'Проверили: это человек, не робот', $actor);
+                    Audit::log($actor, 'lead_update', $id, 'Снята пометка «робот?»');
+                    View::flash('Пометка «робот?» снята');
+                }
                 break;
 
             case 'comment':

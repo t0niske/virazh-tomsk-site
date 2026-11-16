@@ -29,6 +29,10 @@ final class Telegram
         $time = (new DateTimeImmutable($lead['created_at']))->format('H:i');
         $lines = ["🔔 Новая заявка №{$lead['id']} · $time"];
 
+        if (($lead['suspect'] ?? null) !== null) {
+            $lines[] = '⚠️ Похоже на робота: ' . $lead['suspect'];
+        }
+
         if (($lead['service'] ?? '') !== '') {
             $lines[] = $lead['service'];
         }

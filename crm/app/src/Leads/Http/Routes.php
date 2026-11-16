@@ -10,9 +10,10 @@ use App\Leads\Migrator;
 use App\Max\Webhook;
 use App\Visits\Collector;
 use App\Support\Env;
+use App\Support\FormToken;
 
 /**
- * Маршруты системы заявок: POST /api/lead, /send-form.php, /api/visit, /api/chat, /crm/*, /max/webhook.
+ * Маршруты системы заявок: POST /api/lead, /send-form.php, /api/visit, /api/chat, GET /api/form-ts, /crm/*, /max/webhook.
  * Возвращает true, если запрос обработан.
  */
 final class Routes
@@ -23,6 +24,7 @@ final class Routes
         $route = match (true) {
             $path === '/api/lead', $path === '/send-form.php' => 'lead',
             $path === '/api/visit' => 'visit',
+            $path === '/api/form-ts' => 'form_ts',
             $path === '/api/chat' => 'chat',
             $path === '/max/webhook' => 'max',
             $path === '/crm', str_starts_with($path, '/crm/') => 'crm',
@@ -41,12 +43,23 @@ final class Routes
         match ($route) {
             'lead' => LeadController::handle($method),
             'visit' => self::visit($method),
+            'form_ts' => self::formTs(),
             'chat' => ChatController::handle($method),
             'max' => Webhook::handle($method),
             'crm' => Crm::handle($method, $path),
         };
 
         return true;
+    }
+
+    /**
+     * GET /api/form-ts — подписанная метка времени для форм (защита от роботов, App\Support\FormToken). Сайт статический,
+     * поэтому site.js берёт её при открытии страницы и отправляет с заявкой полем form_ts. Без кэша: метка у каждого своя.
+     */
+    private static function formTs(): void
+    {
+        header('Cache-Control: no-store');
+        LeadController::json(200, ['form_ts' => FormToken::make()]);
     }
 
     /** POST /api/visit — счётчику всегда 204 без тела, что бы ни пришло. */

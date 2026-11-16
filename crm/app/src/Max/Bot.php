@@ -214,7 +214,8 @@ final class Bot
 
             case 'miss':
                 $lead = LeadService::miss($lead, $actor);
-                $notice = 'Записали недозвон (' . $lead['attempt'] . ' из ' . Settings::get('max_attempts') . ')';
+                $notice = 'Записали недозвон (звонок ' . $lead['attempt'] . ')'
+                    . ($lead['next_action'] === 'give_up' ? ' — клиенту ушло сообщение «не дозвонились»' : '');
                 break;
 
             case 'talked':

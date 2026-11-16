@@ -30,9 +30,7 @@ final class Schedule
         private readonly array $holidays = [],
         private readonly array $slots = ['morning' => '10:00', 'day' => '13:00', 'evening' => '17:00'],
         public readonly int $answerMinutes = 10,
-        public readonly int $retryDelayMinutes = 90,
-        public readonly int $maxAttempts = 4,
-        public readonly int $finalDay = 3,
+        public readonly int $retryDelayMinutes = 60,
         public readonly int $giveUpHours = 24,
         private readonly string $promiseText = 'в ближайшее рабочее время',
         private readonly ?int $weekendFromDay = 5,
@@ -60,8 +58,6 @@ final class Schedule
             ['morning' => Settings::get('slot_morning'), 'day' => Settings::get('slot_day'), 'evening' => Settings::get('slot_evening')],
             max(1, Settings::int('answer_minutes')),
             max(15, Settings::int('retry_delay_minutes')),
-            max(1, Settings::int('max_attempts')),
-            max(1, Settings::int('final_day')),
             max(1, Settings::int('give_up_hours')),
             Settings::get('promise_text') ?: 'в ближайшее рабочее время',
             in_array(Settings::int('weekend_from_day'), range(1, 7), true) ? Settings::int('weekend_from_day') : null,
@@ -125,11 +121,22 @@ final class Schedule
         return $day;
     }
 
-    /** Когда звонить первый раз с учётом выбранного клиентом времени (now, morning, day, evening). */
+    /**
+     * Когда звонить первый раз с учётом выбранного клиентом времени (now, morning, day, evening).
+     * Заявки, пришедшие ночью и до открытия, — не с открытия офиса, а с начала «утра» (по умолчанию 10:00):
+     * к 9 часам люди обычно ещё не на связи.
+     */
     public function firstCallAt(DateTimeImmutable $now, string $contactTime): DateTimeImmutable
     {
         if (!in_array($contactTime, self::SLOTS, true)) {
-            return $this->nextOpen($now);
+            if ($this->isOpen($now)) {
+                return $now;
+            }
+
+            $open = $this->nextOpen($now);
+            $morning = $this->at($open, $this->slots['morning']);
+
+            return $morning > $open && $morning < $this->at($open, $this->end) ? $morning : $open;
         }
 
         $day = $now->setTime(0, 0);
@@ -154,43 +161,47 @@ final class Schedule
     }
 
     /**
-     * Что делать после очередного недозвона.
+     * Что делать после недозвона. Утром не ответил — звоним днём, днём — вечером. После вечернего
+     * недозвона клиенту уходит SMS «не дозвонились» (сколько бы звонков ни было до этого), и если он
+     * не перезвонит за give_up_hours — «Не дозвонились».
      *
-     * @param int $misses сколько раз уже не дозвонились, включая этот
-     * @return array{action: string, at: DateTimeImmutable}
+     * @return array{action: string, at: DateTimeImmutable} action: call — позвонить ещё; give_up — звонки закончились
      */
-    public function afterMiss(int $misses, DateTimeImmutable $now, DateTimeImmutable $createdAt): array
+    public function afterMiss(DateTimeImmutable $now): array
     {
-        if ($misses >= $this->maxAttempts) {
-            // Последнее сообщение — на N-й день от заявки, но не раньше чем через пару часов.
-            $target = $this->at($createdAt->modify('+' . ($this->finalDay - 1) . ' days'), $this->slots['day']);
-            $target = max($target, $now->modify('+2 hours'));
+        $slot = $this->slotOf($now);
 
-            return ['action' => 'final_message', 'at' => $this->nextOpen($target)];
+        if ($slot === 'evening') {
+            return ['action' => 'give_up', 'at' => $this->giveUpAt($now)];
         }
 
-        if ($misses === 1) {
-            // Повтор через 1–2 часа.
-            return ['action' => 'call', 'at' => $this->nextOpen($now->modify("+{$this->retryDelayMinutes} minutes"))];
-        }
+        $next = $slot === 'morning' ? 'day' : 'evening';
+        $earliest = $now->modify("+{$this->retryDelayMinutes} minutes");
 
-        $afternoon = $now >= $this->at($now, '14:00');
+        if ($this->isWorkDay($now)) {
+            [$from, $to] = $this->slotWindow($now, $next);
+            $at = max($from, $earliest);
 
-        if ($misses === 2) {
-            // Другое время суток: утром не ответил — звоним ближе к вечеру, днём — на следующее утро.
-            $evening = $this->at($now, $this->slots['evening']);
-
-            if (!$afternoon && $this->isWorkDay($now) && $evening >= $now->modify('+1 hour') && $this->isOpen($evening)) {
-                return ['action' => 'call', 'at' => $evening];
+            if ($at < $to) {
+                return ['action' => 'call', 'at' => $at];
             }
 
-            return ['action' => 'call', 'at' => $this->at($this->nextWorkDay($now), $this->slots['morning'])];
+            // Перерыв не помещается — позвоним в начале этого же отрезка завтра.
+            return ['action' => 'call', 'at' => $this->at($this->nextWorkDay($now), $this->slots[$next])];
         }
 
-        // Следующий день, в то время суток, в которое ещё не звонили.
-        $slot = $afternoon ? $this->slots['day'] : $this->slots['evening'];
+        // Нажали «Не дозвонился» в выходной — продолжаем с того же отрезка в рабочий день.
+        return ['action' => 'call', 'at' => $this->at($this->nextWorkDay($now), $this->slots[$next])];
+    }
 
-        return ['action' => 'call', 'at' => $this->at($this->nextWorkDay($now), $slot)];
+    /** Утро, день или вечер по границам «Утром — с», «Днём — с», «Вечером — с». До открытия — утро, после закрытия — вечер. */
+    public function slotOf(DateTimeImmutable $t): string
+    {
+        return match (true) {
+            $t < $this->at($t, $this->slots['day']) => 'morning',
+            $t < $this->at($t, $this->slots['evening']) => 'day',
+            default => 'evening',
+        };
     }
 
     /** Когда сдаться и поставить «Не дозвонились» после последнего сообщения. */
