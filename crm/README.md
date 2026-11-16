@@ -72,3 +72,17 @@ php crm/tests/leads/run.php                                        # тесты 
 Первого руководителя создаёт владелец сам (пароль вводит он): `/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя"` — роль по умолчанию `manager` (руководитель:
 видит «Отчёты», «Настройки», «Сотрудники», «Журнал»). Третий параметр `admin` — рядовой администратор, этих разделов у него нет.
 Остальных сотрудников руководитель добавляет в админке. MAX и Telegram включаются токенами в `~/virazh-crm/.env` (`cron/README.md`).
+
+**Сторож файлов** (с 16.11.2026, общий со «Сто дорог»): cron раз в 10 минут сверяет `~/www/virazh-tomsk.ru` и `~/virazh-crm`
+(без `storage/`) с эталоном в `~/sto-dorog-integrity/` и шлёт тревогу «возможен взлом» через бот Виража и на `MAIL_TO`.
+`deploy.sh switch` и `rollback` снимают эталон сами. После ручной правки `~/virazh-crm/.env` или файлов кода — снять руками:
+
+```
+SITE_DIR=~/virazh-crm STATE_DIR=~/sto-dorog-integrity/virazh-crm bash ~/sto-dorog-integrity/integrity.sh --baseline
+SITE_DIR=~/www/virazh-tomsk.ru STATE_DIR=~/sto-dorog-integrity/virazh-site bash ~/sto-dorog-integrity/integrity.sh --baseline
+```
+
+`~/sto-dorog-integrity/integrity.sh` не менять (исходник — в репозитории «Сто дорог»), его две строки в crontab не удалять.
+
+Оповещения Telegram с 16.11.2026 идут в группу «Заявки с Рекламного сайта Виража» (`TELEGRAM_CHAT_ID` — отрицательный id группы).
+Если группу превратят в супергруппу, id сменится (станет `-100…`): тогда `php cron/telegram-setup.php` покажет новый id.

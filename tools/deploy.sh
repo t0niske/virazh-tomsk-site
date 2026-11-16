@@ -17,7 +17,9 @@
 # переносит в него .env и storage/ (база, логи, копии) прежней версии, при первом разе создаёт .env (номера заявок
 # продолжают counter.txt Joomla, ключ ИИ-помощника — из .env «Сто дорог» на сервере), применяет миграции и ДОБАВЛЯЕТ
 # в crontab две строки (прежние не трогаются, копия — ~/deploy-upload/crontab-*.bak). Первого руководителя админки создаёт владелец сам, своим паролем:
-#   ssh … '/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя" admin'
+#   ssh … '/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя"'   (роль по умолчанию — руководитель)
+# После switch и rollback скрипт сам снимает новый эталон сторожа файлов (~/sto-dorog-integrity). После ручной правки
+# ~/virazh-crm/.env эталон кода заявок снимать руками — команда в crm/README.md, раздел «Хостинг».
 set -euo pipefail
 
 KEY="$HOME/.ssh/virazh_regru"
@@ -181,6 +183,12 @@ else
 fi
 grep -q . <(find virazh-crm/storage -name '*.sqlite' 2>/dev/null) || echo "ВНИМАНИЕ: база системы заявок не найдена"
 "$PHP" -r 'require getenv("HOME")."/virazh-crm/app/bootstrap.php"; echo "Сотрудников в админке: ".App\Support\Db::pdo()->query("SELECT COUNT(*) FROM staff")->fetchColumn()."\n";' 2>/dev/null || true
+# Сторож файлов (общий со «Сто дорог», ~/sto-dorog-integrity, cron раз в 10 минут): новый эталон сайта и кода заявок,
+# иначе после выкладки придёт ложная тревога «возможен взлом». Сам скрипт не трогаем — его исходник в репозитории «Сто дорог».
+if [ -f sto-dorog-integrity/integrity.sh ]; then
+  SITE_DIR="$HOME/$SITE" STATE_DIR="$HOME/sto-dorog-integrity/virazh-site" bash sto-dorog-integrity/integrity.sh --baseline | tail -1
+  SITE_DIR="$HOME/virazh-crm" STATE_DIR="$HOME/sto-dorog-integrity/virazh-crm" bash sto-dorog-integrity/integrity.sh --baseline | tail -1
+fi
 echo "Откат: bash tools/deploy.sh rollback"
 REMOTE
 }
@@ -197,6 +205,7 @@ echo "Возвращена ~/$bak. Снятая версия лежит в ~/$fa
 # система заявок (~/virazh-crm с базой) не откатывается: старая Joomla её не использует, база заявок сохраняется
 p=$(ls -td virazh-crm-prev-* 2>/dev/null | head -1 || true)
 [ -n "$p" ] && echo "Код системы заявок не менялся; прежняя версия кода — ~/$p (без .env и базы)"
+[ -f sto-dorog-integrity/integrity.sh ] && SITE_DIR="$HOME/$SITE" STATE_DIR="$HOME/sto-dorog-integrity/virazh-site" bash sto-dorog-integrity/integrity.sh --baseline | tail -1
 true
 REMOTE
 }
