@@ -1104,3 +1104,45 @@ address{font-style:normal}
 @media (min-width:1080px){.bl-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.bl-tx{padding:22px 24px 26px}.bl-tx b{font-size:20px}}
 .bl-pic.bl-obj{background:#fff;padding:14px 20px}
 .bl-pic.bl-obj img{object-fit:contain;filter:drop-shadow(0 14px 14px rgba(0,0,0,.12))}   /* предметы на прозрачном фоне — целиком, не обрезать */
+
+/* ===== «Новосибирск»: заключение ГИБДД под плитками контактов ===== */
+.nsk-docs{margin-top:12px}
+@media (min-width:1080px) and (max-width:1199px){.nsk-why .wc h3{font-size:18.5px}}   /* «Индивидуальный» в ширину карточки при четырёх в ряд */
+@media (min-width:1080px) and (max-width:1279px){.lq1-num .lq1-c{padding:18px 14px 22px}.lq1-num .lq1-c h3{font-size:19px}.lq1-num .lq1-c b{font-size:26px}}   /* суммы «16 000 ₽» в карточках мотоцикла на ноутбуке */
+/* ===== Статья «Штрафные баллы»: таблица по цветам тяжести — грубые красные, средние оранжевые, мелкие жёлтые ===== */
+.prose table.pt{border-collapse:separate;border-spacing:0;border-radius:var(--r-sm)}
+.pt thead th{background:#141414;color:#fff}
+.pt tbody td{border-bottom:2px solid #fff;vertical-align:middle}
+.pt tr.pt-g td{background:#FBE9EB}
+.pt tr.pt-m td{background:#FFF1E3}
+.pt tr.pt-s td{background:#FFF8DC}
+.pt td.pt-k{color:#fff;font-weight:800}
+.pt tr.pt-g td.pt-k{background:var(--red)}
+.pt tr.pt-m td.pt-k{background:#C2570A}
+.pt tr.pt-s td.pt-k{background:#F2B705;color:#1A1A1A}
+.pt tbody td:last-child{text-align:center}
+.pt tbody td:last-child strong{display:inline-grid;place-items:center;min-width:38px;height:38px;padding:0 8px;border-radius:999px;font:900 italic 18px/1 var(--font);color:#fff;background:var(--red)}
+.pt tr.pt-m td:last-child strong{background:#C2570A}
+.pt tr.pt-s td:last-child strong{background:#F2B705;color:#1A1A1A}
+@media (max-width:640px){   /* на телефоне (список из стиля статьи): подложка на всю строку, группа — цветной полосой */
+  .pt tbody tr.pt-g,.pt tbody tr.pt-m,.pt tbody tr.pt-s{padding:10px 12px;border-bottom:2px solid #fff;align-items:center}
+  .pt tbody tr.pt-g{background:#FBE9EB}.pt tbody tr.pt-m{background:#FFF1E3}.pt tbody tr.pt-s{background:#FFF8DC}
+  .prose .pt tbody tr td{background:none}
+  .prose .pt tbody tr td.pt-k{flex-basis:calc(100% + 24px);margin:-10px -12px 8px;padding:10px 12px}
+  .prose .pt tr.pt-g td.pt-k{background:var(--red)}.prose .pt tr.pt-m td.pt-k{background:#C2570A}.prose .pt tr.pt-s td.pt-k{background:#F2B705}
+}
+
+/* мобильный +7 983 234-52-52 (тот же 34-52-52, владелец сайта 16.11.2026): подпись с WhatsApp и Telegram в одну строку */
+.ct .ct-in a{display:inline;text-decoration:underline;text-underline-offset:2px}
+/* Новосибирск: три офиса — текст слева, лента фото справа; фото одной высоты и целиком (без обрезки), лента листается вбок */
+.nsk-ofs{margin-top:12px;display:grid;gap:12px}
+.nsk-of{display:grid;gap:12px;grid-template-columns:minmax(0,1fr);background:var(--grey);border-radius:var(--r);padding:16px}
+.nsk-of-tx{display:grid;gap:8px;align-content:start;padding:4px 2px}
+.nsk-of-tx h3{margin:0;font:900 italic 22px/1.15 var(--font);text-transform:uppercase;color:var(--head)}
+.nsk-of-tx p{margin:0;font-size:15px;line-height:1.5}
+.nsk-of-tx .btn{margin-top:6px}
+.nsk-of-ph{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:4px}
+.nsk-of-ph figure{margin:0;position:relative;flex:none;scroll-snap-align:start}
+.nsk-of-ph img{display:block;height:240px;width:auto;border-radius:var(--r-sm);background:#fff}
+.nsk-of-ph figcaption{position:absolute;left:10px;bottom:10px;background:#fff;color:var(--ink);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--font)}
+@media (min-width:1080px){.nsk-of{grid-template-columns:280px minmax(0,1fr);padding:20px;gap:20px}.nsk-of-ph img{height:300px}.nsk-of-tx .btn{justify-self:start}}

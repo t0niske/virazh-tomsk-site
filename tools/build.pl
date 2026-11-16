@@ -379,6 +379,8 @@ for my $file (@pages) {
     if (my $ph = $m{phone}) {
       my ($disp, $tel) = split /\s*\|\s*/, $ph;
       for (@v{qw(header overlays)}) { s/\+7 \(3822\) 34-52-52/$disp/g; s/tel:\+73822345252/tel:$tel/g }
+      # и в нижней форме записи «Начните с одного звонка» (она внутри содержимого страницы)
+      $v{content} =~ s{(<section class="sec final".*?</section>)}{ (my $f = $1) =~ s/\+7 \(3822\) 34-52-52/$disp/g; $f =~ s/tel:\+73822345252/tel:$tel/g; $f }se;
     }
     ($html = $layout) =~ s/\{\{(\w+)\}\}/exists $v{$1} ? $v{$1} : "{{$1}}"/ge;
     # служебные комментарии (TODO, разметка блоков) остаются только в исходниках

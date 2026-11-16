@@ -495,6 +495,8 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.5)}
 .ftr-contacts dt{font:700 11.5px/1 var(--font);text-transform:uppercase;letter-spacing:.08em;color:#9A9A9A;margin-bottom:6px}
 .ftr-contacts dd{margin:0;color:#fff;line-height:1.5}
 .ftr-contacts dd a{display:block;color:#fff;font-weight:700}
+.ftr-contacts dd .ftr-in{display:block;font-size:13.5px}
+.ftr-contacts dd .ftr-in a{display:inline;text-decoration:underline;text-underline-offset:2px}
 .ftr-city{display:inline-flex;align-items:center;gap:8px;margin-top:20px;color:#fff;font-weight:700;background:#1D1D1D;border-radius:12px;padding:12px 14px}
 .legal-links{display:flex;gap:6px 18px;flex-wrap:wrap}
 
