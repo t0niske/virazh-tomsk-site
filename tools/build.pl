@@ -125,7 +125,7 @@ sub ins_carousel {
   $btn =~ s/ ?\bbtn-sm\b//; $btn =~ s/ ?\bbtn-block\b//;
   return qq{<article class="ins ins-c"$attr>$ph<div class="ins-in"><div class="ins-pills"><span>$gb</span><span>$d{'Машина'}</span></div>}
        . qq{<span class="nm"><b>$sur</b><span>$rest</span></span>}
-       . qq{<div class="ins-st"><div><b>$d{'За рулём'}</b><span>стаж за рулём</span></div></div>}
+       . ($d{'За рулём'} ? qq{<div class="ins-st"><div><b>$d{'За рулём'}</b><span>стаж за рулём</span></div></div>} : '')   # у новых инструкторов стажа ещё нет
        . qq{${btn}Записаться</button></div></article>};
 }
 # limit: полный список живёт на своей странице, в выжимках — только первые карточки

@@ -117,7 +117,11 @@
   // программа страницы: на этих страницах окно записи и нижняя форма сразу выбирают её,
   // даже если у кнопки нет data-signup="…" (значения — как в списке s-cat и в CAT_LABEL ниже)
   const PAGE_CAT = { 'vosstanovlenie-navykov-vozhdeniya': 'vn', 'gostekhnadzor-kategoriya-ai': 'ai', 'perepodgotovka-i-povyshenie-kvalifikatsii': 'pro', novosibirsk: 'nsk' };
-  const pageCat = PAGE_CAT[location.pathname.replace(/(\/index\.html|\.html)?\/?$/, '').split('/').pop()] || '';
+  const pageSlug = location.pathname.replace(/(\/index\.html|\.html)?\/?$/, '').split('/').pop();
+  const pageCat = PAGE_CAT[pageSlug] || '';
+  // посадочные категорий: их программа — для кнопок без своей (шапка, меню, нижняя панель, шаги); кнопка со своей программой важнее
+  const PAGE_DEF = { 'kategoriya-b-akpp': 'bA', 'kategoriya-b-mkpp': 'bM', 'kategoriya-a-motocikl': 'a' };
+  const pageDef = PAGE_DEF[pageSlug] || '';
   // в Новосибирске томские цены в списке окна записи не показываем: стоимость там уточняют по телефону
   if (pageCat === 'nsk' && $('s-cat')) [...$('s-cat').options].forEach(o => { o.textContent = o.textContent.replace(/\s+—\s+[\d\s ]+₽$/, ''); });
 
@@ -322,7 +326,7 @@
     if (s && sheet) {
       // пункт программы страницы, иначе кнопки; без программы — первый пункт (иначе оставался выбор с прошлого открытия).
       // Программа страницы важнее: на «Восстановлении навыков» карточки машин и инструкторов несут bA/bM, а нужна vn (машина уйдёт темой)
-      const sel = $('s-cat'), want = pageCat || s.dataset.signup;
+      const sel = $('s-cat'), want = pageCat || s.dataset.signup || pageDef;
       sel.value = [...sel.options].some(o => o.value === want) ? want : sel.options[0].value;
       $('sheetSub').textContent = s.dataset.topic ? s.dataset.topic + '. Перезвоним в рабочее время' : 'Перезвоним в рабочее время и подберём группу';
       const f = $('sheetForm'); f.hidden = false; $('sheetOk').style.display = 'none';
