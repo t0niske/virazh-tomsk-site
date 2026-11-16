@@ -73,21 +73,18 @@ final class Telegram
         }
     }
 
-    /** Запрос к Bot API. Возвращает разобранный JSON или null. */
+    /**
+     * Запрос к Bot API. Возвращает разобранный JSON или null.
+     * С хостинга REG.RU api.telegram.org по IPv4 не открывается (соединение висит до таймаута), по IPv6 — сразу
+     * (проверено 16.11.2026). Поэтому, если соединиться не удалось, повторяем запрос только по IPv6.
+     */
     public static function request(string $token, string $method, array $params = []): ?array
     {
-        $ch = curl_init("https://api.telegram.org/bot$token/$method");
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($params, JSON_UNESCAPED_UNICODE),
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT => 10,
-        ] + Tls::options((string) Env::get('TELEGRAM_CA_FILE', '')));
-        $body = curl_exec($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
+        [$body, $error] = self::post($token, $method, $params, null);
+
+        if ($body === false && defined('CURL_IPRESOLVE_V6')) {
+            [$body, $error] = self::post($token, $method, $params, CURL_IPRESOLVE_V6);
+        }
 
         if ($body === false) {
             Log::error('Telegram: нет связи — ' . $error);
@@ -96,5 +93,30 @@ final class Telegram
         }
 
         return json_decode((string) $body, true) ?: null;
+    }
+
+    /** @return array{0: string|false, 1: string} тело ответа (false — нет связи) и текст ошибки curl */
+    private static function post(string $token, string $method, array $params, ?int $ipResolve): array
+    {
+        $ch = curl_init("https://api.telegram.org/bot$token/$method");
+        $options = [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($params, JSON_UNESCAPED_UNICODE),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT => 10,
+        ] + Tls::options((string) Env::get('TELEGRAM_CA_FILE', ''));
+
+        if ($ipResolve !== null) {
+            $options[CURLOPT_IPRESOLVE] = $ipResolve;
+        }
+
+        curl_setopt_array($ch, $options);
+        $body = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        return [$body, $error];
     }
 }
