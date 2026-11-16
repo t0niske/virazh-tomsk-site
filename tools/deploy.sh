@@ -249,6 +249,15 @@ check() {
   grep -q 'noindex' <<<"$home" && { echo "ОШИБКА главная закрыта от индексации"; bad=$((bad + 1)); }
   grep -q 'stats.js' <<<"$home" || { echo "ОШИБКА на главной нет stats.js (Метрика)"; bad=$((bad + 1)); }
   curl -s -A "$ua" "$base/sitemap.xml" | grep -q '<urlset' || { echo "ОШИБКА нет sitemap.xml"; bad=$((bad + 1)); }
+  # заголовки безопасности из .htaccess — на главной и на обычной странице (страницы может отдавать nginx мимо .htaccess)
+  local u hdr h
+  for u in / /obuchenie; do
+    hdr=$(curl -sI -A "$ua" --max-time 20 "$base$u")
+    for h in 'strict-transport-security: max-age=' 'x-content-type-options: nosniff' \
+             'referrer-policy: strict-origin-when-cross-origin' "content-security-policy: frame-ancestors 'self' metrika.yandex.ru"; do
+      n=$((n + 1)); grep -qi "^$h" <<<"$hdr" || { echo "ОШИБКА $u: нет заголовка «$h»"; bad=$((bad + 1)); }
+    done
+  done
   echo "Проверено адресов: $n. Ошибок: $bad"
   [ "$bad" = 0 ]
 }

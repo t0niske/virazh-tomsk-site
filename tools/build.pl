@@ -500,7 +500,18 @@ AddDefaultCharset utf-8
 Options -Indexes -MultiViews
 DirectorySlash Off
 ErrorDocument 404 /404.html
-# Безопасность: на том же аккаунте хостинга лежат старые взломанные сайты. На этом сайте исполняется только send-form.php;
+# Заголовки безопасности (решение владельца 16.11). HSTS сначала на неделю — когда HTTPS проверен, продлить до года
+# (max-age=31536000); includeSubDomains и preload пока не ставим. Во фрейме сайт можно показать только самому сайту
+# и интерфейсу Яндекс Метрики — иначе не работают вебвизор и карты кликов (список — yandex.ru/support/metrica/code/
+# install-counter-csp.html, «Адреса для frame-ancestors»). X-Frame-Options не ставим: он не умеет список доменов.
+# Полной Content-Security-Policy нет — она сломала бы Метрику, карту (Leaflet и OSM) и ИИ-чат.
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=604800"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Content-Security-Policy "frame-ancestors 'self' metrika.yandex.ru metrika.yandex.by metrika.yandex.com metrika.yandex.com.tr metrika.yandex.kz metrika.yandex.uz metrika.yandex metrika.ya.ru metrica.yandex.ru metrica.yandex.by metrica.yandex.com metrica.yandex.com.tr metrica.yandex.kz metrica.yandex metrica.ya.ru analytics.yandex.ru analytics.yandex.by analytics.yandex.com analytics.yandex.com.tr analytics.yandex.kz metr.yandex.ru metr.yandex.by metr.yandex.com metr.yandex.com.tr metr.yandex.kz"
+</IfModule>
+# Безопасность: на том же аккаунте хостинга лежат старые взломанные сайты. На этом сайте исполняются только crm.php и send-form.php;
 # любой другой PHP-файл (и «x.php.jpg») не запускается и не отдаётся, даже если его подбросят в images/ или media/
 <FilesMatch "(?i)\.(?:php[0-9]?|phtml|pht|phar|phps|inc)(?:\.|$)">
   <IfModule !mod_authz_core.c>
