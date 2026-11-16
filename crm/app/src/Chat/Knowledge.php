@@ -64,11 +64,13 @@ final class Knowledge
         return rtrim(defined('VIRAZH_SITE') ? (string) constant('VIRAZH_SITE') : (string) Env::get('VIRAZH_SITE', ''), '/');
     }
 
-    /** HTML ответа → текст: ссылки на страницы сайта — [текст](/адрес), кнопки и разметка — прочь. */
+    /** HTML ответа → текст: ссылки на страницы сайта — [текст](/адрес), на другие сайты — «текст (адрес)», кнопки и разметка — прочь. */
     public static function plain(string $html): string
     {
         $html = preg_replace('~<button\b[^>]*>.*?</button>~su', '', $html) ?? $html;
         $html = preg_replace_callback('~<a\b[^>]*href="(/[^"#]*)"[^>]*>(.*?)</a>~su', static fn (array $m): string => '[' . strip_tags($m[2]) . '](' . $m[1] . ')', $html) ?? $html;
+        // ссылки на другие сайты (демо-урок, WhatsApp) — текст и адрес без https://, кликабельными их делает только сайт
+        $html = preg_replace_callback('~<a\b[^>]*href="https?://([^"#]+)"[^>]*>(.*?)</a>~su', static fn (array $m): string => strip_tags($m[2]) . ' (' . rtrim($m[1], '/') . ')', $html) ?? $html;
         $html = preg_replace('~<a\b[^>]*>(.*?)</a>~su', '$1', $html) ?? $html;
         $html = preg_replace('~</p>\s*<p>|<br\s*/?>~u', "\n", $html) ?? $html;
         $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');

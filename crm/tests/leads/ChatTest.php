@@ -17,6 +17,7 @@ $kb = sys_get_temp_dir() . '/virazh-chat-kb-' . getmypid() . '.json';
 file_put_contents($kb, json_encode(['special' => [], 'chips' => [], 'items' => [
     ['q' => 'Сколько стоит обучение?', 'a' => '<p>Категория B на автомате — <b>66 000&nbsp;₽</b>.</p><p><a href="/tseny/tseny-tomsk">Все цены</a> <button class="btn" data-signup>Записаться</button></p>', 'k' => '', 'w' => 1],
     ['q' => 'Есть ли филиал в Новосибирске?', 'a' => '<p>Да, только категория B — 65 100 ₽.<br>Телефон +7 (383) 205-24-34.</p>', 'k' => '', 'w' => 1],
+    ['q' => 'Есть ли демо-урок?', 'a' => '<p>Да: <a href="https://lk.virazh-tomsk.ru/demolesson" target="_blank" rel="noopener">открыть демо-урок</a>.</p>', 'k' => '', 'w' => 1],
 ]], JSON_UNESCAPED_UNICODE));
 Knowledge::useKb($kb);
 register_shutdown_function(static fn () => @unlink($kb));
@@ -31,6 +32,7 @@ test('Чат: справка — правила Виража и факты с с
     ok(str_contains($prompt, "Да, только категория B — 65 100 ₽.
 Телефон +7 (383) 205-24-34."), 'перенос строки вместо <br>');
     ok(!str_contains($prompt, '<') && !str_contains($prompt, 'Записаться'), 'без HTML и кнопок');
+    ok(str_contains($prompt, 'Да: открыть демо-урок (lk.virazh-tomsk.ru/demolesson).'), 'адрес внешней ссылки остаётся текстом');
     ok(!str_contains($prompt, 'Сто дорог'), 'ни слова о другой школе');
 });
 

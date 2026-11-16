@@ -436,6 +436,8 @@ if ($opt{base}) {   # в CSS адреса картинок и шрифтов а�
     $t =~ s{\[\[позвонить\]\]}{<a class="btn btn-sm" href="tel:+73822345252">Позвонить</a>}g;
     $t =~ s{\[\[вконтакте\]\]}{<a class="btn btn-sm btn-msg btn-vk" href="https://vk.ru/autoschool_virazh_tomsk" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-vk"/></svg>ВКонтакте</a>}g;
     $t =~ s{\[\[max\]\]}{<a class="btn btn-sm btn-msg btn-max" href="https://max.ru/u/f9LHodD0cOIHLwy7TQEKv4KlnVB9EpHeEQRDMUWIxW406e68c6WhU0jCpxI" target="_blank" rel="noopener"><svg width="18" height="18" aria-hidden="true"><use href="#i-max"/></svg>MAX</a>}g;
+    # ссылки на другие сайты (WhatsApp, Telegram, демо-урок) — в новой вкладке, чтобы чат и сайт оставались открытыми
+    $t =~ s{\[([^\]]+)\]\((https?://[^)\s]+)\)}{<a href="$2" target="_blank" rel="noopener">$1</a>}g;
     $t =~ s{\[([^\]]+)\]\(([^)\s]+)\)}{<a href="$2">$1</a>}g;
     $t;
   };
