@@ -17,7 +17,7 @@
 # переносит в него .env и storage/ (база, логи, копии) прежней версии, при первом разе создаёт .env (номера заявок
 # продолжают counter.txt Joomla, ключ ИИ-помощника — из .env «Сто дорог» на сервере), применяет миграции и ДОБАВЛЯЕТ
 # в crontab две строки (прежние не трогаются, копия — ~/deploy-upload/crontab-*.bak). Первого руководителя админки создаёт владелец сам, своим паролем:
-#   ssh … '/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя"'
+#   ssh … '/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя" admin'
 set -euo pipefail
 
 KEY="$HOME/.ssh/virazh_regru"
@@ -205,7 +205,7 @@ check() {
   local base="${1:-https://virazh-tomsk.ru}" ua='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
   local bad=0 n=0
   # code URL → «код итоговый_адрес» с переходами по 301
-  st() { curl -s -o /dev/null -A "$ua" -w '%{http_code} %{redirect_url}' --max-time 20 "$1"; }
+  st() { curl -s -o /dev/null -A "$ua" -w '%{http_code} %{redirect_url}' --max-time 20 "$1" || true; }
   expect() {   # адрес, ожидаемый код, [куда ведёт]
     local r; r=$(st "$base$1"); n=$((n + 1))
     if [[ "$r" != "$2 ${3:+$base$3}"* ]]; then echo "ОШИБКА $1 → $r (ожидалось $2 ${3:-})"; bad=$((bad + 1)); fi
@@ -214,7 +214,7 @@ check() {
   while read -r u; do
     [[ "$u" == /* ]] || continue
     n=$((n + 1))
-    local r; r=$(curl -s -o /dev/null -A "$ua" -L --max-redirs 3 -w '%{http_code}' --max-time 20 "$base$u")
+    local r; r=$(curl -s -o /dev/null -A "$ua" -L --max-redirs 3 -w '%{http_code}' --max-time 20 "$base$u" || true)
     [ "$r" = 200 ] || { echo "ОШИБКА старый адрес $u → $r"; bad=$((bad + 1)); }
   done < tools/old-urls.txt
   expect /index.php 301 /
@@ -237,23 +237,25 @@ check() {
   # безопасность: скрытые файлы и любой PHP, кроме crm.php и send-form.php, не отдаются и не исполняются
   expect /.htaccess 403
   for u in /images/probe.php /media/attachments/probe.phtml /images/probe.php.jpg; do
-    local c; c=$(curl -s -o /dev/null -A "$ua" -w '%{http_code}' --max-time 20 "$base$u"); n=$((n + 1))
+    local c; c=$(curl -s -o /dev/null -A "$ua" -w '%{http_code}' --max-time 20 "$base$u" || true); n=$((n + 1))
     [[ "$c" == 403 || "$c" == 404 ]] || { echo "ОШИБКА $u → $c (ожидалось 403 или 404)"; bad=$((bad + 1)); }
   done
   expect /net-takoj-stranicy 404
   expect /images/2026/03/27/201.webp 200
   expect /media/videos/2023/11/22/img_4385.mp4 200
-  local r; r=$(curl -s -o /dev/null -A "$ua" -w '%{http_code} %{redirect_url}' "https://www.virazh-tomsk.ru/obuchenie"); n=$((n + 1))
+  local r; r=$(curl -s -o /dev/null -A "$ua" -w '%{http_code} %{redirect_url}' "https://www.virazh-tomsk.ru/obuchenie" || true); n=$((n + 1))
   [[ "$r" == "301 https://virazh-tomsk.ru/obuchenie" ]] || { echo "ОШИБКА www → $r"; bad=$((bad + 1)); }
+  r=$(curl -s -o /dev/null -A "$ua" -w '%{http_code} %{redirect_url}' --max-time 20 "http://virazh-tomsk.ru/obuchenie" || true); n=$((n + 1))
+  [[ "$r" == "301 https://virazh-tomsk.ru/obuchenie" ]] || { echo "ОШИБКА http → $r (ожидалось 301 на https)"; bad=$((bad + 1)); }
   curl -s -A "$ua" "$base/robots.txt" | grep -q '^Disallow: /$' && { echo "ОШИБКА robots.txt закрывает сайт"; bad=$((bad + 1)); }
-  local home; home=$(curl -s -A "$ua" "$base/")
+  local home; home=$(curl -s -A "$ua" "$base/" || true)
   grep -q 'noindex' <<<"$home" && { echo "ОШИБКА главная закрыта от индексации"; bad=$((bad + 1)); }
   grep -q 'stats.js' <<<"$home" || { echo "ОШИБКА на главной нет stats.js (Метрика)"; bad=$((bad + 1)); }
   curl -s -A "$ua" "$base/sitemap.xml" | grep -q '<urlset' || { echo "ОШИБКА нет sitemap.xml"; bad=$((bad + 1)); }
   # заголовки безопасности из .htaccess — на главной и на обычной странице (страницы может отдавать nginx мимо .htaccess)
   local u hdr h
   for u in / /obuchenie; do
-    hdr=$(curl -sI -A "$ua" --max-time 20 "$base$u")
+    hdr=$(curl -sI -A "$ua" --max-time 20 "$base$u" || true)
     for h in 'strict-transport-security: max-age=' 'x-content-type-options: nosniff' \
              'referrer-policy: strict-origin-when-cross-origin' "content-security-policy: frame-ancestors 'self' metrika.yandex.ru"; do
       n=$((n + 1)); grep -qi "^$h" <<<"$hdr" || { echo "ОШИБКА $u: нет заголовка «$h»"; bad=$((bad + 1)); }

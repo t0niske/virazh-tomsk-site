@@ -541,13 +541,17 @@ RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F]
 # crm.php, send-form.php и index.php разрешены только в корне: такие файлы в подпапках (подброшенные) — 403.
 # index.php в корне не исполняется никогда: любой запрос к нему переадресуют правила ниже
 RewriteRule ^.+/(?:crm|index|send-form)\.php - [F,NC]
+# http → https (старая Joomla делала это сама, force_ssl = 2). Apache стоит за nginx хостинга: %{HTTPS} у него всегда off,
+# схему он знает из заголовка X-Forwarded-Proto (проверено 16.11). Условие «=http», а не «!https»: если заголовок
+# пропадёт, переадресации просто не будет, а не бесконечный круг
+RewriteCond %{HTTP:X-Forwarded-Proto} =http
+RewriteRule ^ https://virazh-tomsk.ru%{REQUEST_URI} [L,R=301]
+# без www (www с http nginx хостинга сам ведёт на https://virazh-tomsk.ru)
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://virazh-tomsk.ru%{REQUEST_URI} [L,R=301]
 # система заявок: админка /crm и /crm/…, приём заявок /api/lead, метка формы /api/form-ts, счётчик /api/visit, ИИ-помощник /api/chat,
 # вебхук MAX — в crm.php
 RewriteRule ^(?:crm(?:/.*)?|api/(?:lead|visit|chat|form-ts)|max/webhook)$ /crm.php [L]
-# без www. С http на https переводит nginx хостинга; условие %{HTTPS} здесь не годится: Apache стоит за nginx,
-# всегда видит http и зациклил бы переадресацию
-RewriteCond %{HTTP_HOST} ^www\. [NC]
-RewriteRule ^ https://virazh-tomsk.ru%{REQUEST_URI} [L,R=301]
 HT
   # перенесённые страницы — первыми и сразу на итоговый адрес: /tseny/ и /index.php/kontakty/tomsk — одна переадресация, без цепочки
   $ht .= "# Перенесённые страницы (также со слэшем на конце и с префиксом index.php/ старого сайта)\n";
