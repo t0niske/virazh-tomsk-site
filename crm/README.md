@@ -49,7 +49,7 @@
 perl tools/build.pl --out=C:/Users/anton/dev/virazh-deploy-test
 cp crm/.env.example crm/.env          # APP_ENV=local, почта/MAX/Telegram пишутся в crm/storage/logs/
 powershell -ExecutionPolicy Bypass -File tools/dev-server.ps1      # http://localhost:8796, админка /crm
-php crm/database/create-manager.php логин "Имя" admin              # первый руководитель, пароль спросит
+php crm/database/create-manager.php логин "Имя"                    # первый руководитель (роль manager), пароль спросит
 php crm/tests/leads/run.php                                        # тесты (75), своя временная база
 ```
 
@@ -69,5 +69,6 @@ php crm/tests/leads/run.php                                        # тесты 
 
 - `check` — кроме адресов сайта проверяет `/api/lead`, `/api/visit`, `/crm`.
 
-Первого руководителя создаёт владелец сам (пароль вводит он): `/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя" admin` (admin — руководитель).
+Первого руководителя создаёт владелец сам (пароль вводит он): `/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя"` — роль по умолчанию `manager` (руководитель:
+видит «Отчёты», «Настройки», «Сотрудники», «Журнал»). Третий параметр `admin` — рядовой администратор, этих разделов у него нет.
 Остальных сотрудников руководитель добавляет в админке. MAX и Telegram включаются токенами в `~/virazh-crm/.env` (`cron/README.md`).
