@@ -143,7 +143,7 @@ test('Кнопка «Адреса классов» показывает режи
         Settings::reset();
         $text = Texts::render(Settings::get('faq_addresses'), ['work_time' => Schedule::fromSettings()->workTimeText()]);
         ok(str_ends_with($text, 'Офис в Томске работает Пн–Пт с 9:00 до 18:00.'), $text);
-        ok(str_contains($text, 'Новосибирск, пр. Карла Маркса, 57'), 'офис в Новосибирске есть в адресах');
+        ok(str_contains($text, 'Новосибирск: пр. Карла Маркса, 57') && str_contains($text, 'ул. Зорге, 6') && str_contains($text, 'Краснообск'), 'три офиса в Новосибирске есть в адресах');
         ok(str_contains(Settings::get('faq_groups'), 'подскажет администратор'), 'расписание групп — у администратора (в BRANDCORE его нет)');
     } finally {
         putenv('WORK_DAYS=1-6');
