@@ -15,8 +15,8 @@
 # Заявки принимает система заявок (CRM, папка crm/ репозитория): её код лежит вне сайта, в ~/virazh-crm, сайт
 # заходит в неё через crm.php. stage кладёт новый код в ~/virazh-crm-new и прогоняет на сервере её тесты; switch
 # переносит в него .env и storage/ (база, логи, копии) прежней версии, при первом разе создаёт .env (номера заявок
-# продолжают counter.txt Joomla), применяет миграции и ДОБАВЛЯЕТ в crontab две строки (прежние строки не трогаются,
-# копия crontab — ~/deploy-upload/crontab-*.bak). Первого руководителя админки создаёт владелец сам, своим паролем:
+# продолжают counter.txt Joomla, ключ ИИ-помощника — из .env «Сто дорог» на сервере), применяет миграции и ДОБАВЛЯЕТ
+# в crontab две строки (прежние не трогаются, копия — ~/deploy-upload/crontab-*.bak). Первого руководителя админки создаёт владелец сам, своим паролем:
 #   ssh … '/opt/php/8.3/bin/php ~/virazh-crm/database/create-manager.php логин "Имя"'
 set -euo pipefail
 
@@ -138,6 +138,17 @@ if [ ! -f virazh-crm/.env ]; then
   chmod 600 virazh-crm/.env
   echo "Создан ~/virazh-crm/.env: письма на $(grep '^MAIL_TO=' virazh-crm/.env | cut -d= -f2), первая заявка — №$((c0 + 1))"
 fi
+# ИИ-помощник: ключ DeepSeek общий с сайтом «Сто дорог» — копируется на сервере из его .env, наружу не выводится
+if ! grep -q '^DEEPSEEK_API_KEY=..*' virazh-crm/.env; then
+  k=$(grep -m1 '^DEEPSEEK_API_KEY=' www/sto-dorog-tomsk.ru/.env 2>/dev/null | cut -d= -f2- || true)
+  if [ -n "$k" ]; then
+    awk -v k="$k" '/^DEEPSEEK_API_KEY=/ { print "DEEPSEEK_API_KEY=" k; next } { print }' virazh-crm/.env > virazh-crm/.env.tmp       && chmod 600 virazh-crm/.env.tmp && mv virazh-crm/.env.tmp virazh-crm/.env
+    echo "ИИ-помощник: ключ DeepSeek взят из настроек «Сто дорог»"
+  else
+    echo "ИИ-помощник выключен: ключа DeepSeek нет (на сайте отвечают готовые ответы)"
+  fi
+  unset k
+fi
 "$PHP" virazh-crm/database/migrate.php
 chmod 600 virazh-crm/storage/*.sqlite 2>/dev/null || true
 
@@ -217,6 +228,7 @@ check() {
   expect /send-form.php 405
   expect /api/lead 405
   expect /api/visit 204
+  expect /api/chat 405
   expect /crm 303 /crm/login
   expect /crm/login 200
   expect /crm.php 404
@@ -246,5 +258,5 @@ case "${1:-}" in
   switch) switch_ ;;
   rollback) rollback ;;
   check) check "${2:-}" ;;
-  *) sed -n '2,21p' "$0"; exit 1 ;;
+  *) sed -n '2,20p' "$0"; exit 1 ;;
 esac

@@ -36,7 +36,7 @@ final class ChatController
             );
         } catch (\Throwable $e) {
             Log::error('Ошибка чат-бота', $e);
-            [$code, $body] = [500, ['reply' => 'Не получилось ответить. Позвоните нам: +7 (983) 234-56-56.', 'operator' => true]];
+            [$code, $body] = [500, ['reply' => 'Не получилось ответить. Позвоните нам: +7 (3822) 34-52-52.', 'operator' => true, 'fallback' => true]];
         }
 
         LeadController::json($code, $body);

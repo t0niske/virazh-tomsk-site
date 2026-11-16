@@ -280,6 +280,8 @@
       data.append('page_url', location.href);
       Object.keys(vz.utm || {}).forEach(k => data.append(k, vz.utm[k]));
       if (vz.vid) { data.append('visitor_id', vz.vid); data.append('visit_id', vz.sid); }
+      // переписка с ИИ-помощником в этой вкладке (bot.js) — CRM покажет её в карточке заявки
+      try { const c = sessionStorage.getItem('vz_chat'); if (c) data.append('chat_id', c); } catch (e) { /* без хранилища */ }
       data.append('website', trap.querySelector('input').value);
       const label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Отправляем…';

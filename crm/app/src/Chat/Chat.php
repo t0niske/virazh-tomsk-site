@@ -52,7 +52,8 @@ final class Chat
     {
         $model = self::model();
 
-        if ($model === null) {
+        // без ключа DeepSeek или без справки с сайта ИИ не отвечает — на сайте отвечают готовые ответы
+        if ($model === null || self::systemPrompt() === '') {
             return [503, self::fallback('Чат сейчас не работает.')];
         }
 
@@ -128,16 +129,10 @@ final class Chat
         return $messages;
     }
 
-    /** Справка от сайта (App\Site\ChatKnowledge), пока её нет — короткая своя. */
+    /** Справка для ИИ: правила и факты с сайта (Knowledge); пустая строка — справки нет, чат не отвечает. */
     public static function systemPrompt(): string
     {
-        if (class_exists(\App\Site\ChatKnowledge::class)) {
-            return \App\Site\ChatKnowledge::systemPrompt();
-        }
-
-        return 'Ты бот автошколы «Сто дорог» в Томске. Отвечай по-русски, коротко и вежливо. Не выдумывай цены, даты и скидки, '
-            . 'не спрашивай телефон, имя и документы. Если не знаешь ответа, просят человека или хотят записаться — '
-            . 'добавь в конце ответа строку ' . self::OPERATOR_TAG . '. На вопрос «ты человек?» честно отвечай, что ты бот.';
+        return Knowledge::systemPrompt() ?? '';
     }
 
     /** Заявка из чата («Позвоните мне»): связать чат и заявку. */
@@ -261,12 +256,17 @@ final class Chat
         return (int) $stmt->fetchColumn() >= $limit;
     }
 
-    /** @return array{reply: string, operator: bool} */
+    /**
+     * Ответ, когда ИИ не ответил. fallback: true — сайт вместо этого текста показывает свой готовый ответ.
+     *
+     * @return array{reply: string, operator: bool, fallback: bool}
+     */
     private static function fallback(string $reason): array
     {
         return [
             'reply' => "$reason Позвоните нам: " . Phone::format(Settings::get('school_phone')) . ' или оставьте телефон — перезвоним.',
             'operator' => true,
+            'fallback' => true,
         ];
     }
 
@@ -282,8 +282,8 @@ final class Chat
         Settings::set('cron.deepseek_402', $today);
 
         try {
-            Telegram::send('⚠️ Чат-бот на сайте не отвечает: на балансе DeepSeek закончились деньги (ошибка 402). '
-                . 'Посетители видят номер телефона и кнопку «Позвоните мне». Пополните баланс на platform.deepseek.com.');
+            Telegram::send('⚠️ ИИ-помощник на сайте Виража не отвечает: на балансе DeepSeek закончились деньги (ошибка 402). '
+                . 'Пока посетителям отвечают готовые ответы помощника. Пополните баланс на platform.deepseek.com (ключ общий с сайтом «Сто дорог»).');
         } catch (\Throwable $e) {
             Log::error('Telegram о балансе DeepSeek', $e);
         }

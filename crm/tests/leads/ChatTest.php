@@ -4,12 +4,47 @@ declare(strict_types=1);
 
 use App\Chat\Chat;
 use App\Chat\DeepSeek;
+use App\Chat\Knowledge;
 use App\Chat\Redactor;
 use App\Leads\Clock;
 use App\Leads\Leads;
 use App\Support\Db;
 
 const CHAT_ID = 'chatWindowAAAAAAAAAAAA';
+
+// Справка для ИИ — из базы помощника на сайте (assets/js/bot-kb.json); в тестах — своя маленькая база.
+$kb = sys_get_temp_dir() . '/virazh-chat-kb-' . getmypid() . '.json';
+file_put_contents($kb, json_encode(['special' => [], 'chips' => [], 'items' => [
+    ['q' => 'Сколько стоит обучение?', 'a' => '<p>Категория B на автомате — <b>66 000&nbsp;₽</b>.</p><p><a href="/tseny/tseny-tomsk">Все цены</a> <button class="btn" data-signup>Записаться</button></p>', 'k' => '', 'w' => 1],
+    ['q' => 'Есть ли филиал в Новосибирске?', 'a' => '<p>Да, только категория B — 65 100 ₽.<br>Телефон +7 (383) 205-24-34.</p>', 'k' => '', 'w' => 1],
+]], JSON_UNESCAPED_UNICODE));
+Knowledge::useKb($kb);
+register_shutdown_function(static fn () => @unlink($kb));
+
+test('Чат: справка — правила Виража и факты с сайта без разметки', function (): void {
+    $prompt = Chat::systemPrompt();
+    ok(str_contains($prompt, 'помощник автошколы «Авто-Вираж»'), 'правила Виража');
+    ok(str_contains($prompt, 'Новосибирск') && str_contains($prompt, 'никогда их не смешивай'), 'правило про два города');
+    ok(str_contains($prompt, "В: Сколько стоит обучение?
+О: Категория B на автомате — 66 000 ₽.
+[Все цены](/tseny/tseny-tomsk)"), $prompt);
+    ok(str_contains($prompt, "Да, только категория B — 65 100 ₽.
+Телефон +7 (383) 205-24-34."), 'перенос строки вместо <br>');
+    ok(!str_contains($prompt, '<') && !str_contains($prompt, 'Записаться'), 'без HTML и кнопок');
+    ok(!str_contains($prompt, 'Сто дорог'), 'ни слова о другой школе');
+});
+
+test('Чат: без справки с сайта ИИ не отвечает (503), сайт показывает готовые ответы', function () use ($kb): void {
+    fakeModel();
+    Knowledge::useKb(sys_get_temp_dir() . '/net-takogo-fajla.json');
+    try {
+        [$code, $body] = Chat::handle(CHAT_ID, 'Сколько стоит?', '10.9.9.9');
+        eq(503, $code);
+        eq(true, $body['fallback']);
+    } finally {
+        Knowledge::useKb($kb);
+    }
+});
 
 /** Заглушка DeepSeek: запоминает, что ей отправили, отвечает заданным текстом или ошибкой. */
 final class FakeModel
@@ -126,6 +161,7 @@ test('Чат: нет денег (402) — вежливый ответ с тел�
     [$code, $body] = Chat::handle(CHAT_ID, 'Сколько стоит?', '10.4.4.4');
     eq(200, $code);
     ok(str_contains($body['reply'], 'Не получилось ответить. Позвоните нам: +7 (983) 234-56-56') && $body['operator'] === true, $body['reply']);
+    eq(true, $body['fallback'], 'сайт покажет свой готовый ответ');
 
     Chat::handle(CHAT_ID, 'Ау?', '10.4.4.4');
     $telegram = (string) file_get_contents("$dir/telegram.log");

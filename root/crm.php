@@ -1,6 +1,6 @@
 <?php
 // Вход в систему заявок «Авто-Вираж»: админка /crm, приём заявок /api/lead и /send-form.php, счётчик /api/visit,
-// вебхук MAX /max/webhook. Файл лежит в корне сайта; код, база и настройки (.env) — вне сайта:
+// ИИ-помощник /api/chat, вебхук MAX /max/webhook. Файл лежит в корне сайта; код, база и настройки (.env) — вне сайта:
 // на хостинге ~/virazh-crm (рядом с ~/www), локально — путь из переменной окружения VIRAZH_CRM.
 declare(strict_types=1);
 
@@ -11,6 +11,8 @@ if (!is_file($root . '/app/bootstrap.php')) {
     echo 'Система заявок временно недоступна. Позвоните нам: +7 (3822) 34-52-52';
     exit;
 }
+// корень сайта: отсюда ИИ-помощник берёт справку — базу готовых ответов assets/js/bot-kb.json (crm/app/src/Chat/Knowledge.php)
+define('VIRAZH_SITE', __DIR__);
 require $root . '/app/bootstrap.php';
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';

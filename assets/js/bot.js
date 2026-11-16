@@ -1,6 +1,8 @@
 /* Чат-помощник «Авто-Вираж».
-   Отвечает по базе bot-kb.json: её собирает tools/build.pl из bot/answers.md и блоков «Частые вопросы» на страницах.
-   Поиск идёт прямо в браузере — переписка никуда не отправляется и не сохраняется. */
+   На боевом сайте (и локально) вопрос сначала уходит ИИ-помощнику: POST /api/chat → система заявок (crm/app/src/Chat,
+   DeepSeek). Его справка — правила crm/content/chat-rules.txt и эта же база ответов. Телефоны и почту сервер вырезает.
+   Если ИИ не ответил (предпросмотр без сервера, нет ключа, сбой, лимит) — отвечает поиск по базе прямо в браузере.
+   База bot-kb.json: её собирает tools/build.pl из bot/answers.md и блоков «Частые вопросы» на страницах. */
 (function () {
   'use strict';
   const panel = document.getElementById('bot');
@@ -147,17 +149,23 @@
     if (who === 'me') m.textContent = html; else m.innerHTML = html;
     log.appendChild(m);
     log.scrollTop = log.scrollHeight;
+    return m;
   }
   let prev = null;   // о чём спрашивали в прошлый раз — для коротких уточнений
   const chip = q =>`<button class="bot-chip" type="button" data-ask="${esc(q)}">${esc(q)}</button>`;
   function special(name) { return (KB && KB.special[name]) || ''; }
-  function answer(text) {
-    const digits = text.replace(/\D/g, '');
-    if (digits.length >= 10) return special('телефон');
-    const low = text.toLowerCase();
-    const words = tokens(text).length;
+  // служебные ответы: номер телефона в чате, «спасибо», «привет» — сразу из базы, без ИИ
+  function service(text) {
+    if (text.replace(/\D/g, '').length >= 10) return special('телефон');
+    const low = text.toLowerCase(), words = tokens(text).length;
     if (/спасиб|благодар/.test(low) && words <= 3) return special('спасибо');
     if (/^(привет|здравствуй|добр(ый|ое)|хай|ау|алло)/.test(low.trim()) && words <= 2) return special('приветствие');
+    return '';
+  }
+  function answer(text) {
+    const svc = service(text);
+    if (svc) return svc;
+    const low = text.toLowerCase();
     // уточнение к прошлому вопросу: «а на б?», «а на механике?», «а сколько стоит?»
     let qt = tokens(text);
     const cats = qt.filter(isCat), topic = qt.filter(t => !isCat(t));
@@ -176,10 +184,57 @@
       .filter(r => res.find(x => x.it === r.it).score >= Math.max(0.42, top.score * 0.75)) : [];
     return top.it.a + (more.length ? `<div class="bot-rel"><span>Ещё по теме:</span>${more.map(r => chip(r.it.q)).join('')}</div>` : '');
   }
+  // ---------- ИИ-помощник ----------
+  // только там, где есть сервер системы заявок: на предпросмотре GitHub Pages сразу отвечает поиск по базе
+  let aiOn = !!(window.fetch && window.JSON && window.crypto && window.crypto.getRandomValues)
+    && (/(^|\.)virazh-tomsk\.ru$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname));
+  function chatId() {          // своё окно чата на каждую вкладку: история разговора — на сервере, по этому номеру
+    let id = '';
+    try { id = sessionStorage.getItem('vz_chat') || ''; } catch (e) { id = ''; }
+    if (!/^[A-Za-z0-9_-]{16,40}$/.test(id)) {
+      const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', a = new Uint8Array(22);
+      window.crypto.getRandomValues(a);
+      id = Array.prototype.map.call(a, b => ABC.charAt(b & 63)).join('');
+      try { sessionStorage.setItem('vz_chat', id); } catch (e) { /* без хранилища — новый номер на каждый вопрос */ }
+    }
+    return id;
+  }
+  // ответ ИИ — простой текст: экранируем, разрешаем только **жирный** и ссылки на страницы этого сайта [текст](/адрес)
+  function aiHtml(text) {
+    return esc(text).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>')
+      .replace(/\[([^\]\n]{1,80})\]\((\/[a-z0-9\/-]*)\)/g, '<a href="$2">$1</a>')
+      .split(/\n{2,}/).map(p => '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>').join('');
+  }
+  function askAi(text) {      // → {reply, operator} или null (тогда отвечает поиск по базе)
+    const ctrl = window.AbortController ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), 25000) : 0;
+    return fetch('/api/chat', {
+      method: 'POST', credentials: 'same-origin', signal: ctrl ? ctrl.signal : undefined,
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ chat_id: chatId(), message: text.slice(0, 500) })
+    }).then(r => {
+      if (r.status === 503 || r.status === 404 || r.status === 405) aiOn = false;   // ИИ выключен — до конца визита не спрашиваем
+      return r.ok ? r.json() : null;
+    }).then(j => (j && typeof j.reply === 'string' && j.reply.trim() && !j.fallback ? j : null))
+      .catch(() => null)
+      .then(j => { clearTimeout(timer); return j; });
+  }
+
+  let busy = false;
   function ask(text) {
+    if (busy) return;          // ждём ответа на прошлый вопрос
     say('me', text);
-    load().then(() => setTimeout(() => say('bot', answer(text)), 250))
-      .catch(() => say('bot', 'Не получилось загрузить ответы. Позвоните нам: <a href="tel:+73822345252">+7 (3822) 34-52-52</a>.'));
+    load().then(() => {
+      const local = answer(text);
+      if (!aiOn || service(text)) { setTimeout(() => say('bot', local), 250); return; }
+      busy = true;
+      const wait = say('bot', 'Печатаю ответ…');
+      askAi(text).then(r => {
+        wait.innerHTML = r ? aiHtml(r.reply) + (r.operator ? special('оператор') : '') : local;
+        log.scrollTop = log.scrollHeight;
+        busy = false;
+      });
+    }).catch(() => say('bot', 'Не получилось загрузить ответы. Позвоните нам: <a href="tel:+73822345252">+7 (3822) 34-52-52</a>.'));
   }
 
   let opener = null;
@@ -208,7 +263,7 @@
   form.addEventListener('submit', e => {
     e.preventDefault();
     const t = input.value.trim();
-    if (!t) return;
+    if (!t || busy) return;   // пока помощник печатает, вопрос остаётся в поле
     input.value = '';
     ask(t);
   });

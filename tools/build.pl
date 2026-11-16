@@ -526,8 +526,8 @@ RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F]
 # crm.php, send-form.php и index.php разрешены только в корне: такие файлы в подпапках (подброшенные) — 403.
 # index.php в корне не исполняется никогда: любой запрос к нему переадресуют правила ниже
 RewriteRule ^.+/(?:crm|index|send-form)\.php - [F,NC]
-# система заявок: админка /crm и /crm/…, приём заявок /api/lead, счётчик /api/visit, вебхук MAX — в crm.php
-RewriteRule ^(?:crm(?:/.*)?|api/(?:lead|visit)|max/webhook)$ /crm.php [L]
+# система заявок: админка /crm и /crm/…, приём заявок /api/lead, счётчик /api/visit, ИИ-помощник /api/chat, вебхук MAX — в crm.php
+RewriteRule ^(?:crm(?:/.*)?|api/(?:lead|visit|chat)|max/webhook)$ /crm.php [L]
 # без www. С http на https переводит nginx хостинга; условие %{HTTPS} здесь не годится: Apache стоит за nginx,
 # всегда видит http и зациклил бы переадресацию
 RewriteCond %{HTTP_HOST} ^www\. [NC]
