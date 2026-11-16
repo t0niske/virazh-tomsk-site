@@ -10,12 +10,14 @@ namespace App\Support;
  */
 final class EnvFile
 {
-    /** @param array<string, string> $values */
+    /** @param array<string, string|int> $values числа (например, ID чата Telegram) записываются как текст */
     public static function set(string $path, array $values): void
     {
         $text = is_file($path) ? (string) file_get_contents($path) : '';
 
         foreach ($values as $key => $value) {
+            $value = (string) $value;
+
             if (!preg_match('/^[A-Z][A-Z0-9_]*$/', $key) || preg_match('/[\r\n]/', $value)) {
                 throw new \InvalidArgumentException("Недопустимое значение для $key");
             }

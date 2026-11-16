@@ -78,7 +78,8 @@ if (in_array('--install', $argv, true)) {
         exit("Боту пока никто не писал. Откройте бота в Telegram и нажмите «Старт» (или добавьте его в группу и напишите там любое сообщение), затем запустите команду снова.\n");
     }
 
-    $ids = array_keys($chats);
+    // ключи-ID чатов PHP превращает в числа — дальше работаем с текстом
+    $ids = array_map('strval', array_keys($chats));
     $chatId = $ids[0];
 
     if (count($ids) > 1) {

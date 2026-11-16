@@ -116,6 +116,10 @@ test('Telegram: настройка пишет токен и чат в .env на 
         // в токене могут быть символы, особые для замены по шаблону ($1, \0) — они должны записаться как есть
         eq("# Telegram\nTELEGRAM_DRIVER=http\nTELEGRAM_BOT_TOKEN=" . '123456789:AAx$1_\0-yz' . "\nMAIL_TO=a@example.invalid\nTELEGRAM_CHAT_ID=-1001234567890\n", file_get_contents($env));
 
+        // ID личного чата Telegram приходит числом (так упала первая установка 16.11) — пишется как текст
+        App\Support\EnvFile::set($env, ['TELEGRAM_CHAT_ID' => 687646970]);
+        ok(str_contains((string) file_get_contents($env), "\nTELEGRAM_CHAT_ID=687646970\n"), 'числовой ID чата записан');
+
         $bad = false;
         try { App\Support\EnvFile::set($env, ['TELEGRAM_CHAT_ID' => "1\nAPP_ENV=local"]); } catch (InvalidArgumentException) { $bad = true; }
         ok($bad, 'перевод строки в значении не проходит');
