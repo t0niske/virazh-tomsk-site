@@ -1146,3 +1146,18 @@ address{font-style:normal}
 .nsk-of-ph img{display:block;height:240px;width:auto;border-radius:var(--r-sm);background:#fff}
 .nsk-of-ph figcaption{position:absolute;left:10px;bottom:10px;background:#fff;color:var(--ink);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--font)}
 @media (min-width:1080px){.nsk-of{grid-template-columns:280px minmax(0,1fr);padding:20px;gap:20px}.nsk-of-ph img{height:300px}.nsk-of-tx .btn{justify-self:start}}
+/* Карточки цен на главной: картинка справа, на свободном месте у часов и цены (владелец 16.11), там, где хватает ширины.
+   На телефоне и на 1100–1279 px места справа нет: картинка остаётся сверху */
+@media (min-width:520px) and (max-width:1099px){
+  .pc{grid-template-columns:minmax(0,1fr) auto;column-gap:16px}
+  .pc-pic{grid-column:2;grid-row:1 / span 4;align-self:center;height:auto;margin:0}
+  .pc-pic img{width:150px;height:150px}
+  .pc-cat,.pc-name,.pc-chips,.pc-price{grid-column:1}
+}
+@media (min-width:1280px){
+  .pc{grid-template-columns:minmax(0,1fr) auto;column-gap:12px;grid-template-rows:auto auto auto auto auto auto auto 1fr}
+  .pc-pic{grid-column:2;grid-row:3 / span 2;align-self:center;height:auto;margin:0}
+  .pc-pic img{width:80px;height:80px}
+  .pc-chips,.pc-price{grid-column:1}
+}
+@media (min-width:1440px){.pc-pic{grid-row:2 / span 3}.pc-name{grid-column:1}}   /* на широких: картинка рядом с названием, часами и ценой, часы в одну строку */

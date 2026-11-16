@@ -3,7 +3,6 @@
 # Исходники: design/img-original/ins/<имя>.jpg (фото 600×600), design/ins-cut/<имя>.png (альфа-маска, rembg isnet-general-use),
 # design/ins-scene/<машина>-studio.jpg (сцена вокруг машины из img/car-*.webp, сгенерирована через Codex).
 # Новый инструктор: вырезать фон rembg → добавить в PEOPLE; нет фото — в NO_PHOTO (в карточке будет его машина)
-# или в SILHOUETTE (серый силуэт без лица на фоне его машины, design/ins-silhouette.png — Codex, по просьбе владельца сайта 16.11.2026).
 #   py -3 tools\ins-photo.py efimov    — пересобрать только названные
 import os
 import sys
@@ -24,9 +23,7 @@ HAZE = 0.45      # плотность однотонной дымки над с�
 
 PEOPLE = {'ushakov': 'omoda', 'kovalenok': 'vw-polo', 'komissarov': 'belgee', 'volnykh': 'kia-rio',
           'novoselov': 'granta', 'volodin': 'granta'}
-NO_PHOTO = {'yukalchuk': 'chery-tiggo-4', 'sofrin': 'jetour', 'solovyev': 'nissan-note'}
-SILHOUETTE = {'shcherbinin': 'granta', 'efimov': 'solaris'}
-SIL_W = 1.12     # ширина кадра силуэта к стороне фото: плечи почти во всю ширину, как у людей на фото
+NO_PHOTO = {'yukalchuk': 'chery-tiggo-4', 'sofrin': 'jetour', 'solovyev': 'nissan-note', 'shcherbinin': 'granta', 'efimov': 'solaris'}
 
 
 def box(a, r, axis):
@@ -75,24 +72,6 @@ def scene(car):
     return bg * (1 - k) + np.array([0xF2, 0xF2, 0xF2]) / 255 * k
 
 
-def silhouette():
-    """Силуэт с белого фона: прозрачность по отличию от белого, плечи почти во всю ширину, макушка на TOP от верха."""
-    im = Image.open(os.path.join(ROOT, 'design', 'ins-silhouette.png')).convert('RGB')
-    s = int(SIZE * SIL_W)
-    im = im.resize((s, s), Image.LANCZOS)
-    C = np.asarray(im, float) / 255
-    a = np.clip((1 - C.min(-1)) / 0.25, 0, 1)
-    top = np.where((a > 0.5).sum(1) > 4)[0][0]
-    x0, y0 = (s - SIZE) // 2, top - int(TOP * SIZE)
-    F = np.ones((SIZE, SIZE, 3)); A = np.zeros((SIZE, SIZE))
-    dy, sy = max(0, -y0), max(0, y0)
-    h = min(SIZE - dy, s - sy)
-    F[dy:dy + h] = C[sy:sy + h, x0:x0 + SIZE]; A[dy:dy + h] = a[sy:sy + h, x0:x0 + SIZE]
-    # силуэт рисовался на белом: полупрозрачный край очищаем от белого
-    F = np.where(A[..., None] > 0.02, np.clip((F - (1 - A[..., None])) / np.maximum(A[..., None], 0.02), 0, 1), F)
-    return F, A
-
-
 def save(img, name):
     Image.fromarray((img * 255).round().clip(0, 255).astype(np.uint8)).save(os.path.join(OUT, name + '.webp'), 'WEBP', quality=82, method=6)
     print(name)
@@ -107,7 +86,3 @@ for name, car in PEOPLE.items():
 for name, car in NO_PHOTO.items():
     if want(name):
         save(scene(car), name)
-for name, car in SILHOUETTE.items():
-    if want(name):
-        F, a = silhouette()
-        save(F * a[..., None] + scene(car) * (1 - a[..., None]), name)
