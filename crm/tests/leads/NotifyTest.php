@@ -106,3 +106,20 @@ test('Номера заявок продолжают счётчик старог
         putenv('LEADS_FIRST_ID=1');
     }
 });
+
+test('Telegram: настройка пишет токен и чат в .env на месте, остальное не трогает', function (): void {
+    $env = sys_get_temp_dir() . '/virazh-envfile-' . getmypid() . '.env';
+    file_put_contents($env, "# Telegram\nTELEGRAM_DRIVER=log\nTELEGRAM_BOT_TOKEN=\nMAIL_TO=a@example.invalid\n");
+
+    try {
+        App\Support\EnvFile::set($env, ['TELEGRAM_DRIVER' => 'http', 'TELEGRAM_BOT_TOKEN' => '123456789:AAx$1_\0-yz', 'TELEGRAM_CHAT_ID' => '-1001234567890']);
+        // в токене могут быть символы, особые для замены по шаблону ($1, \0) — они должны записаться как есть
+        eq("# Telegram\nTELEGRAM_DRIVER=http\nTELEGRAM_BOT_TOKEN=" . '123456789:AAx$1_\0-yz' . "\nMAIL_TO=a@example.invalid\nTELEGRAM_CHAT_ID=-1001234567890\n", file_get_contents($env));
+
+        $bad = false;
+        try { App\Support\EnvFile::set($env, ['TELEGRAM_CHAT_ID' => "1\nAPP_ENV=local"]); } catch (InvalidArgumentException) { $bad = true; }
+        ok($bad, 'перевод строки в значении не проходит');
+    } finally {
+        @unlink($env);
+    }
+});

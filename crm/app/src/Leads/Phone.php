@@ -36,13 +36,19 @@ final class Phone
         return (bool) preg_match('/^\+79\d{9}$/', $phone);
     }
 
-    /** +73822345252 → +7 (382) 234-52-52 */
+    /** +79131234567 → +7 (913) 123-45-67; томский +73822345252 → +7 (3822) 34-52-52 */
     public static function format(string $phone): string
     {
         $digits = preg_replace('/\D+/', '', $phone);
 
         if (strlen($digits) !== 11) {
             return $phone;
+        }
+
+        // Томск: код города из четырёх цифр — +7 (3822) 34-52-52, а не +7 (382) 234-52-52
+        if (str_starts_with($digits, '73822')) {
+            return sprintf('+7 (%s) %s-%s-%s',
+                substr($digits, 1, 4), substr($digits, 5, 2), substr($digits, 7, 2), substr($digits, 9, 2));
         }
 
         return sprintf('+7 (%s) %s-%s-%s',
