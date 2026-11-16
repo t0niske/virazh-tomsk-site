@@ -32,11 +32,11 @@ if (($user['role'] ?? '') === 'manager') {
 <meta name="theme-color" content="#18181A">
 <title><?= V::e($title) ?> — Авто-Вираж</title>
 <link rel="icon" href="/crm/assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/crm/assets/crm.css?v=12">
+<link rel="stylesheet" href="/crm/assets/crm.css?v=13">
 <script src="/crm/assets/crm.js?v=4" defer></script>
 </head>
 <body>
-<header class="top">
+<header class="top<?= count($nav) > 5 ? ' top--wide' : '' ?>">
   <div class="top__inner">
     <a class="logo" href="/crm"><span class="logo__mark">АВ</span><span class="logo__text">Авто-Вираж: заявки</span></a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" data-menu>Меню</button>
