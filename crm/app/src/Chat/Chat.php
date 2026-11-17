@@ -93,6 +93,18 @@ final class Chat
         }
 
         self::add($chat, 'user', $message, false);
+
+        // «Оператор», «позовите человека» — без ИИ: модель повторяла свои прошлые отказы из истории чата
+        // («не могу соединить с сотрудником», 17.11.2026). Сервер зовёт администратора сам.
+        if (self::asksForHuman($message)) {
+            $wasWaiting = self::waiting($chat, Clock::now());
+            $text = self::callText(Clock::now(), $wasWaiting);
+            self::add($chat, 'bot', $text, true);
+            self::notifyOperator($chat);
+
+            return [200, ['reply' => $text, 'operator' => true]];
+        }
+
         $result = $model->complete(self::conversation((int) $chat['id']));
 
         if (!$result['ok']) {
@@ -125,6 +137,35 @@ final class Chat
         $text = trim(str_ireplace(self::OPERATOR_TAG, '', $text));
 
         return [$text !== '' ? $text : 'Позвал администратора — он ответит здесь, в чате, в рабочее время.', $operator];
+    }
+
+    /**
+     * Короткая просьба позвать человека: «оператор», «позовите администратора», «можно с живым человеком?».
+     * Длинные сообщения не трогаем — там вопрос по существу, его разбирает ИИ (и сам зовёт, если ответа нет).
+     */
+    public static function asksForHuman(string $message): bool
+    {
+        $text = str_replace('ё', 'е', mb_strtolower(trim($message)));
+
+        if (count(preg_split('/\s+/u', $text) ?: []) > 12) {
+            return false;
+        }
+
+        return (bool) preg_match('/оператор|администратор|менеджер|консультант|сотрудник|жив(ой|ого|ому|ым) человек|с человеком|позов(и|ите) человека|позвать человека|соедин(и|ите|ить)/u', $text);
+    }
+
+    /** Ответ на просьбу позвать человека: в рабочее время — позвали, в нерабочее — когда ответят и как связаться. */
+    public static function callText(DateTimeImmutable $now, bool $alreadyCalled = false): string
+    {
+        // под ответом окно чата само добавляет «оставьте номер в форме записи или позвоните» с кнопками
+        if (!Schedule::fromSettings()->isOpen($now)) {
+            return 'Сейчас нерабочее время: администратор ответит в рабочие часы (' . self::hoursText() . '). '
+                . 'Телефоны: Томск — ' . Phone::format(Settings::get('school_phone')) . ', Новосибирск — +7 (383) 205-24-34.';
+        }
+
+        return $alreadyCalled
+            ? 'Администратор уже знает о вашем вопросе и ответит здесь, в этом чате, как только освободится.'
+            : 'Позвал администратора — он подключится к этому чату и ответит здесь же. Пока можно продолжать писать.';
     }
 
     /** Администратор ведёт переписку: отвечал не раньше LIVE_MINUTES минут назад. */
