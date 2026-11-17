@@ -31,7 +31,7 @@ final class Backup
 
         if (Db::driver() === 'sqlite') {
             $file = "$dir/leads_$stamp.sqlite";
-            $pdo->exec('VACUUM INTO ' . $pdo->quote($file));
+            self::copySqlite($pdo, $file);
             $gz = $file . '.gz';
             file_put_contents($gz, gzencode((string) file_get_contents($file), 6));
             unlink($file);
@@ -44,6 +44,41 @@ final class Backup
         self::prune($keepDays);
 
         return $gz;
+    }
+
+    /** null — по версии SQLite; false — всегда копией файла (для тестов той ветки, что работает на хостинге). */
+    public static ?bool $vacuumInto = null;
+
+    /**
+     * VACUUM INTO есть только с SQLite 3.27, а на хостинге reg.ru 3.26 (17.11.2026: ночные копии падали с «near INTO»).
+     * Там — копия файла под BEGIN IMMEDIATE: пока она идёт, никто не пишет, чтение не мешает.
+     */
+    private static function copySqlite(PDO $pdo, string $file): void
+    {
+        $vacuum = self::$vacuumInto
+            ?? version_compare((string) $pdo->query('SELECT sqlite_version()')->fetchColumn(), '3.27.0', '>=');
+
+        if ($vacuum) {
+            $pdo->exec('VACUUM INTO ' . $pdo->quote($file));
+
+            return;
+        }
+
+        $source = (string) ($pdo->query('PRAGMA database_list')->fetch(PDO::FETCH_ASSOC)['file'] ?? '');
+
+        if ($source === '' || !is_file($source)) {
+            throw new \RuntimeException('Не найден файл базы SQLite для копии');
+        }
+
+        $pdo->exec('BEGIN IMMEDIATE');
+
+        try {
+            if (!copy($source, $file)) {
+                throw new \RuntimeException("Не удалось скопировать базу в $file");
+            }
+        } finally {
+            $pdo->exec('COMMIT');
+        }
     }
 
     private static function dumpMysql(PDO $pdo, string $file): void
