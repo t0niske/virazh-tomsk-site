@@ -9,6 +9,8 @@
   if (!panel) return;
   const log = document.getElementById('botLog'), chipsBox = document.getElementById('botChips');
   const form = document.getElementById('botForm'), input = document.getElementById('botIn');
+  // в чат пишут и телефон, хоть бот и просит этого не делать — вебвизор Метрики набор в этом поле не записывает
+  input.classList.add('ym-disable-keys');
   // база лежит рядом со скриптом: так адрес верный и на предпросмотре в подпапке
   const kbUrl = ((document.currentScript && document.currentScript.src) || '/assets/js/bot.js').replace(/bot\.js(\?.*)?$/, 'bot-kb.json$1');
 
