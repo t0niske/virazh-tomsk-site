@@ -298,7 +298,7 @@ check() {
   expect /send-form.php 405
   expect /api/lead 405
   expect /api/visit 204
-  expect /api/chat 405
+  expect /api/chat 403   # GET — ответы администратора для окна чата, только со страниц самого сайта (Referer/Origin)
   expect /api/form-ts 200
   expect /crm 303 /crm/login
   expect /crm/login 200
