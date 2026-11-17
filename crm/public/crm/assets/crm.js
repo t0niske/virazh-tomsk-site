@@ -87,26 +87,49 @@
       set: function (k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* приватный режим */ } }
     };
     var canNotify = 'Notification' in window;
-    var baseTitle = document.title, timer = null, audio = null;
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    var RING = 'crm-notify-ring';
+    var baseTitle = document.title, timer = null, audio = null, lockedAtPress = false;
     var enabled = function () { return store.get(ON) === '1'; };
+    var soundOn = function () { return !!audio && audio.state === 'running'; };
 
     var paint = function () {
-      var v = enabled();
+      var v = enabled(), mute = v && !!Ctx && !soundOn();
       bell.hidden = false;
       bell.setAttribute('aria-pressed', v ? 'true' : 'false');
+      bell.toggleAttribute('data-mute', mute);
       bell.textContent = v ? 'Уведомления: вкл' : 'Уведомления: выкл';
       if (v && canNotify && Notification.permission === 'denied') bell.textContent = 'Уведомления: только звук';
+      if (mute) bell.textContent = 'Уведомления: включить звук';
     };
 
-    // Звук браузер разрешает только после нажатия на странице — готовим его при любом нажатии.
+    // Звук создаём сразу при открытии страницы: после перехода по ссылке внутри админки браузер обычно
+    // разрешает его без нового нажатия. Если не разрешил — кнопка в шапке просит включить звук,
+    // а включается он любым нажатием на странице.
+    var prepare = function () {
+      if (!Ctx || audio || !enabled()) return;
+      try { audio = new Ctx(); } catch (e) { audio = null; return; }
+      audio.addEventListener('statechange', paint);
+    };
     var unlock = function () {
-      var Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx || !enabled()) return Promise.resolve();
-      if (!audio) audio = new Ctx();
-      return audio.state === 'suspended' ? audio.resume() : Promise.resolve();
+      prepare();
+      return audio && audio.state !== 'running' ? audio.resume().catch(function () {}) : Promise.resolve();
+    };
+    // Перед сигналом будим звук: фоновую вкладку браузер может приостановить. Ждём не дольше 0,5 с —
+    // иначе сигнал прозвучал бы с опозданием, при следующем нажатии.
+    var wake = function () {
+      if (!audio) return Promise.reject(new Error('нет звука'));
+      if (audio.state === 'running') return Promise.resolve();
+      return Promise.race([
+        audio.resume(),
+        new Promise(function (resolve, reject) { setTimeout(function () { reject(new Error('нет звука')); }, 500); })
+      ]).then(function () { if (audio.state !== 'running') throw new Error('нет звука'); });
     };
     var chime = function () {
-      if (!audio || audio.state !== 'running') return;
+      return wake().then(function () { tone(); return true; }, function () { return false; });
+    };
+    var tone = function () {
       var t = audio.currentTime;
       [[784, 0], [1175, 0.17]].forEach(function (n) {
         var osc = audio.createOscillator(), gain = audio.createGain();
@@ -121,6 +144,14 @@
         osc.stop(t + n[1] + 0.5);
       });
     };
+    // Несколько вкладок: событие достаётся той, что первой спросила сервер, а звук мог быть включён в другой.
+    // Если здесь звука нет — просим остальные вкладки прозвенеть (событие storage приходит только им).
+    var ring = function () {
+      chime().then(function (ok) { if (!ok) store.set(RING, String(Date.now())); });
+    };
+    window.addEventListener('storage', function (e) {
+      if (e.key === RING && e.newValue && enabled()) chime();
+    });
 
     // Несколько вкладок: каждое событие показываем один раз (общий список в localStorage).
     var firstTime = function (key) {
@@ -190,7 +221,7 @@
           if (!since || d.now > since) store.set(SINCE, d.now);
           var fresh = d.items.filter(function (item) { return firstTime(item.key); });
           fresh.forEach(show);
-          if (fresh.length) chime();
+          if (fresh.length) ring();
           document.title = (d.queue > 0 ? '(' + d.queue + ') ' : '') + baseTitle;
         })
         .catch(function () { stop(); });   // вышли из админки — проверять нечего
@@ -198,7 +229,16 @@
     var start = function () { if (!timer) { poll(); timer = setInterval(poll, PERIOD); } };
     var stop = function () { clearInterval(timer); timer = null; document.title = baseTitle; };
 
+    // Уведомления уже включены, не хватает только звука — нажатие на кнопку включает звук, а не выключает всё.
+    var remember = function () { lockedAtPress = enabled() && !!Ctx && !soundOn(); };
+    bell.addEventListener('pointerdown', remember);
+    bell.addEventListener('keydown', remember);
     bell.addEventListener('click', function () {
+      if (lockedAtPress && enabled()) {
+        lockedAtPress = false;
+        unlock().then(chime).then(paint);
+        return;
+      }
       var v = !enabled();
       store.set(ON, v ? '1' : '0');
       if (!v) { stop(); paint(); return; }
@@ -216,6 +256,7 @@
     document.addEventListener('pointerdown', function () { unlock(); });
     document.addEventListener('keydown', function () { unlock(); });
 
+    prepare();
     paint();
     if (enabled()) { register(); start(); }
   }

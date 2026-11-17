@@ -32,8 +32,8 @@ if (($user['role'] ?? '') === 'manager') {
 <meta name="theme-color" content="#18181A">
 <title><?= V::e($title) ?> — Авто-Вираж</title>
 <link rel="icon" href="/crm/assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/crm/assets/crm.css?v=14">
-<script src="/crm/assets/crm.js?v=8" defer></script>
+<link rel="stylesheet" href="/crm/assets/crm.css?v=15">
+<script src="/crm/assets/crm.js?v=9" defer></script>
 </head>
 <body>
 <header class="top<?= count($nav) > 5 ? ' top--wide' : '' ?>">

@@ -78,6 +78,7 @@ h2 { font-size: 17px; font-weight: 700; margin-bottom: 12px; }
 .notify-btn { background: none; border: 1px solid rgba(255, 255, 255, .22); color: rgba(255, 255, 255, .75); font: inherit; font-size: 13px; padding: 6px 11px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
 .notify-btn:hover { color: #fff; border-color: rgba(255, 255, 255, .45); }
 .notify-btn[aria-pressed="true"] { color: #fff; background: rgba(255, 255, 255, .12); border-color: transparent; }
+.notify-btn[data-mute] { background: var(--orange); }
 /* Разделов много (руководитель): логотип и имя — первая строка, разделы — вторая; иначе имя переносится как попало. */
 @media (min-width: 721px) {
   .top__inner { padding-top: 6px; padding-bottom: 6px; row-gap: 6px; }
