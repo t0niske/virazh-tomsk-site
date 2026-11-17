@@ -126,11 +126,23 @@
     // Показ — через сервис-воркер (sw.js): Яндекс Браузер и Chrome на Android уведомления прямо со страницы
     // не показывают. Если воркера нет (старый браузер) — обычное new Notification.
     var worker = null;
+    // Ждём включения именно этого воркера, не дольше 3 с. navigator.serviceWorker.ready не годится: если область
+    // воркера не покрывает страницу, оно не выполнится никогда, и уведомление повиснет.
+    var whenActive = function (reg) {
+      if (!reg) return Promise.resolve(null);
+      if (reg.active) return Promise.resolve(reg);
+      var sw = reg.installing || reg.waiting;
+      if (!sw) return Promise.resolve(null);
+      return new Promise(function (resolve) {
+        var done = function () { resolve(reg.active ? reg : null); };
+        sw.addEventListener('statechange', function () { if (sw.state === 'activated') done(); });
+        setTimeout(done, 3000);
+      });
+    };
     var register = function () {
       if (worker || !('serviceWorker' in navigator)) return Promise.resolve(worker);
-      return navigator.serviceWorker.register('/crm/assets/sw.js', { scope: '/crm/' })
-        .catch(function () { return navigator.serviceWorker.register('/crm/assets/sw.js'); })
-        .then(function () { return navigator.serviceWorker.ready; })
+      return navigator.serviceWorker.register('/crm/sw.js', { scope: '/crm/' })
+        .then(whenActive)
         .then(function (reg) { worker = reg; return reg; })
         .catch(function () { return null; });
     };

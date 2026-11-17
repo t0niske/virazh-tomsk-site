@@ -16,6 +16,14 @@ final class App
 
     public static function handle(string $method, string $path): void
     {
+        // Сервис-воркер уведомлений — по адресу /crm/sw.js: так его область — вся админка /crm/ без особых заголовков
+        // (на хостинге, где /crm/assets/ отдаёт nginx, Service-Worker-Allowed не доходит — так было у «Сто дорог»).
+        if ($path === '/crm/sw.js') {
+            self::asset('sw.js');
+
+            return;
+        }
+
         // Стили и скрипт админки. Обычно их отдаёт веб-сервер, но через переходник на Joomla — PHP.
         if (preg_match('#^/crm/assets/([a-z.]+)$#', $path, $m)) {
             self::asset($m[1]);
