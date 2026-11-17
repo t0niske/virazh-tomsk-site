@@ -123,12 +123,39 @@
       store.set(SEEN, list.slice(-80).join('|'));
       return true;
     };
-    var show = function (item) {
-      if (!canNotify || Notification.permission !== 'granted') return;
+    // Показ — через сервис-воркер (sw.js): Яндекс Браузер и Chrome на Android уведомления прямо со страницы
+    // не показывают. Если воркера нет (старый браузер) — обычное new Notification.
+    var worker = null;
+    var register = function () {
+      if (worker || !('serviceWorker' in navigator)) return Promise.resolve(worker);
+      return navigator.serviceWorker.register('/crm/assets/sw.js', { scope: '/crm/' })
+        .catch(function () { return navigator.serviceWorker.register('/crm/assets/sw.js'); })
+        .then(function () { return navigator.serviceWorker.ready; })
+        .then(function (reg) { worker = reg; return reg; })
+        .catch(function () { return null; });
+    };
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', function (e) {
+        if (e.data && e.data.open) window.location.href = e.data.open;
+      });
+    }
+    var plain = function (item, options) {
       try {
-        var n = new Notification(item.title, { body: item.text, tag: item.key, icon: '/crm/assets/icon.svg' });
+        var n = new Notification(item.title, options);
         n.onclick = function () { window.focus(); window.location.href = item.url; n.close(); };
       } catch (e) { /* браузер без уведомлений со страницы */ }
+    };
+    var show = function (item) {
+      if (!canNotify || Notification.permission !== 'granted') return;
+      // PNG, а не SVG: часть браузеров молча не показывает уведомление с SVG-значком
+      var options = { body: item.text, tag: item.key, icon: '/img/favicon.png', data: { url: item.url } };
+      register().then(function (reg) {
+        if (reg && reg.showNotification) return reg.showNotification(item.title, options);
+        plain(item, options);
+      }).catch(function () { plain(item, options); });
+    };
+    var hello = function () {
+      show({ title: 'Уведомления включены', text: 'Так будут приходить новые заявки и вопросы из чата.', key: 'on-' + Date.now(), url: '/crm/queue' });
     };
 
     var poll = function () {
@@ -158,11 +185,11 @@
       if (!v) { stop(); paint(); return; }
       store.set(SINCE, '');   // включили — показываем только то, что придёт дальше
       unlock().then(chime);   // пробный сигнал: слышно, что звук работает
+      // пробное уведомление каждый раз при включении: сразу видно, пропускает ли их браузер и Windows
       if (canNotify && Notification.permission === 'default') {
-        Notification.requestPermission().then(function (p) {
-          paint();
-          if (p === 'granted') show({ title: 'Уведомления включены', text: 'Новые заявки и вопросы из чата будут появляться здесь.', key: 'on', url: '/crm/queue' });
-        });
+        Notification.requestPermission().then(function (p) { paint(); if (p === 'granted') hello(); });
+      } else {
+        hello();
       }
       paint();
       start();
@@ -171,6 +198,6 @@
     document.addEventListener('keydown', function () { unlock(); });
 
     paint();
-    if (enabled()) start();
+    if (enabled()) { register(); start(); }
   }
 })();

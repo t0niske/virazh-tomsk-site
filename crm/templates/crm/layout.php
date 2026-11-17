@@ -33,7 +33,7 @@ if (($user['role'] ?? '') === 'manager') {
 <title><?= V::e($title) ?> — Авто-Вираж</title>
 <link rel="icon" href="/crm/assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/crm/assets/crm.css?v=14">
-<script src="/crm/assets/crm.js?v=5" defer></script>
+<script src="/crm/assets/crm.js?v=6" defer></script>
 </head>
 <body>
 <header class="top<?= count($nav) > 5 ? ' top--wide' : '' ?>">

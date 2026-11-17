@@ -12,7 +12,7 @@ use App\Leads\Log;
  */
 final class App
 {
-    private const ASSETS = ['crm.css' => 'text/css', 'crm.js' => 'text/javascript', 'icon.svg' => 'image/svg+xml'];
+    private const ASSETS = ['crm.css' => 'text/css', 'crm.js' => 'text/javascript', 'icon.svg' => 'image/svg+xml', 'sw.js' => 'text/javascript'];
 
     public static function handle(string $method, string $path): void
     {
@@ -94,6 +94,16 @@ final class App
         }
 
         header('Content-Type: ' . self::ASSETS[$name] . '; charset=utf-8');
+
+        if ($name === 'sw.js') {
+            // сервис-воркер уведомлений лежит в /crm/assets/, а работает на всю админку /crm/
+            header('Service-Worker-Allowed: /crm/');
+            header('Cache-Control: no-cache');
+            readfile($file);
+
+            return;
+        }
+
         header('Cache-Control: public, max-age=3600');
         readfile($file);
     }
