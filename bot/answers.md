@@ -230,7 +230,7 @@
 
 ## На каких машинах проходит обучение?
 слова: машины, автомобили, автопарк, на чём учиться, какие машины, марки
-На автомате — Omoda C5, Chery Tiggo 4 Pro, Jetour Dashing, Belgee S50, Volkswagen Polo. На механике — Kia Rio, Hyundai Solaris, Lada Granta, Nissan Note. Для категории A — мотоцикл Bajaj Boxer. Во всех машинах дублирующие педали.
+На автомате — Omoda C5, Chery Tiggo 4 Pro, Jetour Dashing, Belgee S50. На механике — Kia Rio, Hyundai Solaris, Lada Granta, Nissan Note, Volkswagen Polo. Для категории A — мотоцикл Bajaj Boxer. Во всех машинах дублирующие педали.
 
 [Автопарк](/avtopark)
 
@@ -242,8 +242,8 @@
 
 ## Кто из инструкторов на автомате, а кто на механике?
 слова: ушаков, ковалёнок, коваленок, комиссаров, юкальчук, софрин, вольных, новоселов, володин, соловьев, щербинин, ефимов, коробка у инструктора
-На автомате: Ушаков Е. Е. (Omoda C5), Ковалёнок А. В. (VW Polo), Комиссаров Д. В. (Belgee S50), Юкальчук Н. В. (Chery Tiggo 4 Pro), Софрин В. И. (Jetour Dashing).
-На механике: Вольных П. Ю. (Kia Rio), Новоселов Е. С. (Lada Granta), Володин С. Н. (Lada Granta), Соловьев Д. Ю. (Nissan Note), Щербинин А. Н. (Lada Granta), Ефимов Е. С. (Hyundai Solaris).
+На автомате: Ушаков Е. Е. (Omoda C5), Комиссаров Д. В. (Belgee S50), Юкальчук Н. В. (Chery Tiggo 4 Pro), Софрин В. И. (Jetour Dashing).
+На механике: Ковалёнок А. В. (VW Polo), Вольных П. Ю. (Kia Rio), Новоселов Е. С. (Lada Granta), Володин С. Н. (Lada Granta), Соловьев Д. Ю. (Nissan Note), Щербинин А. Н. (Lada Granta), Ефимов Е. С. (Hyundai Solaris).
 
 [Все инструкторы](/instruktory)
 
