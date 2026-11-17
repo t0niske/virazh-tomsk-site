@@ -14,11 +14,17 @@ sub exists_path {
   return -f "$site$p" || -f "$site$p/index.html";
 }
 
-# 1. старые адреса
+# 1. старые адреса: страница, страница-редирект или правило 301 в .htaccess (например, кириллический /Блог)
+my @moved;
+if (open my $h, '<:utf8', "$site/.htaccess") {
+  while (<$h>) { push @moved, qr/$1/ if m{^RewriteRule\s+(\^\S+)\s+/\S*\s+\[[^\]]*\bR=301}; }
+  close $h;
+}
+sub moved { my $p = substr(shift, 1); return scalar grep { $p =~ $_ } @moved; }
 if (open my $h, '<:utf8', 'tools/old-urls.txt') {
   my $n = 0;
   while (<$h>) { chomp; next unless m{^/}; $n++;
-    unless (exists_path($_)) { print "НЕТ СТАРОГО АДРЕСА: $_\n"; $err++ } }
+    unless (exists_path($_) || moved($_)) { print "НЕТ СТАРОГО АДРЕСА: $_\n"; $err++ } }
   print "Старые адреса: проверено $n\n";
 }
 

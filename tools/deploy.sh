@@ -10,6 +10,9 @@
 #   bash tools/deploy.sh crm        # БЫСТРО, меньше минуты: только код системы заявок (папка crm/) — архив ~200 КБ,
 #                                   # тесты на сервере, подмена кода (.env и storage/ переезжают), миграции, эталон сторожа
 #   bash tools/deploy.sh crm-rollback   # вернуть прежний код системы заявок (база и настройки остаются текущими)
+#   bash tools/deploy.sh indexnow   # отправить всю карту сайта в IndexNow (Яндекс). site отправляет сам — только
+#                                   # страницы с новым содержанием
+#                                   # (после stage → switch и при сбое отправки — вручную)
 # Правки только в crm/ — режим crm; страницы, стили, скрипты сайта — site. Полная stage → switch — при переносе
 # или если нужно заново скопировать файлы старого сайта.
 #
@@ -34,8 +37,43 @@ HOST="u1605290@server178.hosting.reg.ru"
 SITE="www/virazh-tomsk.ru"          # от домашней папки /var/www/u1605290/data
 BUILD="C:/Users/anton/dev/virazh-release"   # своя папка: virazh-site-build раздаёт предпросмотр дизайн-сессия
 PHP="/opt/php/8.3/bin/php"          # PHP командной строки на сервере (сайт тоже на 8.3: этого требует Joomla 6)
+# IndexNow (Яндекс, через него и Bing): ключ не секретный — он же лежит файлом root/<ключ>.txt в корне сайта
+INDEXNOW_KEY="dbb51480c78fe57e1efc2e8907b78c1e"
 ssh_() { ssh -i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=20 "$HOST" "$@"; }
 cd "$(dirname "$0")/.."
+
+# Адреса для IndexNow из sitemap.xml. Аргументы: старая карта (с боевого сайта), новая (сборка), список изменившихся
+# файлов («./путь»), all — отправить всю карту. Без all — страницы, чей файл изменился и чья дата lastmod новая или
+# сегодняшняя: файлы меняются у всех страниц сразу, когда меняется общий скрипт или стиль (номер версии в ссылке),
+# а lastmod двигает только содержание страницы. lastmod — по дням, поэтому правка, сделанная сегодня, уходит и повторно
+indexnow_list_() {
+  perl -e '
+    my ($old, $new, $changed, $all) = @ARGV;
+    sub sm { my %m; open my $h, "<", $_[0] or return %m; local $/; my $s = <$h>;
+      $m{$1} = $2 // "" while $s =~ m{<loc>([^<]+)</loc>\s*(?:<lastmod>([^<]*)</lastmod>)?}g; %m }
+    my %o = sm($old); my %n = sm($new); my %c;
+    if (open my $h, "<", $changed) { while (<$h>) { chomp; $c{$_} = 1 } }
+    my @t = localtime; my $today = sprintf "%04d-%02d-%02d", $t[5] + 1900, $t[4] + 1, $t[3];
+    for my $loc (sort keys %n) {
+      (my $p = $loc) =~ s{^https?://[^/]+}{}; $p = $p eq "/" ? "./index.html" : ".$p/index.html";
+      next unless ($all // "") eq "all" || ($c{$p} && (!exists $o{$loc} || $o{$loc} ne $n{$loc} || $n{$loc} eq $today));
+      print "$loc\n";
+    }' "$@"
+}
+indexnow_() {   # $1 — файл со списком адресов, по одному в строке
+  local list="$1" n body code
+  n=$(grep -c . "$list" || true)
+  [ "$n" -gt 0 ] || { echo "IndexNow: страниц с новым содержанием нет — отправлять нечего"; return 0; }
+  body=$(perl -e 'my $k = shift; my @u = grep { length } map { chomp; $_ } <STDIN>; s/(["\\])/\\$1/g for @u;
+    print qq({"host":"virazh-tomsk.ru","key":"$k","keyLocation":"https://virazh-tomsk.ru/$k.txt","urlList":[),
+      join(",", map { qq("$_") } @u), "]}"' "$INDEXNOW_KEY" < "$list")
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 -H 'Content-Type: application/json; charset=utf-8' \
+    --data-binary "$body" https://yandex.com/indexnow || true)
+  case "$code" in
+    200|202) echo "IndexNow: Яндексу отправлено страниц — $n (ответ $code)" ;;
+    *) echo "ВНИМАНИЕ: IndexNow не принял список (ответ ${code:-нет связи}). Сайт выложен; повторить: bash tools/deploy.sh indexnow" ;;
+  esac
+}
 
 build_() {
   perl tools/build.pl --out="$BUILD"
@@ -251,6 +289,9 @@ check() {
   expect /index.php/component/jce 410
   expect /kontakty/tomsk 301 /kontakty
   expect /obuchenie/ 301 /obuchenie
+  expect /%D0%91%D0%BB%D0%BE%D0%B3 301 /blog/skolko-dlitsya-obuchenie-na-prava-kategorii-b
+  expect /%D0%91%D0%BB%D0%BE%D0%B3/ 301 /blog/skolko-dlitsya-obuchenie-na-prava-kategorii-b
+  expect "/$INDEXNOW_KEY.txt" 200
   # система заявок: приём только POST, админка просит войти, сам crm.php напрямую ничего не открывает
   expect /send-form.php 405
   expect /api/lead 405
@@ -303,6 +344,11 @@ site() {
   ssh_ "cd ~/$SITE && sha256sum -c --quiet ~/deploy-upload/site-manifest-$ts.txt 2>/dev/null | sed -n 's/: FAILED.*\$//p'" > "$tmp/changed.txt" || true
   local n; n=$(grep -c . "$tmp/changed.txt" || true)
   echo "Изменилось файлов: $n из $(grep -c . "$tmp/manifest.txt")"
+  # для IndexNow: карта сайта до выкладки; ключа на сайте ещё нет (первый раз) — отправим всю карту
+  local inlist all=''; inlist="$(mktemp)"
+  curl -s --max-time 20 https://virazh-tomsk.ru/sitemap.xml > "$tmp/sitemap-old.xml" || true
+  grep -qxF "./$INDEXNOW_KEY.txt" "$tmp/changed.txt" && all=all
+  indexnow_list_ "$tmp/sitemap-old.xml" "$BUILD/sitemap.xml" "$tmp/changed.txt" "$all" > "$inlist"
   local tgz="$tmp/site-changes-$ts.tar.gz"
   if [ "$n" -gt 0 ]; then tar -czf "$tgz" -C "$BUILD" -T "$tmp/changed.txt"; else tar -czf "$tgz" -T /dev/null; fi
   echo "Архив изменений: $(du -h "$tgz" | cut -f1)"
@@ -338,7 +384,21 @@ true
 REMOTE
   local code
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://virazh-tomsk.ru/ || true)
-  [ "$code" = 200 ] && echo "Проверка: главная — 200" || { echo "ВНИМАНИЕ: главная ответила $code — откат: bash tools/deploy.sh rollback"; exit 1; }
+  [ "$code" = 200 ] && echo "Проверка: главная — 200" || { echo "ВНИМАНИЕ: главная ответила $code — откат: bash tools/deploy.sh rollback"; rm -f "$inlist"; exit 1; }
+  indexnow_ "$inlist"
+  rm -f "$inlist"
+}
+
+# Вся карта сайта в IndexNow — вручную (после полной выкладки stage → switch или если отправка после site не прошла)
+indexnow_all() {
+  local tmp; tmp="$(mktemp -d)"
+  curl -s --max-time 20 https://virazh-tomsk.ru/sitemap.xml > "$tmp/sitemap.xml"
+  grep -q '<urlset' "$tmp/sitemap.xml" || { echo "нет https://virazh-tomsk.ru/sitemap.xml"; rm -rf "$tmp"; exit 1; }
+  [ "$(curl -s --max-time 20 "https://virazh-tomsk.ru/$INDEXNOW_KEY.txt")" = "$INDEXNOW_KEY" ] \
+    || { echo "на сайте нет файла ключа /$INDEXNOW_KEY.txt — сначала выложите сайт"; rm -rf "$tmp"; exit 1; }
+  indexnow_list_ /dev/null "$tmp/sitemap.xml" /dev/null all > "$tmp/list.txt"
+  indexnow_ "$tmp/list.txt"
+  rm -rf "$tmp"
 }
 
 crm() {
@@ -408,5 +468,6 @@ case "${1:-}" in
   site) site ;;
   crm) crm ;;
   crm-rollback) crm_rollback ;;
-  *) sed -n '2,29p' "$0"; exit 1 ;;
+  indexnow) indexnow_all ;;
+  *) sed -n '2,32p' "$0"; exit 1 ;;
 esac
