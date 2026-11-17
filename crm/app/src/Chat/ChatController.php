@@ -53,6 +53,7 @@ final class ChatController
                 is_string($input['chat_id'] ?? null) ? $input['chat_id'] : '',
                 is_string($input['message'] ?? null) ? $input['message'] : '',
                 (string) ($_SERVER['REMOTE_ADDR'] ?? ''),
+                ['vid' => $_COOKIE['sd_vid'] ?? null, 'sid' => $_COOKIE['sd_sid'] ?? null],   // путь посетителя для /crm/chat/N
             );
         } catch (\Throwable $e) {
             Log::error('Ошибка чат-бота', $e);

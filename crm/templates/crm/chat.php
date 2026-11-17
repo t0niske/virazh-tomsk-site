@@ -3,7 +3,10 @@
 use App\Chat\Chat;
 use App\Crm\View as V;
 
-/** @var array $chat @var list<array> $messages @var bool $live @var bool $waiting @var bool $fresh @var array $staffNames */
+/**
+ * @var array $chat @var list<array> $messages @var bool $live @var bool $waiting @var bool $fresh @var array $staffNames
+ * @var list<array> $visits заходы посетителя по порядку @var ?array $current заход, из которого он писал @var ?array $timeline
+ */
 $id = (int) $chat['id'];
 ?>
 <a class="back link" href="/crm/chats">← Все переписки</a>
@@ -27,7 +30,8 @@ $id = (int) $chat['id'];
   <?php endif; ?>
 </section>
 
-<section class="panel narrow">
+<div class="lead-grid">
+<section class="panel lead-main">
   <div class="chat" data-chat>
     <?php foreach ($messages as $m): ?>
       <?php
@@ -52,3 +56,46 @@ $id = (int) $chat['id'];
     <button class="btn btn--primary">Отправить</button>
   </form>
 </section>
+
+<aside class="lead-side">
+  <section class="panel">
+    <h2>Откуда пришёл и что смотрел</h2>
+    <?php if ($current === null): ?>
+      <p class="muted small">Путь по сайту неизвестен: переписка началась до 17.11.2026, когда это появилось, или у посетителя заблокированы cookie.</p>
+    <?php else: ?>
+      <?php $start = strtotime($current['started_at']); $first = $visits[0]; ?>
+      <p class="small"><strong><?= V::e($current['source']) ?></strong> · <?= V::date($current['started_at']) ?> · <?= (int) $current['pages'] ?> стр., на экране <?= V::duration((int) $current['active_seconds']) ?></p>
+      <?php if (count($visits) > 1): ?>
+        <p class="muted small">Первый заход: <?= V::e($first['source']) ?>, <?= V::date($first['started_at']) ?>. Всего заходов: <?= count($visits) ?>.</p>
+      <?php endif; ?>
+      <ol class="timeline">
+        <?php foreach ($timeline['pages'] as $page): ?>
+          <li class="timeline__item">
+            <time>+<?= V::duration(max(0, strtotime($page['opened_at']) - $start)) ?></time>
+            <div>
+              <strong><?= V::e(preg_replace('/\s+—\s+Авто-Вираж$/u', '', (string) ($page['title'] ?: $page['path']))) ?></strong>
+              <div class="timeline__text break"><?= V::e($page['path']) ?> · <?= V::duration((int) $page['active_seconds']) ?></div>
+              <?php foreach ($page['events'] as $e): ?>
+                <?php if ($e['name'] === 'scroll') continue; ?>
+                <div class="timeline__text">→ <?= V::e(\App\Visits\Visits::EVENT_LABELS[$e['name']] ?? $e['name']) ?></div>
+              <?php endforeach; ?>
+            </div>
+          </li>
+        <?php endforeach; ?>
+      </ol>
+      <a class="small" href="/crm/visit/<?= (int) $current['id'] ?>">Подробнее о заходе</a>
+    <?php endif; ?>
+  </section>
+
+  <?php if (count($visits) > 1): ?>
+    <section class="panel">
+      <h2>Все заходы (<?= count($visits) ?>)</h2>
+      <ul class="plain">
+        <?php foreach (array_reverse($visits) as $v): ?>
+          <li class="small"><a href="/crm/visit/<?= (int) $v['id'] ?>"><?= V::date($v['started_at']) ?></a> · <?= V::e($v['source']) ?> · <?= (int) $v['pages'] ?> стр.<?= $v['lead_id'] !== null ? ' · заявка №' . (int) $v['lead_id'] : '' ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </section>
+  <?php endif; ?>
+</aside>
+</div>

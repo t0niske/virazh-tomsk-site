@@ -52,9 +52,10 @@ final class Chat
     /**
      * Обработать сообщение посетителя.
      *
+     * @param array{vid?: ?string, sid?: ?string} $visit cookie счётчика сайта: с какого захода пишет посетитель
      * @return array{0: int, 1: array{reply: string, operator: bool}}
      */
-    public static function handle(string $chatId, string $message, string $ip): array
+    public static function handle(string $chatId, string $message, string $ip, array $visit = []): array
     {
         $message = trim($message);
 
@@ -83,7 +84,7 @@ final class Chat
         }
 
         $message = Redactor::clean(mb_substr($message, 0, self::MAX_LENGTH));
-        $chat = self::findOrCreate($chatId, $message);
+        $chat = self::findOrCreate($chatId, $message, $visit);
 
         if (self::userMessages((int) $chat['id']) >= self::PER_CHAT
             || !RateLimiter::hit('chat_ip5:' . $ip, self::PER_IP_5MIN, 300)
@@ -160,7 +161,7 @@ final class Chat
         // под ответом окно чата само добавляет «оставьте номер в форме записи или позвоните» с кнопками
         if (!Schedule::fromSettings()->isOpen($now)) {
             return 'Сейчас нерабочее время: администратор ответит в рабочие часы (' . self::hoursText() . '). '
-                . 'Телефоны: Томск — ' . Phone::format(Settings::get('school_phone')) . ', Новосибирск — +7 (383) 205-24-34.';
+                . 'Телефон в Томске — ' . Phone::format(Settings::get('school_phone')) . '.';
         }
 
         return $alreadyCalled
@@ -377,19 +378,32 @@ final class Chat
         return $stmt->rowCount();
     }
 
-    private static function findOrCreate(string $chatId, string $firstText): array
+    /** @param array{vid?: ?string, sid?: ?string} $visit cookie счётчика sd_vid, sd_sid — для пути посетителя в /crm/chat/N */
+    private static function findOrCreate(string $chatId, string $firstText, array $visit = []): array
     {
+        $vid = self::visitKey($visit['vid'] ?? null);
+        $sid = self::visitKey($visit['sid'] ?? null);
         $chat = self::findByChatId($chatId);
 
         if ($chat !== null) {
+            if ($vid !== null && ($chat['visitor_id'] ?? null) === null) {
+                Db::pdo()->prepare('UPDATE chats SET visitor_id = ?, visit_id = ? WHERE id = ?')->execute([$vid, $sid, $chat['id']]);
+                $chat = self::findByChatId($chatId);
+            }
+
             return $chat;
         }
 
         $now = Clock::sql();
-        Db::pdo()->prepare('INSERT INTO chats (chat_id, created_at, last_at, first_text) VALUES (?, ?, ?, ?)')
-            ->execute([$chatId, $now, $now, mb_substr($firstText, 0, 200)]);
+        Db::pdo()->prepare('INSERT INTO chats (chat_id, created_at, last_at, first_text, visitor_id, visit_id) VALUES (?, ?, ?, ?, ?, ?)')
+            ->execute([$chatId, $now, $now, mb_substr($firstText, 0, 200), $vid, $sid]);
 
         return self::findByChatId($chatId);
+    }
+
+    private static function visitKey(mixed $value): ?string
+    {
+        return is_string($value) && preg_match('/^[A-Za-z0-9_-]{8,40}$/', $value) ? $value : null;
     }
 
     private static function add(array $chat, string $role, string $text, bool $operator): void

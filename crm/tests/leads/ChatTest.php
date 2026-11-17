@@ -291,5 +291,17 @@ test('Чат: «оператор» — сервер зовёт админист�
     Clock::set('2026-11-17 21:30:00');
     [, $night] = Chat::handle('chatWindowNIGHTNIGHTNIGH', 'Позовите человека', '10.9.9.10');
     ok(str_starts_with($night['reply'], 'Сейчас нерабочее время: администратор ответит в рабочие часы (Пн–Сб 10:00–18:00'), $night['reply']);
-    ok(str_contains($night['reply'], 'Новосибирск — +7 (383) 205-24-34'), 'телефоны');
+    ok(str_contains($night['reply'], 'Телефон в Томске') && !str_contains($night['reply'], 'Новосибирск'), 'по умолчанию — Томск, без Новосибирска');
+});
+
+test('Чат: запоминает, с какого захода пишет посетитель (cookie счётчика) — для пути в /crm/chat/N', function (): void {
+    fakeModel();
+    Clock::set('2026-11-17 11:00:00');
+    Chat::handle(CHAT_ID, 'Сколько стоит?', '10.10.10.10', ['vid' => 'visitorAAAAAAAAAAAAAAA', 'sid' => 'visitBBBBBBBBBBBBBBBBB']);
+    $chat = Chat::findByChatId(CHAT_ID);
+    eq('visitorAAAAAAAAAAAAAAA', $chat['visitor_id']);
+    eq('visitBBBBBBBBBBBBBBBBB', $chat['visit_id']);
+
+    Chat::handle('chatWindowNOCOOKIEAAAA', 'Привет', '10.10.10.11', ['vid' => 'плохое значение', 'sid' => null]);
+    eq(null, Chat::findByChatId('chatWindowNOCOOKIEAAAA')['visitor_id'], 'мусор в cookie не сохраняется');
 });

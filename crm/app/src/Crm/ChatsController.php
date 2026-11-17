@@ -7,6 +7,7 @@ namespace App\Crm;
 use App\Chat\Chat;
 use App\Leads\Audit;
 use App\Leads\Clock;
+use App\Visits\Visits;
 
 /** Переписка чат-бота сайта: список и страница чата. */
 final class ChatsController
@@ -50,7 +51,28 @@ final class ChatsController
         }
 
         $now = Clock::now();
+        // путь посетителя: все его заходы и тот, из которого он писал (по cookie счётчика, сохранённым с чатом)
+        $visits = ($chat['visitor_id'] ?? null) !== null ? array_reverse(Visits::byVisitor((string) $chat['visitor_id'])) : [];
+        $current = null;
+
+        foreach ($visits as $v) {
+            if (($chat['visit_id'] ?? null) !== null && $v['sid'] === $chat['visit_id']) {
+                $current = $v;
+            }
+        }
+
+        if ($current === null) {
+            foreach ($visits as $v) {
+                if ($v['started_at'] <= $chat['last_at']) {
+                    $current = $v;   // последний заход, начатый до последней реплики
+                }
+            }
+        }
+
         View::render('chat', [
+            'visits' => $visits,
+            'current' => $current,
+            'timeline' => $current !== null ? Visits::timeline((int) $current['id']) : null,
             'title' => 'Чат №' . $id,
             'active' => 'chats',
             'chat' => $chat,
