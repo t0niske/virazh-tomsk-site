@@ -48,6 +48,23 @@ final class Leads
         return $stmt->fetch() ?: null;
     }
 
+    /**
+     * «Кому звонить сейчас»: подошло время звонка или новые, которые никто не взял. Одна выборка для страницы
+     * очереди, кнопки «Кому звонить: N» и счётчика во вкладке (раньше кнопка считала по-другому и пропадала).
+     */
+    public static function dueNow(\DateTimeImmutable $now): array
+    {
+        $closed = "'" . implode("','", Status::CLOSED) . "'";
+        $stmt = Db::pdo()->prepare(
+            "SELECT * FROM leads WHERE status NOT IN ($closed) AND (
+                (next_action IN ('call', 'message') AND next_action_at <= ?) OR (status = 'new' AND due_at <= ?)
+             ) ORDER BY CASE WHEN status = 'new' THEN 0 ELSE 1 END, next_action_at, id"
+        );
+        $stmt->execute([Clock::sql($now), Clock::sql($now)]);
+
+        return $stmt->fetchAll();
+    }
+
     /** Последняя заявка с этим номером, обновлявшаяся не раньше $since. */
     public static function findRecentByPhone(string $phone, string $since): ?array
     {

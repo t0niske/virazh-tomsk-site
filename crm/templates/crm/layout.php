@@ -32,8 +32,8 @@ if (($user['role'] ?? '') === 'manager') {
 <meta name="theme-color" content="#18181A">
 <title><?= V::e($title) ?> — Авто-Вираж</title>
 <link rel="icon" href="/crm/assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/crm/assets/crm.css?v=13">
-<script src="/crm/assets/crm.js?v=4" defer></script>
+<link rel="stylesheet" href="/crm/assets/crm.css?v=14">
+<script src="/crm/assets/crm.js?v=5" defer></script>
 </head>
 <body>
 <header class="top<?= count($nav) > 5 ? ' top--wide' : '' ?>">
@@ -46,6 +46,7 @@ if (($user['role'] ?? '') === 'manager') {
       <?php endforeach; ?>
     </nav>
     <div class="me">
+      <button class="notify-btn" type="button" data-notify="/crm/pulse" aria-pressed="false" title="Звук и уведомления браузера о новых заявках и о чате, где нужен оператор" hidden>Уведомления: выкл</button>
       <a href="/crm/profile" class="me__name<?= $active === 'profile' ? ' is-active' : '' ?>"><?= V::e($user['name']) ?> · <?= V::e(Staff::ROLES[$user['role']] ?? '') ?></a>
       <form method="post" action="/crm/logout"><?= V::csrf() ?><button class="link" type="submit">Выйти</button></form>
     </div>

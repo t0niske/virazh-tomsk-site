@@ -64,6 +64,7 @@ final class App
         match (true) {
             $path === '/' => LeadsController::index(),
             $path === '/queue' => LeadsController::queue(),
+            $path === '/pulse' && $method === 'GET' => PulseController::handle(),
             $path === '/new' => LeadsController::create($method),
             (bool) preg_match('#^/lead/(\d+)$#', $path, $m) => LeadsController::show((int) $m[1]),
             $method === 'POST' && (bool) preg_match('#^/lead/(\d+)/([a-z]+)$#', $path, $m) => LeadsController::action((int) $m[1], $m[2]),

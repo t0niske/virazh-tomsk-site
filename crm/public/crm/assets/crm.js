@@ -50,12 +50,127 @@
   var chat = document.querySelector('[data-chat]');
   if (chat) chat.scrollTop = chat.scrollHeight;
 
-  // Очередь обновляется сама, если пользователь ничего не вводит.
+  // Очередь обновляется сама, если пользователь ничего не вводит. Без перезагрузки страницы: иначе браузер
+  // заново запрещает звук до первого нажатия, и сигнал о новой заявке не прозвучит.
   var auto = document.querySelector('[data-autorefresh]');
   if (auto) {
     setInterval(function () {
       var active = document.activeElement;
-      if (!active || !/INPUT|TEXTAREA|SELECT/.test(active.tagName)) window.location.reload();
+      if (active && /INPUT|TEXTAREA|SELECT/.test(active.tagName)) return;
+      if (document.querySelector('main.page details[open]')) return;
+      if (!window.fetch || !window.DOMParser) { window.location.reload(); return; }
+      fetch(window.location.href, { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+        .then(function (html) {
+          var fresh = new DOMParser().parseFromString(html, 'text/html').querySelector('main.page');
+          var page = document.querySelector('main.page');
+          if (fresh && page) page.innerHTML = fresh.innerHTML; else window.location.reload();
+        })
+        .catch(function () { window.location.reload(); });
     }, Number(auto.dataset.autorefresh) * 1000);
+  }
+
+  // Уведомления: новая или повторная заявка, чат на сайте, где нужен оператор. Звук + уведомление браузера.
+  // Работает, пока открыта хотя бы одна вкладка админки; включается кнопкой в шапке (браузер спросит разрешение).
+  var bell = document.querySelector('[data-notify]');
+  if (bell && window.fetch) {
+    var ON = 'crm-notify', SINCE = 'crm-notify-since', SEEN = 'crm-notify-seen', PERIOD = 20000;
+    var store = {
+      get: function (k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } },
+      set: function (k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* приватный режим */ } }
+    };
+    var canNotify = 'Notification' in window;
+    var baseTitle = document.title, timer = null, audio = null;
+    var enabled = function () { return store.get(ON) === '1'; };
+
+    var paint = function () {
+      var v = enabled();
+      bell.hidden = false;
+      bell.setAttribute('aria-pressed', v ? 'true' : 'false');
+      bell.textContent = v ? 'Уведомления: вкл' : 'Уведомления: выкл';
+      if (v && canNotify && Notification.permission === 'denied') bell.textContent = 'Уведомления: только звук';
+    };
+
+    // Звук браузер разрешает только после нажатия на странице — готовим его при любом нажатии.
+    var unlock = function () {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx || !enabled()) return Promise.resolve();
+      if (!audio) audio = new Ctx();
+      return audio.state === 'suspended' ? audio.resume() : Promise.resolve();
+    };
+    var chime = function () {
+      if (!audio || audio.state !== 'running') return;
+      var t = audio.currentTime;
+      [[784, 0], [1175, 0.17]].forEach(function (n) {
+        var osc = audio.createOscillator(), gain = audio.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = n[0];
+        gain.gain.setValueAtTime(0.0001, t + n[1]);
+        gain.gain.exponentialRampToValueAtTime(0.3, t + n[1] + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.45);
+        osc.connect(gain);
+        gain.connect(audio.destination);
+        osc.start(t + n[1]);
+        osc.stop(t + n[1] + 0.5);
+      });
+    };
+
+    // Несколько вкладок: каждое событие показываем один раз (общий список в localStorage).
+    var firstTime = function (key) {
+      var list = (store.get(SEEN) || '').split('|');
+      if (list.indexOf(key) !== -1) return false;
+      list.push(key);
+      store.set(SEEN, list.slice(-80).join('|'));
+      return true;
+    };
+    var show = function (item) {
+      if (!canNotify || Notification.permission !== 'granted') return;
+      try {
+        var n = new Notification(item.title, { body: item.text, tag: item.key, icon: '/crm/assets/icon.svg' });
+        n.onclick = function () { window.focus(); window.location.href = item.url; n.close(); };
+      } catch (e) { /* браузер без уведомлений со страницы */ }
+    };
+
+    var poll = function () {
+      var since = store.get(SINCE) || '';
+      fetch(bell.dataset.notify + (since ? '?since=' + encodeURIComponent(since) : ''), {
+        credentials: 'same-origin', headers: { Accept: 'application/json' }
+      })
+        .then(function (r) {
+          if (!r.ok || (r.headers.get('Content-Type') || '').indexOf('json') === -1) return Promise.reject('вход');
+          return r.json();
+        })
+        .then(function (d) {
+          if (!since || d.now > since) store.set(SINCE, d.now);
+          var fresh = d.items.filter(function (item) { return firstTime(item.key); });
+          fresh.forEach(show);
+          if (fresh.length) chime();
+          document.title = (d.queue > 0 ? '(' + d.queue + ') ' : '') + baseTitle;
+        })
+        .catch(function () { stop(); });   // вышли из админки — проверять нечего
+    };
+    var start = function () { if (!timer) { poll(); timer = setInterval(poll, PERIOD); } };
+    var stop = function () { clearInterval(timer); timer = null; document.title = baseTitle; };
+
+    bell.addEventListener('click', function () {
+      var v = !enabled();
+      store.set(ON, v ? '1' : '0');
+      if (!v) { stop(); paint(); return; }
+      store.set(SINCE, '');   // включили — показываем только то, что придёт дальше
+      unlock().then(chime);   // пробный сигнал: слышно, что звук работает
+      if (canNotify && Notification.permission === 'default') {
+        Notification.requestPermission().then(function (p) {
+          paint();
+          if (p === 'granted') show({ title: 'Уведомления включены', text: 'Новые заявки и вопросы из чата будут появляться здесь.', key: 'on', url: '/crm/queue' });
+        });
+      }
+      paint();
+      start();
+    });
+    document.addEventListener('pointerdown', function () { unlock(); });
+    document.addEventListener('keydown', function () { unlock(); });
+
+    paint();
+    if (enabled()) start();
   }
 })();

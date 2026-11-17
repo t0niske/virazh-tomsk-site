@@ -11,7 +11,6 @@ use App\Leads\LeadForm;
 use App\Leads\Leads;
 use App\Leads\LeadService;
 use App\Leads\Phone;
-use App\Leads\Scheduler;
 use App\Leads\Settings;
 use App\Leads\Status;
 use App\Max\AdminChat;
@@ -59,7 +58,7 @@ final class LeadsController
             'sources' => $pdo->query('SELECT DISTINCT source FROM leads ORDER BY source')->fetchAll(\PDO::FETCH_COLUMN),
             'staffList' => Staff::all(true),
             'staffNames' => array_column(Staff::all(), 'name', 'id'),
-            'queueCount' => count(Scheduler::dueLeads(Clock::now())),
+            'queueCount' => count(Leads::dueNow(Clock::now())),
         ]);
     }
 
@@ -73,18 +72,10 @@ final class LeadsController
         );
         $later->execute([Clock::sql($now), Clock::sql($now->setTime(23, 59, 59))]);
 
-        // «Сейчас»: подошло время звонка или новые, которые никто не взял.
-        $due = Db::pdo()->prepare(
-            "SELECT * FROM leads WHERE status NOT IN ($closed) AND (
-                (next_action IN ('call', 'message') AND next_action_at <= ?) OR (status = 'new' AND due_at <= ?)
-             ) ORDER BY CASE WHEN status = 'new' THEN 0 ELSE 1 END, next_action_at, id"
-        );
-        $due->execute([Clock::sql($now), Clock::sql($now)]);
-
         View::render('queue', [
             'title' => 'Кому звонить',
             'active' => 'queue',
-            'due' => $due->fetchAll(),
+            'due' => Leads::dueNow($now),
             'later' => $later->fetchAll(),
             'staffNames' => array_column(Staff::all(), 'name', 'id'),
             'open' => \App\Leads\Schedule::fromSettings()->isOpen($now),
