@@ -10,6 +10,7 @@ use App\Leads\Log;
 use App\Leads\Notify\Telegram;
 use App\Leads\Phone;
 use App\Leads\RateLimiter;
+use App\Leads\Schedule;
 use App\Leads\Settings;
 use App\Support\Db;
 use App\Support\Env;
@@ -27,6 +28,11 @@ final class Chat
     public const PER_CHAT = 20;
     public const PER_IP_5MIN = 10;
     public const PER_IP_DAY = 40;
+    /** Сколько минут после последнего ответа администратора ИИ молчит (переписку ведёт человек). */
+    public const LIVE_MINUTES = 30;
+    /** Сколько минут окно чата на сайте ждёт администратора после того, как бот его позвал. */
+    public const WAIT_MINUTES = 60;
+    public const RELEASE_TEXT = 'Администратор завершил разговор. Если появятся вопросы — пишите сюда, ответит помощник.';
 
     private static ?object $model = null;
     private static bool $modelSet = false;
@@ -50,17 +56,30 @@ final class Chat
      */
     public static function handle(string $chatId, string $message, string $ip): array
     {
+        $message = trim($message);
+
+        if (!preg_match('/^[A-Za-z0-9_-]{16,40}$/', $chatId) || $message === '') {
+            return [422, ['reply' => 'Напишите вопрос текстом.', 'operator' => false]];
+        }
+
+        // В переписке администратор: ИИ молчит, сообщение ждёт человека (/crm/chat/N, уведомление в браузере).
+        $existing = self::findByChatId($chatId);
+
+        if ($existing !== null && self::live($existing, Clock::now())) {
+            if (!RateLimiter::hit('chat_ip5:' . $ip, self::PER_IP_5MIN * 3, 300) || !RateLimiter::hit('chat_ipday:' . $ip, self::PER_IP_DAY * 3, 86400)) {
+                return [429, self::fallback('Сообщений слишком много.')];
+            }
+
+            self::add($existing, 'user', Redactor::clean(mb_substr($message, 0, self::MAX_LENGTH)), false);
+
+            return [200, ['reply' => '', 'operator' => true, 'live' => true]];
+        }
+
         $model = self::model();
 
         // без ключа DeepSeek или без справки с сайта ИИ не отвечает — на сайте отвечают готовые ответы
         if ($model === null || self::systemPrompt() === '') {
             return [503, self::fallback('Чат сейчас не работает.')];
-        }
-
-        $message = trim($message);
-
-        if (!preg_match('/^[A-Za-z0-9_-]{16,40}$/', $chatId) || $message === '') {
-            return [422, ['reply' => 'Напишите вопрос текстом.', 'operator' => false]];
         }
 
         $message = Redactor::clean(mb_substr($message, 0, self::MAX_LENGTH));
@@ -105,7 +124,105 @@ final class Chat
         $operator = mb_stripos($text, self::OPERATOR_TAG) !== false;
         $text = trim(str_ireplace(self::OPERATOR_TAG, '', $text));
 
-        return [$text !== '' ? $text : 'Позову администратора — нажмите «Позвоните мне», и мы перезвоним.', $operator];
+        return [$text !== '' ? $text : 'Позвал администратора — он ответит здесь, в чате, в рабочее время.', $operator];
+    }
+
+    /** Администратор ведёт переписку: отвечал не раньше LIVE_MINUTES минут назад. */
+    public static function live(array $chat, DateTimeImmutable $now): bool
+    {
+        return ($chat['operator_at'] ?? null) !== null
+            && $chat['operator_at'] >= Clock::sql($now->modify('-' . self::LIVE_MINUTES . ' minutes'));
+    }
+
+    /** Бот позвал администратора не раньше WAIT_MINUTES минут назад, а тот ещё не ответил. */
+    public static function waiting(array $chat, DateTimeImmutable $now): bool
+    {
+        // по номерам сообщений, а не по времени: зов бота позже последнего ответа администратора (или «вышел из чата»)
+        $stmt = Db::pdo()->prepare("SELECT
+                MAX(CASE WHEN operator = 1 AND role IN ('bot', 'system') THEN id END) AS called_id,
+                MAX(CASE WHEN operator = 1 AND role IN ('bot', 'system') THEN created_at END) AS called_at,
+                MAX(CASE WHEN role IN ('operator', 'notice') THEN id END) AS answered_id
+            FROM chat_messages WHERE chat_ref = ?");
+        $stmt->execute([$chat['id']]);
+        $row = $stmt->fetch();
+
+        return $row !== false && $row['called_id'] !== null
+            && $row['called_at'] >= Clock::sql($now->modify('-' . self::WAIT_MINUTES . ' minutes'))
+            && ($row['answered_id'] === null || (int) $row['called_id'] > (int) $row['answered_id']);
+    }
+
+    /** Ответ администратора из /crm/chat/N: посетитель увидит его в окне чата, ИИ замолкает на LIVE_MINUTES минут. */
+    public static function operatorReply(array $chat, array $staff, string $text): void
+    {
+        $now = Clock::sql();
+        Db::pdo()->prepare("INSERT INTO chat_messages (chat_ref, created_at, role, text, operator, staff_id) VALUES (?, ?, 'operator', ?, 0, ?)")
+            ->execute([$chat['id'], $now, $text, (int) $staff['id']]);
+        Db::pdo()->prepare('UPDATE chats SET messages = messages + 1, last_at = ?, operator_at = ?, operator = 1 WHERE id = ?')
+            ->execute([$now, $now, $chat['id']]);
+    }
+
+    /** «Вернуть боту»: администратор вышел, дальше снова отвечает ИИ; посетитель видит служебное сообщение. */
+    public static function release(array $chat): void
+    {
+        if (($chat['operator_at'] ?? null) === null) {
+            return;
+        }
+
+        $now = Clock::sql();
+        Db::pdo()->prepare("INSERT INTO chat_messages (chat_ref, created_at, role, text, operator) VALUES (?, ?, 'notice', ?, 0)")
+            ->execute([$chat['id'], $now, self::RELEASE_TEXT]);
+        Db::pdo()->prepare('UPDATE chats SET messages = messages + 1, last_at = ?, operator_at = NULL WHERE id = ?')
+            ->execute([$now, $chat['id']]);
+    }
+
+    /**
+     * GET /api/chat?chat_id=…&after=N — для окна чата на сайте: новые ответы администратора и служебные сообщения,
+     * идёт ли переписка с человеком (live) и ждёт ли посетитель администратора (waiting). Номер чата — секрет вкладки.
+     *
+     * @return array{messages: list<array{id: int, from: string, text: string}>, live: bool, waiting: bool}
+     */
+    public static function poll(string $chatId, int $after): array
+    {
+        $chat = preg_match('/^[A-Za-z0-9_-]{16,40}$/', $chatId) ? self::findByChatId($chatId) : null;
+
+        if ($chat === null) {
+            return ['messages' => [], 'live' => false, 'waiting' => false];
+        }
+
+        $stmt = Db::pdo()->prepare("SELECT id, role, text FROM chat_messages WHERE chat_ref = ? AND id > ? AND role IN ('operator', 'notice') ORDER BY id LIMIT 20");
+        $stmt->execute([$chat['id'], max(0, $after)]);
+        $now = Clock::now();
+
+        return [
+            'messages' => array_map(static fn (array $m): array => ['id' => (int) $m['id'], 'from' => $m['role'] === 'operator' ? 'operator' : 'notice', 'text' => $m['text']], $stmt->fetchAll()),
+            'live' => self::live($chat, $now),
+            'waiting' => self::waiting($chat, $now),
+        ];
+    }
+
+    /** Для ИИ: рабочее ли сейчас время — от этого зависит, обещать ли подключение администратора к чату. */
+    public static function statusLine(DateTimeImmutable $now): string
+    {
+        $hours = self::hoursText();
+
+        return Schedule::fromSettings()->isOpen($now)
+            ? "СЕЙЧАС рабочее время ($hours): администратор может подключиться к этому чату и ответить здесь."
+            : "СЕЙЧАС нерабочее время. Администраторы отвечают $hours.";
+    }
+
+    /** «Пн–Пт 9:00–18:00 по местному времени» — из настроек графика. */
+    public static function hoursText(): string
+    {
+        $names = [1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб', 7 => 'Вс'];
+        $days = Schedule::parseDays(Settings::get('work_days'));
+        sort($days);
+        $range = $days !== [] && $days === range($days[0], $days[count($days) - 1]);
+        $daysText = $range
+            ? $names[$days[0]] . (count($days) > 1 ? '–' . $names[$days[count($days) - 1]] : '')
+            : implode(', ', array_map(static fn (int $d): string => $names[$d] ?? '', $days));
+        $time = static fn (string $t): string => preg_replace('/^0(\d)/', '$1', $t);
+
+        return trim("$daysText " . $time(Settings::get('work_start')) . '–' . $time(Settings::get('work_end')) . ' по местному времени');
     }
 
     /**
@@ -116,14 +233,19 @@ final class Chat
      */
     public static function conversation(int $chatRef): array
     {
-        $stmt = Db::pdo()->prepare("SELECT role, text FROM chat_messages WHERE chat_ref = ? AND role IN ('user', 'bot') ORDER BY id DESC LIMIT " . self::HISTORY);
+        $stmt = Db::pdo()->prepare("SELECT role, text FROM chat_messages WHERE chat_ref = ? AND role IN ('user', 'bot', 'operator') ORDER BY id DESC LIMIT " . self::HISTORY);
         $stmt->execute([$chatRef]);
         $history = array_reverse($stmt->fetchAll());
 
-        $messages = [['role' => 'system', 'content' => self::systemPrompt()]];
+        $messages = [['role' => 'system', 'content' => self::systemPrompt() . "\n\n" . self::statusLine(Clock::now())]];
 
         foreach ($history as $row) {
-            $messages[] = ['role' => $row['role'] === 'bot' ? 'assistant' : 'user', 'content' => $row['text']];
+            $messages[] = match ($row['role']) {
+                'bot' => ['role' => 'assistant', 'content' => $row['text']],
+                // ответы администратора — тоже ответы школы; ИИ видит, что их писал человек
+                'operator' => ['role' => 'assistant', 'content' => 'Администратор: ' . $row['text']],
+                default => ['role' => 'user', 'content' => $row['text']],
+            };
         }
 
         return $messages;
@@ -297,7 +419,7 @@ final class Chat
         }
 
         try {
-            Telegram::send("💬 В чате на сайте нужен оператор (чат №{$chat['id']}). Если посетитель оставит телефон, придёт заявка.\n"
+            Telegram::send("💬 В чате на сайте нужен оператор (чат №{$chat['id']}). Ответить посетителю можно прямо в CRM — ответ появится у него в окне чата.\n"
                 . 'Открыть: ' . rtrim((string) Env::get('APP_URL', ''), '/') . '/crm/chat/' . $chat['id']);
         } catch (\Throwable $e) {
             Log::error('Telegram о чате', $e);

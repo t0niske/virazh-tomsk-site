@@ -68,6 +68,22 @@ final class PulseController
             ];
         }
 
+        // Новые сообщения посетителя после того, как бот позвал администратора: человек ждёт ответа.
+        $visitor = $pdo->prepare("SELECT m.id, m.chat_ref, m.text FROM chat_messages m JOIN chats c ON c.id = m.chat_ref
+            WHERE m.role = 'user' AND m.created_at >= ? AND c.operator = 1
+              AND m.id > (SELECT MIN(x.id) FROM chat_messages x WHERE x.chat_ref = m.chat_ref AND x.operator = 1)
+            ORDER BY m.created_at, m.id LIMIT 20");
+        $visitor->execute([$from]);
+
+        foreach ($visitor as $m) {
+            $out['items'][] = [
+                'key' => 'm' . $m['id'],
+                'title' => 'Сообщение в чате №' . $m['chat_ref'],
+                'text' => mb_strimwidth((string) $m['text'], 0, 90, '…'),
+                'url' => '/crm/chat/' . $m['chat_ref'],
+            ];
+        }
+
         return $out;
     }
 }

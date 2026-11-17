@@ -49,6 +49,56 @@ final class ChatsController
             $_SESSION['chat_viewed'][$id] = time();
         }
 
-        View::render('chat', ['title' => 'Чат №' . $id, 'active' => 'chats', 'chat' => $chat, 'messages' => Chat::messages($id)]);
+        $now = Clock::now();
+        View::render('chat', [
+            'title' => 'Чат №' . $id,
+            'active' => 'chats',
+            'chat' => $chat,
+            'messages' => Chat::messages($id),
+            'live' => Chat::live($chat, $now),
+            'waiting' => Chat::waiting($chat, $now),
+            // свежая переписка обновляется на странице сама, пока администратор её открыл
+            'fresh' => $chat['last_at'] >= Clock::sql($now->modify('-2 hours')),
+            'staffNames' => array_column(Staff::all(), 'name', 'id'),
+        ]);
+    }
+
+    /** Ответ администратора посетителю: появится у него в окне чата на сайте; бот замолкает на 30 минут. */
+    public static function reply(int $id): void
+    {
+        $chat = Chat::find($id);
+
+        if ($chat === null) {
+            View::render('error', ['title' => 'Не найдено', 'message' => 'Такой переписки нет.'], 404);
+
+            return;
+        }
+
+        $text = trim((string) ($_POST['text'] ?? ''));
+
+        if ($text === '') {
+            View::flash('Напишите ответ посетителю.', 'error');
+            View::redirect("/crm/chat/$id");
+
+            return;
+        }
+
+        Chat::operatorReply($chat, Auth::user(), mb_substr($text, 0, 2000));
+        Audit::log(Auth::actor(), 'chat_reply', $chat['lead_id'] !== null ? (int) $chat['lead_id'] : null, "Ответил в чате №$id");
+        View::redirect("/crm/chat/$id#reply");
+    }
+
+    /** «Вернуть боту»: дальше на вопросы посетителя снова отвечает ИИ. */
+    public static function release(int $id): void
+    {
+        $chat = Chat::find($id);
+
+        if ($chat !== null) {
+            Chat::release($chat);
+            Audit::log(Auth::actor(), 'chat_release', $chat['lead_id'] !== null ? (int) $chat['lead_id'] : null, "Вернул чат №$id боту");
+            View::flash('Переписка возвращена боту — посетитель увидел, что вы вышли из чата.');
+        }
+
+        View::redirect("/crm/chat/$id");
     }
 }

@@ -64,7 +64,14 @@
         .then(function (html) {
           var fresh = new DOMParser().parseFromString(html, 'text/html').querySelector('main.page');
           var page = document.querySelector('main.page');
-          if (fresh && page) page.innerHTML = fresh.innerHTML; else window.location.reload();
+          if (!fresh || !page) { window.location.reload(); return; }
+          // недописанный ответ в чате не теряем; переписку держим прокрученной вниз
+          var kept = {};
+          page.querySelectorAll('textarea[name]').forEach(function (t) { kept[t.name] = t.value; });
+          page.innerHTML = fresh.innerHTML;
+          page.querySelectorAll('textarea[name]').forEach(function (t) { if (kept[t.name]) t.value = kept[t.name]; });
+          var log = page.querySelector('[data-chat]');
+          if (log) log.scrollTop = log.scrollHeight;
         })
         .catch(function () { window.location.reload(); });
     }, Number(auto.dataset.autorefresh) * 1000);

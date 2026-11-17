@@ -16,6 +16,8 @@ final class Audit
         'lead_view' => 'Открыл заявку',
         'visit_view' => 'Открыл заход на сайт',
         'chat_view' => 'Открыл переписку чата',
+        'chat_reply' => 'Ответил в чате на сайте',
+        'chat_release' => 'Вернул чат боту',
         'lead_update' => 'Изменил заявку',
         'lead_delete' => 'Удалил заявку',
         'lead_status' => 'Сменил статус',

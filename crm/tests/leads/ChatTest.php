@@ -206,3 +206,64 @@ test('Чат: запрос к DeepSeek по контракту и разбор �
     eq(402, DeepSeek::parse(402, '{"error":{"message":"Insufficient Balance"}}')['status']);
     eq('Insufficient Balance', DeepSeek::parse(402, '{"error":{"message":"Insufficient Balance"}}')['error']);
 });
+
+test('Чат: администратор подключается — бот зовёт, ответ доходит до окна чата, бот молчит, «Вернуть боту»', function (): void {
+    $model = fakeModel("Позвал администратора — он подключится к этому чату и ответит здесь.\n[ОПЕРАТОР]");
+    Clock::set('2026-11-17 11:00:00');   // вторник, рабочее время (в тестах Пн–Сб 10:00–18:00)
+
+    [, $body] = Chat::handle(CHAT_ID, 'Позовите оператора', '10.8.8.8');
+    eq(true, $body['operator']);
+    ok(str_contains(end($model->requests[0])['content'] ?? '', 'оператора'), 'вопрос ушёл ИИ');
+    ok(str_contains($model->requests[0][0]['content'], 'СЕЙЧАС рабочее время (Пн–Сб 10:00–18:00 по местному времени)'), 'ИИ знает, что сейчас рабочее время');
+
+    $poll = Chat::poll(CHAT_ID, 0);
+    eq([], $poll['messages']);
+    eq(true, $poll['waiting'], 'окно ждёт администратора');
+    eq(false, $poll['live']);
+
+    // администратор отвечает из CRM
+    $staff = App\Crm\Staff::find(App\Crm\Staff::create('olga', 'Ольга', 'admin', 'test-password-1'));
+    Clock::set('2026-11-17 11:02:00');
+    Chat::operatorReply(Chat::findByChatId(CHAT_ID), $staff, 'Здравствуйте! Я администратор, слушаю вас.');
+    $poll = Chat::poll(CHAT_ID, 0);
+    eq(1, count($poll['messages']));
+    eq('operator', $poll['messages'][0]['from']);
+    eq('Здравствуйте! Я администратор, слушаю вас.', $poll['messages'][0]['text']);
+    ok(!str_contains(json_encode($poll, JSON_UNESCAPED_UNICODE), 'Ольга'), 'посетитель не видит имя сотрудника');
+    eq(true, $poll['live']);
+    eq(false, $poll['waiting']);
+    eq([], Chat::poll(CHAT_ID, $poll['messages'][0]['id'])['messages'], 'уже показанное не повторяется');
+
+    // пока администратор в чате, ИИ молчит, сообщение ждёт человека и приходит ему уведомлением
+    $asked = count($model->requests);
+    Clock::set('2026-11-17 11:03:00');
+    [$code, $body] = Chat::handle(CHAT_ID, 'Сколько стоит на автомате?', '10.8.8.8');
+    eq(200, $code);
+    eq(['reply' => '', 'operator' => true, 'live' => true], $body);
+    eq($asked, count($model->requests), 'в DeepSeek не ушло');
+    $pulse = App\Crm\PulseController::data('2026-11-17 11:02:30', Clock::now());
+    $chatRef = (int) Chat::findByChatId(CHAT_ID)['id'];
+    eq('Сообщение в чате №' . $chatRef, $pulse['items'][0]['title']);
+    eq('Сколько стоит на автомате?', $pulse['items'][0]['text']);
+
+    // «Вернуть боту»: посетитель видит служебное сообщение, дальше снова отвечает ИИ (и видит ответ администратора в истории)
+    Chat::release(Chat::findByChatId(CHAT_ID));
+    $notice = Chat::poll(CHAT_ID, $poll['messages'][0]['id']);
+    eq('notice', $notice['messages'][0]['from']);
+    eq(Chat::RELEASE_TEXT, $notice['messages'][0]['text']);
+    eq(false, $notice['live']);
+    eq(false, $notice['waiting'], 'после «Вернуть боту» администратора никто не ждёт');
+    fakeModel('Категория B на автомате — 66 000 ₽.');
+    eq('Категория B на автомате — 66 000 ₽.', Chat::handle(CHAT_ID, 'А всё-таки сколько?', '10.8.8.8')[1]['reply']);
+    $history = Chat::conversation($chatRef);
+    ok(in_array('Администратор: Здравствуйте! Я администратор, слушаю вас.', array_column($history, 'content'), true), 'ответ администратора — в истории для ИИ');
+
+    // через 30 минут после ответа администратора бот снова отвечает сам
+    Chat::operatorReply(Chat::findByChatId(CHAT_ID), $staff, 'Ещё что-то?');
+    Clock::set('2026-11-17 11:40:00');
+    eq(false, Chat::live(Chat::findByChatId(CHAT_ID), Clock::now()));
+
+    // нерабочее время — ИИ об этом знает
+    ok(str_contains(Chat::statusLine(new DateTimeImmutable('2026-11-17 20:00:00')), 'СЕЙЧАС нерабочее время. Администраторы отвечают Пн–Сб 10:00–18:00'), 'вечером');
+    eq(['messages' => [], 'live' => false, 'waiting' => false], Chat::poll('плохой номер', 0));
+});

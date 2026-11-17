@@ -215,9 +215,34 @@
     }).then(r => {
       if (r.status === 503 || r.status === 404 || r.status === 405) aiOn = false;   // ИИ выключен — до конца визита не спрашиваем
       return r.ok ? r.json() : null;
-    }).then(j => (j && typeof j.reply === 'string' && j.reply.trim() && !j.fallback ? j : null))
+    }).then(j => (j && (j.live || (typeof j.reply === 'string' && j.reply.trim() && !j.fallback)) ? j : null))
       .catch(() => null)
       .then(j => { clearTimeout(timer); return j; });
+  }
+
+  // ---------- администратор в чате ----------
+  // Бот позвал администратора (operator) — окно спрашивает сервер, не ответил ли человек (GET /api/chat), и показывает
+  // ответ здесь же. Пока администратор в чате (live), сообщения уходят ему, а ИИ молчит.
+  const sget = k => { try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const sset = (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) { /* без хранилища — до конца страницы */ } };
+  let pollTimer = 0, liveShown = false;
+  function pollOperator() {
+    clearTimeout(pollTimer);
+    const id = sget('vz_chat');
+    if (!aiOn || !id) return;
+    fetch('/api/chat?chat_id=' + encodeURIComponent(id) + '&after=' + (Number(sget('vz_chat_seen')) || 0), {
+      credentials: 'same-origin', headers: { Accept: 'application/json' }
+    }).then(r => (r.ok ? r.json() : null)).then(j => {
+      if (!j) { pollTimer = setTimeout(pollOperator, 30000); return; }
+      (j.messages || []).forEach(m => {
+        sset('vz_chat_seen', String(m.id));
+        if (panel.hidden) open();
+        if (m.from === 'operator') { say('bot msg-admin', '<p><b>Администратор</b></p>' + aiHtml(m.text)); liveShown = true; }
+        else say('bot', '<p>' + esc(m.text) + '</p>');
+      });
+      if (j.live || j.waiting) { sset('vz_chat_op', '1'); pollTimer = setTimeout(pollOperator, panel.hidden ? 15000 : 5000); }
+      else sset('vz_chat_op', '');
+    }).catch(() => { pollTimer = setTimeout(pollOperator, 30000); });
   }
 
   let busy = false;
@@ -230,9 +255,16 @@
       busy = true;
       const wait = say('bot', 'Печатаю ответ…');
       askAi(text).then(r => {
+        busy = false;
+        if (r && r.live) {     // в чате администратор: сообщение у него, ответ придёт сюда
+          if (liveShown) wait.remove(); else { wait.innerHTML = '<p>Администратор в чате — ответит здесь.</p>'; liveShown = true; }
+          sset('vz_chat_op', '1');
+          pollOperator();
+          return;
+        }
         wait.innerHTML = r ? aiHtml(r.reply) + (r.operator ? special('оператор') : '') : local;
         log.scrollTop = log.scrollHeight;
-        busy = false;
+        if (r && r.operator) { sset('vz_chat_op', '1'); pollOperator(); }
       });
     }).catch(() => say('bot', 'Не получилось загрузить ответы. Позвоните нам: <a href="tel:+73822345252">+7 (3822) 34-52-52</a>.'));
   }
@@ -267,4 +299,6 @@
     input.value = '';
     ask(t);
   });
+  // перешли на другую страницу, а администратор ещё в чате или его ждут — продолжаем слушать ответы
+  if (sget('vz_chat_op') === '1') pollOperator();
 })();

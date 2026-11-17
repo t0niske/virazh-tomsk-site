@@ -41,7 +41,8 @@ $periods = ['today' => 'Сегодня', 'week' => 'Эта неделя', 'last_
             <td data-label="Вопрос"><?= V::e(mb_strimwidth((string) $c['first_text'], 0, 90, '…')) ?></td>
             <td class="nowrap" data-label="Реплик"><?= (int) $c['messages'] ?></td>
             <td data-label="Отметки">
-              <?php if ((int) $c['operator']): ?><span class="badge badge--new">нужен оператор</span><?php endif; ?>
+              <?php if (\App\Chat\Chat::live($c, \App\Leads\Clock::now())): ?><span class="badge badge--enrolled">администратор в чате</span>
+              <?php elseif ((int) $c['operator']): ?><span class="badge badge--new">нужен оператор</span><?php endif; ?>
               <?php if ($c['lead_id'] !== null): ?><a class="badge badge--enrolled" href="/crm/lead/<?= (int) $c['lead_id'] ?>">Заявка №<?= (int) $c['lead_id'] ?></a><?php endif; ?>
             </td>
           </tr>

@@ -78,6 +78,8 @@ final class App
             $method === 'POST' && (bool) preg_match('#^/lead/(\d+)/([a-z]+)$#', $path, $m) => LeadsController::action((int) $m[1], $m[2]),
             $path === '/chats' => ChatsController::index(),
             (bool) preg_match('#^/chat/(\d+)$#', $path, $m) => ChatsController::show((int) $m[1]),
+            $method === 'POST' && (bool) preg_match('#^/chat/(\d+)/reply$#', $path, $m) => ChatsController::reply((int) $m[1]),
+            $method === 'POST' && (bool) preg_match('#^/chat/(\d+)/release$#', $path, $m) => ChatsController::release((int) $m[1]),
             $path === '/visits' => VisitsController::index(),
             (bool) preg_match('#^/visit/(\d+)$#', $path, $m) => VisitsController::show((int) $m[1]),
             $path === '/reports' => ReportsController::index(),
