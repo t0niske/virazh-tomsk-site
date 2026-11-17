@@ -279,6 +279,8 @@ check() {
   while read -r u; do
     [[ "$u" == /* ]] || continue
     n=$((n + 1))
+    # кириллицу (/Блог) — в %XX: curl под Windows передал бы её в кодировке Windows, и сервер ответил бы 404
+    u=$(printf '%s' "$u" | perl -pe 's/([\x80-\xff])/sprintf("%%%02X", ord($1))/ge')
     local r; r=$(curl -s -o /dev/null -A "$ua" -L --max-redirs 3 -w '%{http_code}' --max-time 20 "$base$u" || true)
     [ "$r" = 200 ] || { echo "ОШИБКА старый адрес $u → $r"; bad=$((bad + 1)); }
   done < tools/old-urls.txt
