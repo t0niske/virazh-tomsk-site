@@ -199,3 +199,6 @@
 /yandex_589d0aa8be7ea944.html
 # Старый адрес блога Joomla кириллицей (%D0%91%D0%BB%D0%BE%D0%B3) — Google ещё держит его в выдаче (Ahrefs, 17.11); 301 правилом в .htaccess
 /Блог
+# Раздел новостей сайта до 2023 года — по старым ссылкам ещё приходят люди (ноябрь 2026); 301 правилами в .htaccess
+/o-nas/novosti/1-avtoshkola-virazh-soobshchaet-o-redizajne-sajta
+/o-nas/novosti/72-vnutrennie-ekzameny-teoriya-12-07-23-praktika-14-07-23

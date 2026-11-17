@@ -294,6 +294,9 @@ check() {
   expect /%D0%91%D0%BB%D0%BE%D0%B3 301 /blog/skolko-dlitsya-obuchenie-na-prava-kategorii-b
   expect /%D0%91%D0%BB%D0%BE%D0%B3/ 301 /blog/skolko-dlitsya-obuchenie-na-prava-kategorii-b
   expect "/$INDEXNOW_KEY.txt" 200
+  expect /index.php/o-nas/novosti/1-avtoshkola-virazh-soobshchaet-o-redizajne-sajta 301 /
+  expect '/index.php/o-nas/novosti/29-ekzameny-gibdd-teoriya-avtodrom-20-05-2020g-gorod-21-05-2020g' 301 /ekzameny
+  expect '/index.php/o-nas/novosti?start=38' 301 /
   # система заявок: приём только POST, админка просит войти, сам crm.php напрямую ничего не открывает
   expect /send-form.php 405
   expect /api/lead 405
