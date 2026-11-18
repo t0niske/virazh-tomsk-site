@@ -5,8 +5,8 @@
   'use strict';
 
   // цены и часы — единое место для калькулятора и формы записи
-  // (B: теория 5 000 + вождение 2 000 за занятие + внутренний экзамен 5 000, ГИБДД 5 000 отдельно;
-  //  A: 25 000, внутренний экзамен и ГИБДД включены; состав цены сверить — seo/BRANDCORE.md)
+  // (B: теория 5 000 + вождение 2 000 за занятие + внутренний экзамен 5 000; A: 25 000 за весь курс.
+  //  Цену экзамена в ГИБДД на сайте не писать — директор, 18.11.2026; состав цены сверить — seo/BRANDCORE.md)
   const C = {
     bA: { label: 'B АКПП', price: 66000, hours: 56, start: 5000 },
     bM: { label: 'B МКПП', price: 68000, hours: 58, start: 5000 },
@@ -77,7 +77,6 @@
       $('cPayRow').hidden = !tax.checked;
       $('cPay').textContent = rub(paid);
       $('cStartRow').hidden = !C[cat].start;
-      $('cExamRow').hidden = cat === 'a';
       $('calcCta').dataset.signup = cat;
     };
     segClick(calc.querySelector('.seg'), k => { cat = k; render(); });
