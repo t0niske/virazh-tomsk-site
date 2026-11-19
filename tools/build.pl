@@ -63,6 +63,10 @@ sub include_with {
   $s =~ s{\s*<button\b[^>]*\bdata-signup\b[^>]*>.*?</button>}{}gs if $a{nosignup};
   # nonote=1 — без сноски под лентой шагов («Суммы для категории B…»): на посадочной она лишняя
   $s =~ s{\s*<p class="road-note">.*?</p>}{}s if $a{nonote};
+  # tax=mkpp — налоговый вычет в карточках «Учиться выгодно» считаем с курса на механике (посадочная МКПП)
+  if (($a{tax} // '') eq 'mkpp') {
+    $s =~ s{с курса 66 000 ₽ — до 8 580 ₽}{с курса 68 000 ₽ — до 8 840 ₽} or die "deals: не нашёл строку вычета для tax=mkpp\n";
+  }
   # cat=bM — в форме записи заранее выбрана категория страницы (final-form на посадочной «B, механика»)
   if (my $c = $a{cat}) {
     $s =~ s{(<button class="chip" type="button" data-c="([\w-]+)" aria-pressed=")(?:true|false)"}{$1 . ($2 eq $c ? 'true' : 'false') . '"'}ge;
