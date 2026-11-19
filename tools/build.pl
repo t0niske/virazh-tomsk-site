@@ -182,8 +182,11 @@ sub typo_text {
   $t;
 }
 # картинка для соцсетей (og:image): у посадочных — фото их первого экрана (lp-hero), у остальных страниц — общая
+# Своя картинка страницы — из meta (og: /img/og/статья.jpg, 1200×630), она важнее остальных.
 sub og_image {
-  my ($img) = shift =~ m{<section class="lp-hero">.*?<img\b[^>]*?\bsrc="(/img/[^"]+)"}s;
+  my ($content, $own) = @_;
+  return $opt{site} . $own if $own;
+  my ($img) = $content =~ m{<section class="lp-hero">.*?<img\b[^>]*?\bsrc="(/img/[^"]+)"}s;
   return $opt{site} . ($img // '/img/hero-bg.webp');
 }
 # Склеенный текст: соседние теги без пробела («…в Томске</span><span>Авто-Вираж», «5.0</b><span>369 оценок») поисковик
@@ -377,7 +380,7 @@ for my $file (@pages) {
       description => esc($m{description} // ''),
       canonical => $canonical, robots => $robots, head => $head,
       body_class => $m{body} // '', header => $hdr, footer => $footer, overlays => $ovl,
-      content => $content, version => $version, og_image => og_image($content),
+      content => $content, version => $version, og_image => og_image($content, $m{og}),
     );
     # своя страница города: в шапке и плавающих кнопках — его телефон (meta phone: +7 (383) 205-24-34 | +73832052434)
     if (my $ph = $m{phone}) {
